@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view/>
+    <Home/>
+    
   </div>
 </template>
 
@@ -15,5 +16,12 @@ export default {
 </script>
 
 <style>
-
+  body{
+    margin: 0;
+    padding: 0;
+  }
+  a{
+    text-decoration: none;
+    color: #333;
+  }
 </style>
