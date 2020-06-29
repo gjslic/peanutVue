@@ -1,3 +1,4 @@
+// 聊天组件
 <template>
   <div class="chat_box">
     <div class="chat_title"></div>

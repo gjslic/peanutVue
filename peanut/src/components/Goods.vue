@@ -1,3 +1,4 @@
+// 商品管理
 <template>
   <div>
     <div style="margin: 15px 0;">

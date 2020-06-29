@@ -1,5 +1,6 @@
+// 后台主页
 <template>
-  <el-container>
+  <el-container style="height: 100vh;">
     <el-header style="color: #fff">
       <span style="float: left; font-size: 24px;">Peanut后台管理系统</span>
       <div style="float: right">
