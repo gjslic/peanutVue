@@ -5,10 +5,7 @@ import Goods from '@/components/Goods'
 import AdminRole from '@/components/AdminRole'
 import AdminEcharts from '@/components/AdminEcharts'
 import AdminNotice from '@/components/AdminNotice'
-<<<<<<< HEAD
-=======
 import AdminComplain from '@/components/AdminComplain'
->>>>>>> master
 
 Vue.use(Router)
 
@@ -38,14 +35,10 @@ export default new Router({
             path: '/AdminNotice',
             name: 'AdminNotice',
             component: AdminNotice
-        },
-<<<<<<< HEAD
-=======
-        {
+        }, {
             path: '/AdminComplain',
             name: 'AdminComplain',
             component: AdminComplain
         },
->>>>>>> master
     ]
 })
