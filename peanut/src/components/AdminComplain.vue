@@ -1,4 +1,4 @@
-<!-- @tlh角色管理 -->
+<!-- @tlh举报管理 -->
 <template>
   <div>
     <el-row style="margin-bottom:20px">
@@ -6,8 +6,8 @@
     </el-row>
     <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="ID" label="ID" width="180"></el-table-column>
-      <el-table-column prop="name" label="角色名字" width="180"></el-table-column>
-      <el-table-column prop="address" label="角色描述"></el-table-column>
+      <el-table-column prop="name" label="举报者" width="180"></el-table-column>
+      <el-table-column prop="address" label="举报内容"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
