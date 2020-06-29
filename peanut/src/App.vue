@@ -1,22 +1,24 @@
 <template>
   <div id="app">
     <Home/>
-    
+    <!-- <Detail/> -->
   </div>
 </template>
 
 <script>
 import Home from './components/Home'
+import Detail from './components/Detail'
 export default {
   name: 'App',
   components: {
-    Home
+    Home,
+    Detail
   }
 }
 </script>
 
 <style>
-  body,ul{
+  body,ul,h1,p{
     margin: 0;
     padding: 0;
   }
