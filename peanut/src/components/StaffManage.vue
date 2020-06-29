@@ -200,15 +200,15 @@
     },
     // 获取员工列表
     mounted() {
-    	// let that = this;
-    	// that.axios.post('http://localhost/th5/public/admin/Staff/getStaffArr',{
+    	let that = this;
+    	that.axios.post('http://localhost/th5/public/admin/Staff/getStaffArr',{
 
-    	// }).then(function (res){
-			// 	that.staffArr = res.data.list;
-			// 	console.log(that.form.roleArr)
-    	// }).catch(function (error) {
-    	// 	console.log(error)
-    	// })
+    	}).then(function (res){
+				that.staffArr = res.data.list;
+				console.log(that.form.roleArr)
+    	}).catch(function (error) {
+    		console.log(error)
+    	})
     },
 		methods: {
 			// 上传头像

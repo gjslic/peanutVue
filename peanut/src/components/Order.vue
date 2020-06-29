@@ -51,14 +51,14 @@
         },
         mounted() {
             // getOrderArr(){
-                // var that = this;
-                // that.axios.post('http://localhost/th5/public/admin/Order/getOrderArr', {
-                // }).then(function (res) {
-                //     console.log(res);
-                //     that.orderData = res.data.list;
-                // }).catch(function (error) {
-                //     console.log(error)
-                // })
+                var that = this;
+                that.axios.post('http://localhost/th5/public/admin/Order/getOrderArr', {
+                }).then(function (res) {
+                    console.log(res);
+                    that.orderData = res.data.list;
+                }).catch(function (error) {
+                    console.log(error)
+                })
             // }
         },
         methods: {
