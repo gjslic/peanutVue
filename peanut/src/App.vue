@@ -2,6 +2,7 @@
   <div id="app">
     <Home/>
     <!-- <Detail/> -->
+    <!-- <AdminLogin/> -->
   </div>
 </template>
 
@@ -13,6 +14,12 @@ export default {
   components: {
     Home,
     Detail
+import AdminLogin from './components/AdminLogin'
+export default {
+  name: 'App',
+  components: {
+     Home
+    // AdminLogin
   }
 }
 </script>
