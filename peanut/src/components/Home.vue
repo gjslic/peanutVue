@@ -28,17 +28,17 @@
             </el-menu-item>
           </router-link>
           <router-link to="/staffManage">
-            <el-menu-item index="4">
+            <el-menu-item index="3">
               <i class="el-icon-s-custom"></i>
               <span slot="title">员工管理</span>
             </el-menu-item>
           </router-link>
-          <el-menu-item index="5">
+          <el-menu-item index="4">
             <i class="el-icon-user-solid"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
           <router-link to="/goods">
-            <el-menu-item index="6">
+            <el-menu-item index="5">
               <i class="el-icon-s-shop"></i>
               <span slot="title">商品管理</span>
             </el-menu-item>
@@ -61,19 +61,20 @@
               <span slot="title">报表管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="">
           <router-link to="/AdminNotice">
-            <el-menu-item index="3">
+            <el-menu-item index="9">
               <i class="el-icon-message-solid"></i>
               <span slot="title">公告管理</span>
             </el-menu-item>
           </router-link>
           <router-link to="">
-            <el-menu-item index="3">
+            <el-menu-item index="10">
               <i class="el-icon-phone"></i>
               <span slot="title">客服聊天</span>
+              </el-menu-item>
+          </router-link>
           <router-link to="/AdminComplain">
-            <el-menu-item index="3">
+            <el-menu-item index="11">
               <i class="el-icon-message-solid"></i>
               <span slot="title">举报管理</span>
             </el-menu-item>
@@ -89,7 +90,7 @@
     <el-footer class="foot-style">© Peanut - 所有权归花生</el-footer>
   </el-container>
 </template>
-
+router-link
 
 <style>
 .el-header {
