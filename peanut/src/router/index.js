@@ -35,41 +35,34 @@ export default new Router({
       component: Jurisdic
     },
     {
+      path: '/goods',
+      name: 'Goods',
+      component: Goods
+    },
+    {
+      path: '/AdminRole',
+      name: 'AdminRole',
+      component: AdminRole
+    },
+    {
+      path: '/AdminEcharts',
+      name: 'AdminEcharts',
+      component: AdminEcharts
+    },
+    {
+      path: '/AdminNotice',
+      name: 'AdminNotice',
+      component: AdminNotice
+    },
+    {
+      path: '/AdminComplain',
+      name: 'AdminComplain',
+      component: AdminComplain
+    },
+    {
       path: '/order',
       name: 'order',
       component: Order
     }
   ]
 })
-    routes: [
-        // {
-        //     path: '/',
-        //     name: 'Home',
-        //     component: Home
-        // },
-        {
-            path: '/goods',
-            name: 'Goods',
-            component: Goods
-        },
-        {
-            path: '/AdminRole',
-            name: 'AdminRole',
-            component: AdminRole
-        },
-        {
-            path: '/AdminEcharts',
-            name: 'AdminEcharts',
-            component: AdminEcharts
-        },
-        {
-            path: '/AdminNotice',
-            name: 'AdminNotice',
-            component: AdminNotice
-        },
-        {
-            path: '/AdminComplain',
-            name: 'AdminComplain',
-            component: AdminComplain
-        },
-    ]
