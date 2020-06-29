@@ -26,6 +26,9 @@ export default new Router({
       path: '/',
       name: 'Welcome',
       component: Welcome
+    
+    },
+    {
       path: '/goods',
       name: 'Goods',
       component: Goods
@@ -54,6 +57,8 @@ export default new Router({
       path: '/users',
       name: 'Users',
       component: Users
+    },
+    {
       path: '/AdminRole',
       name: 'AdminRole',
       component: AdminRole
