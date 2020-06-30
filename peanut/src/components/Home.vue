@@ -16,105 +16,77 @@
     </el-header>
     <el-container style="height: 500px; border: 1px solid #eee">
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-        <el-menu :default-openeds="['1', '3']">
-          <router-link to="">
+        <el-menu :default-openeds="['1', '11']">
+          <router-link to="/">
             <el-menu-item index="1">
               <i class="el-icon-s-home"></i>
               <span slot="title">主页</span>
             </el-menu-item>
           </router-link>
-          <router-link to="">
 
-          <el-menu-item index="1">
-            <i class="el-icon-s-home"></i>
-            <span slot="title">主页</span>
-          </el-menu-item>
           <router-link to="/AdminRole">
             <el-menu-item index="2">
               <i class="el-icon-s-help"></i>
               <span slot="title">角色管理</span>
             </el-menu-item>
-          </router-link to="">
-          <router-link to="">
+          </router-link>
+           <router-link to="/jurisdic">
             <el-menu-item index="3">
-              <i class="el-icon-menu"></i>
-              <span slot="title">系统管理</span>
+              <i class="el-icon-s-shop"></i>
+              <span slot="title">权限管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="/staffManage">
+
+         <router-link to="/staffManage">
             <el-menu-item index="4">
               <i class="el-icon-s-custom"></i>
               <span slot="title">员工管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="">
+
+          <router-link to="/users">
             <el-menu-item index="5">
               <i class="el-icon-user-solid"></i>
               <span slot="title">用户管理</span>
             </el-menu-item>
           </router-link>
-          </router-link>
-          <el-menu-item index="3">
-            <i class="el-icon-menu"></i>
-            <span slot="title">系统管理</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-s-custom"></i>
-            <span slot="title">员工管理</span>
-          </el-menu-item>
-          <el-menu-item index="5">
-            <i class="el-icon-user-solid"></i>
-            <span slot="title">用户管理</span>
-          </el-menu-item>
+
           <router-link to="/goods">
             <el-menu-item index="6">
               <i class="el-icon-s-shop"></i>
               <span slot="title">商品管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="/jurisdic">
-            <el-menu-item index="6">
-              <i class="el-icon-s-shop"></i>
-              <span slot="title">权限管理</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/order">
+          
+           <router-link to="/order">
             <el-menu-item index="7">
               <i class="el-icon-s-goods"></i>
               <span slot="title">订单管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="">
-          <el-menu-item index="7">
-            <i class="el-icon-s-goods"></i>
-            <span slot="title">订单管理</span>
-          </el-menu-item>
           <router-link to="/AdminEcharts">
             <el-menu-item index="8">
               <i class="el-icon-s-data"></i>
               <span slot="title">报表管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="">
+          <router-link to="/AdminComplain">
+            <el-menu-item index="9">
+              <i class="el-icon-message-solid"></i>
+              <span slot="title">举报管理</span>
+            </el-menu-item>
+          </router-link>
           <router-link to="/AdminNotice">
-            <el-menu-item index="3">
+            <el-menu-item index="10">
               <i class="el-icon-message-solid"></i>
               <span slot="title">公告管理</span>
             </el-menu-item>
           </router-link>
-          <router-link to="">
-            <el-menu-item index="3">
+          <router-link to="/chat">
+            <el-menu-item index="11">
               <i class="el-icon-phone"></i>
               <span slot="title">客服聊天</span>
-          <el-menu-item index="3">
-            <i class="el-icon-phone"></i>
-            <span slot="title">客服聊天</span>
-          </el-menu-item>
-          <router-link to="/AdminComplain">
-            <el-menu-item index="3">
-              <i class="el-icon-message-solid"></i>
-              <span slot="title">举报管理</span>
-            </el-menu-item>
+              </el-menu-item>
           </router-link>
         </el-menu>
       </el-aside>
@@ -127,7 +99,7 @@
     <el-footer class="foot-style">© Peanut - 所有权归花生</el-footer>
   </el-container>
 </template>
-
+router-link
 
 <style>
 .el-header {
