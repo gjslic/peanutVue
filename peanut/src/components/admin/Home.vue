@@ -100,7 +100,6 @@
     <el-footer class="foot-style">© Peanut - 所有权归花生</el-footer>
   </el-container>
 </template>
-router-link
 
 <style>
 .el-header {
