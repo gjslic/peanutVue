@@ -1,6 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-const AddLoginRegister = () => import('@/components/web/AddLoginRegister')
+// 首页
+const Homepage = () => import('@/components/web/Homepage')
+
+const Login = () => import('@/components/web/Login')
+const Register = () => import('@/components/web/Register')
+
 const AddPersonalCenter = () => import('@/components/web/AddPersonalCenter')
 const AddSellingCars = () => import('@/components/web/AddSellingCars')
 //买车页面
@@ -15,6 +20,11 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    { 
+      path: '/', 
+      name: 'Homepage', 
+      component: Homepage 
+    },
     
     
     {
@@ -23,10 +33,16 @@ export default new Router({
       component: AdminLogin
     },
     {
-      path: '/AddLoginRegister',
-      name: 'AddLoginRegister',
-      component: AddLoginRegister
+      path: '/Login',
+      name: 'Login',
+      component: Login
     },
+    {
+      path: '/Register',
+      name: 'Register',
+      component: Register
+    },
+    
     {
       path: '/AddPersonalCenter',
       name: 'AddPersonalCenter',

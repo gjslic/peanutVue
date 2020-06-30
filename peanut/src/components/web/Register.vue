@@ -12,6 +12,13 @@
           </div>  
         </el-col>
       </el-row>
+      <el-row :gutter="20" class="margin_bottom_20">
+        <el-col :span="18" :offset="3" style="text-align: center;">
+          <el-link type="primary" :underline="false">
+            <i class="el-icon-s-management font_size_30"></i><span class="font_size_30">花生二手车用户注册</span>
+          </el-link>
+        </el-col>
+      </el-row>
       <el-row :gutter="20">
         <el-col :span="18" :offset="3">
           <div class="grid-content bg-purple">
@@ -53,7 +60,8 @@
       <el-row :gutter="20">
         <el-col :span="18" :offset="3">
           <el-form-item>
-            <el-link type="primary" class="Jump_Login">已有账号？点我登录~</el-link>
+            <router-link to="/Login" class="Jump_Login"><el-link type="primary" :underline="false">已有账号？点我登录~</el-link></router-link>
+            <router-link to="/Register" class="Jump_Login margin_r_5"><el-link type="warning" :underline="false">返回首页</el-link></router-link>
           </el-form-item>
         </el-col>
       </el-row>
@@ -135,9 +143,15 @@ export default {
       margin-bottom: 0;
     }
   }
+  .font_size_30{
+    font-size: 25px !important;
+  }
   .margin_bottom_20{
     margin-bottom: 20px;
   }
+  .margin_r_5{
+        margin: 0 5px 0 0;
+    }
   .el-col {
     border-radius: 4px;
   }

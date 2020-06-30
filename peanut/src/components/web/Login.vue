@@ -12,6 +12,13 @@
                     </div>
                 </el-col>
             </el-row>
+            <el-row :gutter="20" class="margin_bottom_20">
+                <el-col :span="18" :offset="3" style="text-align: center;">
+                    <el-link type="primary" :underline="false">
+                        <i class="el-icon-s-promotion font_size_30"></i><span class="font_size_30">花生二手车用户登录</span>
+                    </el-link>
+                </el-col>
+            </el-row>
             <el-row :gutter="20">
                 <el-col :span="18" :offset="3">
                     <div class="grid-content bg-purple">
@@ -54,8 +61,8 @@
             <el-row :gutter="20">
                 <el-col :span="18" :offset="3">
                     <el-form-item>
-                        <el-link type="primary" class="Jump_Login">还没账号？点我注册~</el-link>
-                        <el-link type="warning" class="Jump_Login">忘记密码？</el-link>
+                        <router-link to="/Register" class="Jump_Login"><el-link type="primary" :underline="false">还没账号？点我注册~</el-link></router-link>
+                        <router-link to="/AddPersonalCenter" class="Jump_Login margin_r_5"><el-link type="warning" :underline="false">返回首页</el-link></router-link>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -127,8 +134,14 @@ export default {
         margin-bottom: 0;
         }
     }
+    .font_size_30{
+        font-size: 25px !important;
+    }
     .margin_bottom_20{
         margin-bottom: 20px;
+    }
+    .margin_r_5{
+        margin: 0 5px 0 0;
     }
     .el-col {
         border-radius: 4px;
