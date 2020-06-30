@@ -22,11 +22,11 @@ new Vue({
     template: '<App/>'
 })
 
-import {request} from "./network/request";
-request({
-  url: '/wjx/Index/search'
-}).then(res => {
-  console.log(res)
-}).catch(err => {
-  console.log(err)
-})
+// import {request} from "./network/request";
+// request({
+//   url: ''
+// }).then(res => {
+  
+// }).catch(err => {
+  
+// })
