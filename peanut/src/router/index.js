@@ -3,6 +3,10 @@ import Router from 'vue-router'
 const AddLoginRegister = () => import('@/components/web/AddLoginRegister')
 const AddPersonalCenter = () => import('@/components/web/AddPersonalCenter')
 const AddSellingCars = () => import('@/components/web/AddSellingCars')
+//买车页面
+const BuyCar = () => import('@/components/web/BuyCar')
+//拍卖页面
+const auction = () => import('@/components/web/auction')
 
 const Home = () => import('@/components/admin/Home')
 const AdminLogin = () => import('@/components/admin/AdminLogin')
@@ -39,5 +43,15 @@ export default new Router({
       component: Home,
       children:homeChild 
     },
+    { 
+      path: '/BuyCar', 
+      name: 'BuyCar', 
+      component: BuyCar
+    },
+    { 
+      path: '/auction', 
+      name: 'auction', 
+      component: auction 
+    }
   ]
 })

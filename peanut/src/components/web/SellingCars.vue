@@ -15,7 +15,7 @@
         <!-- 卖车表 -->
         <el-form ref="form" :model="form" label-width="80px">
             <el-row :gutter="20">
-                <el-col :sm="5" :xs="1"><p></p></el-col>
+                <el-col :sm="5" :xs="1" style="height:1px"></el-col>
                 <el-col :span="18" >
 
                     <!-- <el-form-item label="活动名称">
