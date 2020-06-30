@@ -6,7 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css';
 import App from './App'
 import router from './router/index'
-
+import store from './store'
 import axios from 'axios'
 
 Vue.prototype.axios = axios
@@ -17,6 +17,16 @@ Vue.config.productionTip = false
 new Vue({
     el: '#app',
     router,
+    store,
     components: { App },
     template: '<App/>'
+})
+
+import {request} from "./network/request";
+request({
+  url: '/wjx/Index/search'
+}).then(res => {
+  console.log(res)
+}).catch(err => {
+  console.log(err)
 })

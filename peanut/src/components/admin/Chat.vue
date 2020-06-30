@@ -1,3 +1,4 @@
+// 聊天组件
 <template>
   <div class="chat_box">
     <div class="chat_title"></div>
@@ -5,7 +6,7 @@
       <div class="chat_list">
         <ul>
           <li class="list_item">
-            <img class="user_img" src="../assets/images/avator.jpg" alt="">
+            <img class="user_img" src="../../assets/images/avator.jpg" alt="">
             <span class="user_name">用户1</span>
           </li>
         </ul>
@@ -14,7 +15,7 @@
             <ul>
               <li>
                 <div class="img_box">
-                  <img class="user_img" src="../assets/images/avator.jpg" alt="">
+                  <img class="user_img" src="../../assets/images/avator.jpg" alt="">
                   
                 </div>
                 <span class="user_chat_name">
@@ -25,7 +26,7 @@
               </li>
               <li class="info_item_my">
                 <div class="img_box">
-                  <img class="user_img" src="../assets/images/avator.jpg" alt="">
+                  <img class="user_img" src="../../assets/images/avator.jpg" alt="">
                   
                 </div>
                 <span class="user_chat_name">
@@ -50,8 +51,8 @@
     </div>
   </div>
 </template>
-<style>
-  @import '../assets/css/chat.css';
+<style scoped>
+  @import '../../assets/css/chat.css';
   
 </style>
 <script>

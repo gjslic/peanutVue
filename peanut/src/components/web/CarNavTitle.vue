@@ -1,3 +1,4 @@
+// 购车详情页导航标题组件
 <template>
   <div class="nav_title">
     <slot>购车服务</slot>

@@ -1,3 +1,4 @@
+// 用户管理
 <template>
   <div>
     <div style="margin: 15px 0;">
@@ -15,13 +16,16 @@
       :data="tableData"
       style="width: 100%">
       <el-table-column      
-        label="ID">
+        label="注册时间">
         <template slot-scope="scope">
           <span>{{ scope.row.date }}</span>
         </template>
       </el-table-column>
       <el-table-column
-        label="车辆名称">
+        label="头像">
+      </el-table-column>
+      <el-table-column
+        label="用户名">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>姓名: {{ scope.row.name }}</p>
@@ -33,19 +37,22 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="品牌">
+        label="手机号">
       </el-table-column>
       <el-table-column
-        label="系列">
+        label="地址">
       </el-table-column>
       <el-table-column
-        label="价格">
+        label="年龄">
       </el-table-column>
       <el-table-column
-        label="图片">
+        label="性别">
       </el-table-column>
       <el-table-column
-        label="介绍">
+        label="信誉值">
+      </el-table-column>
+      <el-table-column
+        label="状态">
       </el-table-column>
       <el-table-column 
       label="操作"
@@ -54,11 +61,11 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">未审核</el-button>
+            @click="handleEdit(scope.$index, scope.row)">锁定</el-button>
           <el-button
             size="mini"
             type="warning"
-            @click="handleDelete(scope.$index, scope.row)">下架</el-button>
+            @click="handleDelete(scope.$index, scope.row)">重置密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -84,7 +91,7 @@
 </style>
 <script>
   export default {
-    name: 'Goods',
+    name: 'Users',
     data() {
       return {
         input3: '',

@@ -1,10 +1,11 @@
+// 后台主页
 <template>
-  <el-container>
+  <el-container style="height: 100vh;">
     <el-header style="color: #fff">
       <span style="float: left; font-size: 24px;">Peanut后台管理系统</span>
       <div style="float: right">
         <el-dropdown>
-          <i class="el-icon-setting" style="margin-right: 15px; color: #fff"></i>
+          <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>查看</el-dropdown-item>
             <el-dropdown-item>新增</el-dropdown-item>
@@ -17,7 +18,7 @@
     <el-container style="height: 500px; border: 1px solid #eee">
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
         <el-menu :default-openeds="['1', '11']">
-          <router-link to="/">
+          <router-link to="/welcome">
             <el-menu-item index="1">
               <i class="el-icon-s-home"></i>
               <span slot="title">主页</span>
@@ -30,14 +31,14 @@
               <span slot="title">角色管理</span>
             </el-menu-item>
           </router-link>
-           <router-link to="/jurisdic">
+          <router-link to="/Jurisdiction">
             <el-menu-item index="3">
               <i class="el-icon-s-shop"></i>
               <span slot="title">权限管理</span>
             </el-menu-item>
           </router-link>
 
-         <router-link to="/staffManage">
+          <router-link to="/staffManage">
             <el-menu-item index="4">
               <i class="el-icon-s-custom"></i>
               <span slot="title">员工管理</span>
@@ -57,8 +58,8 @@
               <span slot="title">商品管理</span>
             </el-menu-item>
           </router-link>
-          
-           <router-link to="/order">
+
+          <router-link to="/order">
             <el-menu-item index="7">
               <i class="el-icon-s-goods"></i>
               <span slot="title">订单管理</span>
@@ -86,7 +87,7 @@
             <el-menu-item index="11">
               <i class="el-icon-phone"></i>
               <span slot="title">客服聊天</span>
-              </el-menu-item>
+            </el-menu-item>
           </router-link>
         </el-menu>
       </el-aside>
@@ -99,7 +100,6 @@
     <el-footer class="foot-style">© Peanut - 所有权归花生</el-footer>
   </el-container>
 </template>
-router-link
 
 <style>
 .el-header {
@@ -119,11 +119,9 @@ router-link
 </style>
 
 <script>
-import Goods from "../components/Goods";
 export default {
   name: "Home",
   components: {
-    Goods
   },
   data() {
     const item = {

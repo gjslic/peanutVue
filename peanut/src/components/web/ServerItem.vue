@@ -6,7 +6,7 @@
       </slot>
     </p>
     <el-row>
-      <el-col :span="8">
+      <el-col :span="8" :xs="24">
         <span class="name_item">
           <i class="el-icon-circle-check"></i>
           <slot name="span_one">
@@ -14,7 +14,7 @@
           </slot>
         </span>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="8" :xs="24">
         <span class="name_item">
           <i class="el-icon-circle-check"></i>
           <slot name="span_two">
@@ -22,11 +22,11 @@
           </slot>
         </span>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="8" :xs="24">
         <span class="name_item">
           <i class="el-icon-circle-check"></i>
           <slot name="span_three">
-            <span>无水泡 无火烧</span>
+            <span>无水泡火烧</span>
           </slot>
         </span>
       </el-col>
@@ -42,16 +42,12 @@ export default {
 
 <style scoped>
 @media screen and (max-width:992px) {
-  .server_box .server_item{
-    overflow: hidden;
-    padding: 10px;
-  }
   .name_item{
-  font-size: 16px !important;
-  padding-top: 0 !important;
+    padding: 3px 0 !important;
   }
+  
   .server_item .server_name{
-    padding-top: 0 !important;
+    padding-top: 10px !important;
   }
 }
 .server_item {

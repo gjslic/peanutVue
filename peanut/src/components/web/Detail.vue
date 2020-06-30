@@ -307,14 +307,20 @@ export default {
   padding: 0 8px;
 }
 
-.el-pagination.is-background .el-pager li {
+
+.block {
+  margin: 5px 20px;
+}
+</style>
+<style>
+.block .el-pagination.is-background .el-pager li {
   background: none;
 }
-.el-pagination.is-background .el-pager li:not(.disabled).active {
+.block .el-pagination.is-background .el-pager li:not(.disabled).active{
   background-color: #fd7a3a;
   color: #fff;
 }
-.block {
-  margin: 5px 20px;
+.block .el-pagination.is-background .el-pager li:not(.disabled):hover {
+    color: #fd7a3a;
 }
 </style>

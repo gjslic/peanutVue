@@ -1,20 +1,13 @@
 <template>
   <div id="app">
-    <Home/>
-    <!-- <Detail/> -->
-    <!-- <AdminLogin/> -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Home from './components/Home'
-import Detail from './components/Detail'
-import AdminLogin from './components/AdminLogin'
 export default {
   name: 'App',
   components: {
-    Home,
-    Detail
   }
 }
 </script>
