@@ -1,17 +1,22 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '../components/HelloWorld'
-import AddLoginRegister from '../components/AddLoginRegister'
-import AddPersonalCenter from '../components/AddPersonalCenter'
-import AddSellingCars from '../components/AddSellingCars'
+const AddLoginRegister = () => import('@/components/web/AddLoginRegister')
+const AddPersonalCenter = () => import('@/components/web/AddPersonalCenter')
+const AddSellingCars = () => import('@/components/web/AddSellingCars')
+
+const Home = () => import('@/components/admin/Home')
+const AdminLogin = () => import('@/components/admin/AdminLogin')
+import homeChild from './home'
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    
+    
     {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      path: '/AdminLogin',
+      name: 'AdminLogin',
+      component: AdminLogin
     },
     {
       path: '/AddLoginRegister',
@@ -27,6 +32,12 @@ export default new Router({
       path: '/AddSellingCars',
       name: 'AddSellingCars',
       component: AddSellingCars
-    }
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: Home,
+      children:homeChild 
+    },
   ]
 })

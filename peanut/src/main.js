@@ -3,17 +3,30 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import 'element-ui/lib/theme-chalk/display.css'
+import 'element-ui/lib/theme-chalk/display.css';
 import App from './App'
 import router from './router/index'
+import store from './store'
+import axios from 'axios'
 
+Vue.prototype.axios = axios
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App/>'
 })
+
+// import {request} from "./network/request";
+// request({
+//   url: ''
+// }).then(res => {
+  
+// }).catch(err => {
+  
+// })
