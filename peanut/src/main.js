@@ -8,10 +8,15 @@ import App from './App'
 import router from './router/index'
 import store from './store'
 import axios from 'axios'
-
+import {post,fetch,patch,put} from './network/request'
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
 Vue.config.productionTip = false
+
+Vue.prototype.$post=post;
+Vue.prototype.$fetch=fetch;
+Vue.prototype.$patch=patch;
+Vue.prototype.$put=put;
 
 /* eslint-disable no-new */
 new Vue({

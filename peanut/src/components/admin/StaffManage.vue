@@ -17,12 +17,12 @@
 		<el-dialog title="员工信息录入" :visible.sync="addDialogForm">
 		  <el-form :model="form">
 		    <el-form-item label="员工账号" :label-width="formLabelWidth">
-		      <el-input @focus="showCom" v-model="form.account" placeholder="请输入账号"></el-input>
-		      <span class="commit acc_commit">账号规则：6~10位字符，支持英文、数字和下划线</span>
+		      <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input>
+		      <span class="commit acc_commit">账号规则：6~10位字符，支持英文、数字,英文开头</span>
 		    </el-form-item>
 		    <el-form-item label="员工密码" :label-width="formLabelWidth">
 		    	<el-input placeholder="请输入密码" v-model="form.password" show-password></el-input>
-		      <span class="commit psw_commit">密码规则：6~30位字符，支持英文、数字、下划线及常用符号</span>
+		      <span class="commit psw_commit">密码规则：6~30位字符，支持英文、数字和小数点，英文开头</span>
 		    </el-form-item>
 		    <el-form-item label="昵称" :label-width="formLabelWidth">
 		      <el-input v-model="form.name" placeholder="请输入昵称"></el-input>
@@ -32,33 +32,25 @@
 		    	<el-input type="text" placeholder="请输入手机号" v-model="form.tel" maxlength="11" show-word-limit></el-input>
 		      <span class="commit tel_commit">手机号规则：11位数字，134/152/158/188/138开头</span>
 		    </el-form-item>
-		    <el-form-item label="头像" :label-width="formLabelWidth">
-		    	<el-upload class="avatar-uploader" action="http://localhost/th5/public/index.php/index/index/loadImg" :show-file-list="false" :on-success="uploadImg" :before-upload="beforeUploadImg">
-					<img v-if="form.headImg" :src="form.headImg" class="avatar">
-  					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
-				</el-upload>
-		    </el-form-item>
 		    <el-form-item label="员工职位" :label-width="formLabelWidth" >
-		      <el-select v-model="form.roleList" placeholder="请选择员工职位" @focus="getRoleArr">
-		        <el-option v-for="item in form.roleArr" :key="item.id" :label="item.name" :value="item.name"></el-option>
+		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
+		        <el-option v-for="item in roleArr" :key="item.id" :label="item.role_name" :value="item.role_name"></el-option>
 		      </el-select>
 		    </el-form-item>
 		    <el-form-item label="性别" :label-width="formLabelWidth">
-		    	<el-radio v-model="form.radio" label="1">男</el-radio>
-		  		<el-radio v-model="form.radio" label="2">女</el-radio>
+		    	<el-radio v-model="form.sex" label="男">男</el-radio>
+		  		<el-radio v-model="form.sex" label="女">女</el-radio>
 		    </el-form-item>
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
 		    <el-button @click="addDialogForm = false">取 消</el-button>
-		    <el-button type="primary" @click="addDialogForm = false">确 定</el-button>
+		    <el-button type="primary" :plain="true" @click="addStaff">确 定</el-button>
 		  </div>
 		</el-dialog>
-		
 		<!-- 员工信息展示区 -->
-	 	<el-table ref="multipleTable" border style="width:100%" :data="staffArr" tooltip-effect="dark" @current-change="setStaff">
+	 	<el-table ref="multipleTable" border style="width:100%" :data="staffArr" tooltip-effect="dark">
 			<el-table-column align="center" type="selection"></el-table-column>
-			<el-table-column align="center" prop="id" label="ID">
-			<!-- <template slot-scope="scope">{{ id }}</template> -->
+			<el-table-column align="center" prop="id" sortable label="ID">
 			</el-table-column>
 			<el-table-column align="center" label="账号">
 				<template slot-scope="scope">
@@ -72,7 +64,7 @@
 			</el-table-column>
 			<el-table-column align="center" label="头像">
 				<template slot-scope="scope"  v-for="(item , index) in staffArr">
-					<el-image :src="item.head_img" :key="index" style="width:80px;border-radius:50%"></el-image>
+					<el-image :src="scope.row.head_img" :key="index" style="width:80px;border-radius:50%"></el-image>
 				</template>
 			</el-table-column>
 			<el-table-column align="center" label="手机号" width="120px">
@@ -82,7 +74,7 @@
 			</el-table-column>
 			<el-table-column align="center" label="职位">
 				<template slot-scope="scope">
-					<span>{{scope.row.role_id}}</span>
+					<span>{{scope.row.role_name}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column align="center" label="性别">
@@ -99,57 +91,27 @@
 			<el-table-column align="center" label="操作" width="200px">
 				<template slot-scope="scope">
 					<el-button type="warning" icon="el-icon-lock" v-if="scope.row.state == 1" @click="editState(scope.row.id,scope.row)" circle></el-button>
-					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 2" @click="editState(scope.row.id,scope.row.state,scope.row)" circle></el-button>
-					<el-button type="primary" icon="el-icon-edit" circle></el-button>
+					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 2" @click="editState(scope.row.id,scope.row)" circle></el-button>
+					<el-button type="primary" icon="el-icon-edit" @click="editStaff(scope.row)" circle></el-button>
 					<el-button type="danger" icon="el-icon-delete" circle></el-button>
 				</template>
 			</el-table-column>
 		</el-table>
-	  <!-- <table style="width:100%;border:1px solid">
-		  <thead>
-			  <tr>
-				  <th>ID</th>
-				  <th>账号</th>
-				  <th>昵称</th>
-				  <th>头像</th>
-				  <th>手机号</th>
-				  <th>职位</th>
-				  <th>性别</th>
-				  <th>状态</th>
-				  <th>操作</th>
-			  </tr>
-		  </thead>
-		  <tbody v-for="item in staffArr">
-			  <tr style="text-align:center">
-				  <td>{{item.id}}</td>
-				  <td>{{item.account}}</td>
-				  <td>{{item.name}}</td>
-				  <td><image :src="item.head_img"></image></td>
-				  <td>{{item.phone}}</td>
-				  <td>{{item.role_id}}</td>
-				  <td>{{item.sex}}</td>
-				  <td>{{item.state}}</td>
-				  <td>
-					<el-button type="primary" icon="el-icon-unlock" circle></el-button>
-					<el-button type="primary" icon="el-icon-edit" circle></el-button>
-					<el-button type="danger" icon="el-icon-delete" circle></el-button>
-				  </td>
-			  </tr>
-		  </tbody>
-	  </table> -->
 	  <el-pagination background style="text-align:center" layout="prev, pager, next" :total="pageObj.total"></el-pagination>
 	</div>
 	
 	
 </template>
 <script>
+	import {request} from "../../network/request";
 	export default {
 		name: 'StaffManage',
 		data() {
       return {
+				url: 'http://localhost/th5/public/',
       	selectInfo: '', //条件
       	select: '', //条件搜索
-
+				roleArr: [], // 职位列表
       	staffArr:[],  //员工列表
         addDialogForm: false,  //添加弹出框初始状态
         form: {
@@ -157,23 +119,9 @@
           account: '', // 添加账号
           password: '',// 添加密码
           tel: '',     // 添加电话
-					headImg: '', //图片路径
-					roleList: '',
-          roleArr: [
-						{
-							name: '管理员',
-							value: 'first'
-						},
-						{
-							name: '超级管理员',
-							value: 'second'
-						},
-						{
-							name: '客服',
-							value: 'third'
-						}
-					],
-          radio: '1', // 性别
+					headImg: 'https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1091405991,859863778&fm=26&gp=0.jpg', //图片路径
+					checkRole: '',
+          sex: '', // 性别
           delivery: false,
         },
 				formLabelWidth: '120px',
@@ -200,50 +148,101 @@
     },
     // 获取员工列表
     mounted() {
-    	// let that = this;
-    	// that.axios.post('http://localhost/th5/public/admin/Staff/getStaffArr',{
+			let that = this;
+			// that.$post('adminStaffManage/staff/getStaffArr',{
+			// }).then(res => {
+			// 	console.log(res)
+			// 	that.staffArr = res.list;
+			// }).catch(err => {
+			// 	console.log(err)
+			// })
 
-    	// }).then(function (res){
-			// 	that.staffArr = res.data.list;
-			// 	console.log(that.form.roleArr)
-    	// }).catch(function (error) {
-    	// 	console.log(error)
-    	// })
+			request({
+				url: 'adminStaffManage/staff/getStaffArr'
+			}).then(res =>{
+				console.log(res)
+				that.staffArr = res.data.list;
+			}).catch(err =>{	
+				console.log(err)
+			})
+    	
     },
 		methods: {
-			// 上传头像
-			uploadImg(res, file) {
-				this.form.headImg = URL.createObjectURL(file.raw);
+			/**
+			 * [addStaff 添加员工]
+			 */
+			addStaff(){
+				let that = this;
+				// that.$post(that.url+'adminStaffManage/staff/addStaff',{
+				// 	data: that.form
+				// }).then(res => {
+				// 	let code = res.code;
+				// 	let infoType = '';
+				// 	if(code == 1000){
+				// 		infoType = 'success';
+				// 		that.addDialogForm = false;
+				// 	}else{
+				// 		infoType = 'error'
+				// 	}
+				// 	that.$message({
+				// 		showClose: true,
+				// 		message: res.msg,
+				// 		type: infoType
+				// 	});
+				// 	console.log(res)
+				// }).catch(err => {
+				// 	console.log(err)
+				// })
 			},
-      // 获取角色列表
+			/**
+			 * [getRoleArr 获取角色列表]
+			 */
       getRoleArr() {
-      	let that = this;
-     			this.axios.post('http://localhost/th5/public/admin/Staff/getRoleArr', {
-
-     		 	}).then(function (res) {
-					console.log(res);
-					if(res.data.code == 1000){
-						that.form.roleArr = res.data.roleArr
-					}else{
-						alert(res.data.msg)
-					}
-			  }).catch(function (error) {
-			    console.log(error);
-			  });
-      },
-      // 
-      setStaff() {
-				console.log(1);
+				let that = this;
+				request({
+					url: 'adminStaffManage/staff/getRoleArr'
+				}).then(res =>{
+					console.log(res)
+					that.roleArr = res.data.roleArr;
+				}).catch(err =>{	
+					console.log(err)
+				})
+				
+				// that.$post(that.url+'adminStaffManage/staff/getRoleArr',{
+				// }).then(res => {
+				// 	if(res.code == 1000){
+				// 		that.roleArr = res.roleArr
+				// 	}else{
+				// 		that.$message({
+				// 			showClose: true,
+				// 			message: res.msg,
+				// 			type: 'error'
+				// 		});
+				// 	}
+				// }).catch(err => {
+				// 	console.log(err)
+				// })
 			},
-			// 修改状态
+			/**
+			 * [editState 修改状态]
+			 */
 			editState(id,row) {
-				console.log(id)
+				console.log(row)
+				if(row.state == 1){
+					row.state = 2
+				}else{
+					row.state = 1
+				}
 			},
-			// 添加输入框提示信息
-      showCom() {
-      	$('.acc_commit').show()
-      },
-      // 上传头像定义规则
+			/**
+			 * [editStaff 修改员工信息弹出框]
+			 */
+			editStaff(row){
+				console.log(row)
+			},
+			/**
+			 * [beforeUploadImg 上传头像定义规则 ]
+			 */
       beforeUploadImg(file) {
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
