@@ -149,11 +149,19 @@
     // 获取员工列表
     mounted() {
     	let that = this;
+<<<<<<< HEAD:peanut/src/components/web/StaffManage.vue
     	that.axios.post('http://localhost/th5/public/admin/staff/getStaffArr',{
 
     	}).then(function (res){
 				that.staffArr = res.data.list;
 				console.log(res)
+=======
+    	that.axios.post('http://localhost/th5/public/admin/Staff/getStaffArr',{
+
+    	}).then(function (res){
+				that.staffArr = res.data.list;
+				console.log(that.form.roleArr)
+>>>>>>> f847c9c1f575f7c7ff6536e9e24d4d5f6587be14:peanut/src/components/StaffManage.vue
     	}).catch(function (error) {
     		console.log(error)
     	})
