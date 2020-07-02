@@ -19,7 +19,7 @@ export function request(config){
  */
 
 export function fetch(url,params={}){
-  return request((resolve,reject) => {
+  return new Promise((resolve,reject) => {
     axios.get(url,{
       params:params
     })
@@ -41,7 +41,7 @@ export function fetch(url,params={}){
  */
 
 export function post(url,data = {}){
-  return request((resolve,reject) => {
+  return new Promise((resolve,reject) => {
     axios.post(url,data)
     .then(response => {
       resolve(response.data);
@@ -58,7 +58,7 @@ export function post(url,data = {}){
  */
 
 export function patch(url,data = {}){
-  return request((resolve,reject) => {
+  return new Promise((resolve,reject) => {
     axios.patch(url,data)
     .then(response => {
       resolve(response.data);
@@ -76,7 +76,7 @@ export function patch(url,data = {}){
  */
 
 export function put(url,data = {}){
-  return request((resolve,reject) => {
+  return new Promise((resolve,reject) => {
     axios.put(url,data)
     .then(response => {
       resolve(response.data);
