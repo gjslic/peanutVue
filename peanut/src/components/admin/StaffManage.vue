@@ -3,7 +3,7 @@
 		<!-- 页面头部操作框 -->
 		<el-row type="flex" push="3" class="row-bg">
 		  <el-col :span="3">
-		  	<el-button type="primary"  @click="addDialogForm =true">添加员工</el-button>
+		  	<el-button type="primary"  @click="addDialogForm =true , dialogTitle = '添加员工信息'" >添加员工</el-button>
 		  </el-col>
 		  <el-col :span="12">
 				<el-select v-model="selectVal" placeholder="请选择" style="width:100px">
@@ -14,8 +14,8 @@
 		  </el-col>
 		</el-row>
 		<!-- 员工添加弹出框 -->
-		<el-dialog title="员工信息录入"  :visible.sync="addDialogForm">
-		  <el-form :model="form" status-icon :rules="rules" ref="form" class="demo-ruleForm">
+		<el-dialog :title="dialogTitle" @close="closeFun" center :visible.sync="addDialogForm">
+		  <el-form :model="form" status-icon :rules="rules" ref="MyForm" class="demo-ruleForm">
 		    <el-form-item label="员工账号" prop="account" :label-width="formLabelWidth">
 		      <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input>
 		    </el-form-item>
@@ -31,7 +31,7 @@
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
 		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
 		        <el-option v-for="item in roleArr" :key="item.id" :label="item.role_name" :value="item.role_name"></el-option>
-		      </el-select>
+					</el-select>
 		    </el-form-item>
 		    <el-form-item label="性别" prop="sex" :label-width="formLabelWidth">
 		    	<el-radio v-model="form.sex" label="男">男</el-radio>
@@ -40,41 +40,7 @@
 		  </el-form>
 		  <div slot="footer" class="dialog-footer">
 		    <el-button @click="addDialogForm = false">取 消</el-button>
-		    <el-button type="primary" :plain="true" @click="addStaff">确 定</el-button>
-		  </div>
-		</el-dialog>
-		<!-- 修改框 -->
-		<el-dialog title="员工信息修改" center :visible.sync="editDialogForm">
-		  <el-form :model="form">
-				<el-form-item  style="text-align:center">
-					<el-image :src="form.head_img" style="width:80px;height:80px"></el-image>
-					<el-button type="primary" cricle>修改</el-button>
-		    </el-form-item>
-		    <el-form-item label="员工账号" :label-width="formLabelWidth">
-		      <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input>
-		    </el-form-item>
-		    <el-form-item label="员工密码" :label-width="formLabelWidth">
-		    	<el-input placeholder="请输入密码" v-model="form.password" show-password></el-input>
-		    </el-form-item>
-		    <el-form-item label="昵称" :label-width="formLabelWidth">
-		      <el-input v-model="form.name" placeholder="请输入昵称"></el-input>
-		    </el-form-item>
-		    <el-form-item label="手机号" :label-width="formLabelWidth">
-		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
-		    </el-form-item>
-		    <el-form-item label="员工职位" :label-width="formLabelWidth" >
-		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
-		        <el-option v-for="item in roleArr" :key="item.id" :label="item.role_name" :value="item.role_name"></el-option>
-		      </el-select>
-		    </el-form-item>
-		    <el-form-item label="性别" :label-width="formLabelWidth">
-		    	<el-radio v-model="form.sex" label="男">男</el-radio>
-		  		<el-radio v-model="form.sex" label="女">女</el-radio>
-		    </el-form-item>
-		  </el-form>
-		  <div slot="footer" class="dialog-footer">
-		    <el-button @click="addDialogForm = false">取 消</el-button>
-		    <el-button type="primary" :plain="true" @click="addStaff">确 定</el-button>
+		    <el-button type="primary" :plain="true" @click="addStaff(form)">确 定</el-button>
 		  </div>
 		</el-dialog>
 		<!-- 员工信息展示区 -->
@@ -115,13 +81,13 @@
 			<el-table-column align="center" label="状态">
 				<template slot-scope="scope">
 					<span v-if="scope.row.state == 1">解锁</span>
-					<span v-else-if="scope.row.state == 2">锁定</span>
+					<span v-else-if="scope.row.state == 0">锁定</span>
 				</template>
 			</el-table-column>
-			<el-table-column align="center" label="操作" width="200px">
+			<el-table-column align="center" label="操作" width="240px">
 				<template slot-scope="scope">
 					<el-button type="warning" icon="el-icon-lock" v-if="scope.row.state == 1" @click="editState(scope.row.id,scope.row)" circle></el-button>
-					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 2" @click="editState(scope.row.id,scope.row)" circle></el-button>
+					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 0" @click="editState(scope.row.id,scope.row)" circle></el-button>
 					<el-button type="primary" icon="el-icon-edit" @click="editStaff(scope.row)" circle></el-button>
 					<el-popconfirm title="确认删除该用户？" icon="el-icon-info" iconColor="red" @onConfirm="delStaff(scope.row.id)">
 						<el-button type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
@@ -143,14 +109,14 @@
 		data() {
 			/**
 			 * [账号正则：accReg => 6-10位英文+数字，英文开头]
-			 * [密码正则：pswReg => 8-10位英文+数字,必须包含大小写字母和数字]
+			 * [密码正则：pswReg => 6-16位英文+数字,必须包含大小写字母和数字]
 			 * [手机号正则：telReg => 13,15,17,18开头，11位数字]
 			 * [昵称正则：nickNameReg => 中文、英文、数字包括下划线]
 			 */
 			let accReg = /^[a-zA-Z][a-zA-Z0-9_]{6,10}$/; 
-			let pswReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,10}$/;
-			let telReg = /^(13[0-9]|17[0-9]|15[0-9]|18[0|1|2|3|5|6|7|8|9])\d{8}$]/;
-			let nickNameReg = /^[\u4E00-\u9FA5A-Za-z0-9_]{6,10}$/;
+			let pswReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,16}$/;
+			let telReg = /^1[3578]\d{9}$/;
+			let nickNameReg = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,6}$/;
 			let checkAcc = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('账号不可为空'));
@@ -229,6 +195,7 @@
             { validator: checkSex, trigger: 'blur' }
 					]
 				},
+				dialogTitle: '',
       	selectInfo: '', //条件
       	selectVal: '', //条件搜索
 				roleArr: [], // 职位列表
@@ -278,16 +245,15 @@
 		methods: {
 			// 获取员工列表
 			getStaff(num = 1){
-				let that = this;
-				that.staffArr = [];
-				let keyWord = that.selectVal;
-				that.$post(that.url+'getStaffArr',{
+				// let that = this;
+				this.staffArr = [];
+				let keyWord = this.selectVal;
+				this.$post(this.url+'getStaffArr',{
 					'keyWord': keyWord,
 					'nowPage': num
 				}).then(res => {
-					that.allPages.total = res.count;
-					that.allPages.allPage = Math.ceil(res.count / 8);
-					that.staffArr = res.data;
+					this.allPages.total = res.count;
+					this.staffArr = res.data;
 				}).catch(err => {
 					console.log(err)
 				})
@@ -297,30 +263,33 @@
 			 * [addStaff 添加员工]
 			 
 			 */
-			addStaff(){
-				let that = this;
-				let infos = that.form;
-				that.$post(that.url+'addStaff',{
-					data: that.form
-				}).then(res => {
-					let code = res.code;
-					let infoType = '';
-					if(code == 1000){
-						infoType = 'success';
-						that.form = {};
-						that.addDialogForm = false;
-					}else{
-						infoType = 'error'
-					}
-					that.$message({
-						showClose: true,
-						message: res.msg,
-						type: infoType
-					});
-					that.$options.methods.getStaff(1);
-				}).catch(err => {
-					console.log(err)
-				})
+			addStaff(form){
+				this.$refs.MyForm.validate((valid) => {
+          if (valid) {
+						this.$post(this.url+'addStaff',{
+							data: form
+						}).then(res => {
+							let infoType = '';
+							if(res.code == 1){
+								infoType = 'success';
+								this.form = {};
+								this.addDialogForm = false;
+							}else{
+								infoType = 'error'
+							}
+							this.$message({
+								showClose: true,
+								message: res.msg,
+								type: infoType
+							});
+							this.getStaff(1);
+						}).catch(err => {
+							console.log(err)
+						})
+          } else {
+            return false;
+          }
+        });
 			},
 			/**
 			 * [getRoleArr 获取角色列表]
@@ -338,9 +307,8 @@
 			 * [editState 修改状态]
 			 */
 			editState(id,row) {
-				console.log(row)
 				if(row.state == 1){
-					row.state = 2;
+					row.state = 0;
 				}else{
 					row.state = 1
 				}
@@ -349,10 +317,9 @@
 					'id': row.id,
 					'state': row.state
 				}).then(res => {
-					console.log(res)
 					let msgType = '';
-					if(res.code == 1000){
-						msgType = 'success';
+					if(res.code == 1){
+						msgType = res.data == 1 ? 'success' : 'error';
 					}else{
 						msgType = 'error';
 					}
@@ -361,6 +328,7 @@
 						message: res.msg,
 						type: msgType
 					});
+					that.getStaff(1);
 				}).catch(err => {
 					console.log(err)
 				})
@@ -371,35 +339,51 @@
 			editStaff(row){
 				let that = this;
 				that.form = row;
-				console.log(that.form);
-				that.editDialogForm = true;
-				console.log(row)
+				that.dialogTitle = '修改员工信息';
+				that.addDialogForm = true;
 			},
 			/**
 			 * [delStaff 删除员工信息]
 			 */ 
 			delStaff(id){
-				let that = this;
-				that.$post(that.url+'delStaff',{
+				this.$post(this.url+'delStaff',{
 					data: id
 				}).then(res => {
-					let msgType = '';
-					if(res.code == 1000){
-						msgType = 'success';
-					}else{
-						msgType = 'error';
-					}
-					that.$message({
+					let msgType = res.code == 1 ? 'success' : 'error';
+					this.$message({
 						showClose: true,
 						message: res.msg,
 						type: msgType
 					});
+					this.getStaff(1);
 				}).catch(err => {
 					console.log(err)
 				})
 			},
+			/**
+			 * [resetPsw 重置密码]
+			 */
 			resetPsw(id){
-				console.log(id)
+				this.$fetch(this.url+'resetPsw',{
+					data: id
+				}).then( res =>{
+					let msgType = res.code == 1 ? 'success' : 'error';
+					this.$message({
+						showClose: true,
+						message: res.msg + ',初始密码为：' + res.data,
+						type: msgType
+					});
+					console.log(res)
+				}).catch(err =>{
+					console.log(err)
+				})
+			},
+			/**
+			 * [closeFun dialog关闭事件]
+			 */
+			closeFun(form){
+				this.form = {};
+				this.$refs.MyForm.resetFields();
 			},
 			/**
 			 * [beforeUploadImg 上传头像定义规则 ]
