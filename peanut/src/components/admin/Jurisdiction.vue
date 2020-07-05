@@ -19,7 +19,8 @@
                         <el-button icon="el-icon-search" @click="getJurisdition(scope.row)" circle></el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="light" content="点击修改权限" placement="top">
-                        <el-button type="primary" @click="getNowJurisdition(scope.row)" icon="el-icon-edit" circle></el-button>
+                        <el-button type="primary" v-if="scope.row.role_name == '超级管理员'" disabled @click="getNowJurisdition(scope.row)" icon="el-icon-edit" circle></el-button>
+                        <el-button type="primary" v-else  @click="getNowJurisdition(scope.row)" icon="el-icon-edit" circle></el-button>
                     </el-tooltip>
                 </template>
             </el-table-column>

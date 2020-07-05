@@ -34,8 +34,11 @@
 		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
-		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
-		        <el-option v-for="item in roleArr" :key="item.id" :label="item.role_name" :value="item.role_name"></el-option>
+		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
+						<template v-for="(item , index) in roleArr"  >
+		        	<el-option :key="index" v-if="item.role_name == '超级管理员'" disabled :value="item.role_name"></el-option>
+							<el-option v-else :key="index" :label="item.role_name" :value="item.role_name"></el-option>
+						</template>
 					</el-select>
 		    </el-form-item>
 		    <el-form-item label="性别" prop="sex" :label-width="formLabelWidth">
@@ -67,7 +70,10 @@
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
 		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
-		        <el-option v-for="item in roleArr"  :key="item.id" :label="item.role_name" :value="item.role_name"></el-option>
+						<template v-for="(item , index) in roleArr"  >
+		        	<el-option :key="index" v-if="item.role_name == '超级管理员'" disabled :value="item.role_name"></el-option>
+							<el-option v-else :key="index" :label="item.role_name" :value="item.role_name"></el-option>
+						</template>
 					</el-select>
 		    </el-form-item>
 		    <el-form-item label="性别" prop="sex" :label-width="formLabelWidth">
