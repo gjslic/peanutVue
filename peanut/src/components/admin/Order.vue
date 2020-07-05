@@ -36,6 +36,7 @@
         name: 'Order',
         data() {
             return {
+                url: 'http://localhost/th5/public/adminOrder/ModuleBaseController/',
                 selectInfo: '',
                 orderData: [],
                 setInfo: [{
@@ -52,7 +53,7 @@
         mounted() {
             // getOrderArr(){
                 var that = this;
-                that.axios.post('http://localhost/th5/public/admin/Order/getOrderArr', {
+                that.$post(this.url+'getOrderArr', {
                 }).then(function (res) {
                     console.log(res);
                     that.orderData = res.data.list;

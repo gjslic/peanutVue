@@ -5,6 +5,11 @@
 		  <el-col :span="3">
 		  	<el-button type="primary"  @click="addDialogForm =true , dialogTitle = '添加员工信息'" >添加员工</el-button>
 		  </el-col>
+			<el-col :span="3">
+				<el-popconfirm title="是否批量操作？删除后不可恢复" @onConfirm="batchDeleteStaff">
+		  		<el-button type="danger" slot="reference"  :disabled= "delBtnDisabled">批量删除</el-button>
+				</el-popconfirm>
+		  </el-col>
 		  <el-col :span="12">
 				<el-select v-model="selectVal" placeholder="请选择" style="width:100px">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -51,7 +56,8 @@
 					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 				</el-upload>
 		    <el-form-item label="员工账号" prop="account" :label-width="formLabelWidth">
-		      <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input>
+					<span>{{form.account}}</span>
+		      <!-- <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input> -->
 		    </el-form-item>
 		    <el-form-item label="昵称" prop="name" :label-width="formLabelWidth">
 		      <el-input v-model="form.name" placeholder="请输入昵称"></el-input>
@@ -75,7 +81,7 @@
 		  </div>
 		</el-dialog>
 		<!-- 员工信息展示区 -->
-	 	<el-table ref="multipleTable" @selection-change="handleSelectionChange" highlight-current-row :row-class-name="rowStyle" border style="width:100%" :data="staffArr" tooltip-effect="dark">
+	 	<el-table ref="multipleTable" @selection-change="handleSelectionChange" highlight-current-row border style="width:100%" :data="staffArr" tooltip-effect="dark">
 			<el-table-column align="center" type="selection"></el-table-column>
 			<el-table-column align="center" prop="id" sortable label="ID">
 			</el-table-column>
@@ -147,6 +153,7 @@
 			let pswReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,16}$/;
 			let telReg = /^1[3578]\d{9}$/;
 			let nickNameReg = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,6}$/;
+			// 账号正则校验
 			let checkAcc = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('账号不可为空'));
@@ -158,7 +165,8 @@
               callback();
           }
         }, 1000);
-      };
+			};
+			// 密码正则校验
       let checkPsw = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
@@ -168,7 +176,8 @@
           }
           callback();
         }
-      };
+			};
+			// 昵称正则校验
 			let checkName = (rule , value , callback) => {
 				if(value === ''){
 					callback(new Error('请创建昵称'));
@@ -179,6 +188,7 @@
           callback();
 				}
 			}
+			// 手机号正则校验
 			let checkTel = (rule , value , callback) => {
 				if(!value){
 					callback(new Error('请输入手机号'));
@@ -189,6 +199,7 @@
           callback();
 				}
 			};
+			// 角色判断不为空
 			let checkRole = (rule , value , callback) => {
 				if(this.form.checkRole === ''){
 					callback(new Error('请选择职位'));
@@ -196,6 +207,7 @@
           callback();
 				}
 			};
+			// 性别判断是否选中
 			let checkSex = (rule , value , callback) => {
 				if(value === ''){
 					callback(new Error('请选择性别'));
@@ -225,7 +237,8 @@
             { validator: checkSex, trigger: 'blur' }
 					]
 				},
-				dialogTitle: '',
+				delBtnDisabled: true,
+				dialogTitle: '', // 弹框标题
       	selectInfo: '', //条件
       	selectVal: '', //条件搜索
 				roleArr: [], // 职位列表
@@ -245,6 +258,7 @@
           delivery: false,
 				},
 				formLabelWidth: '120px',
+				// 搜索指引
 				options: [
 					{
 						value: '1',
@@ -260,15 +274,17 @@
 						label: '职位'
 					}
 				],
+				// 分页
 				allPages: {
 					nowPage: 1,
-					allPage: 1,
+					allPage: 0,
 					total: 0
 				}
       };
     },
     // 获取员工列表
     mounted() {
+			console.log(this.allPages)
 			let that = this;
 			that.getStaff(1);
     },
@@ -278,22 +294,18 @@
 				val.forEach((val, index) => {
 					this.staffArr.forEach((v, i) => {// id 是每一行的数据id
 						if(val.id == v.id){
-							arr.push(i)
+							arr.push(val.id);
 						}
 					})
 				})
 				this.selectRow = arr;
-			},
-			rowStyle({row,rowIndex}){
-				let nowArr = this.selectRow;
-				for(let i = 0;i < nowArr.length; i++){
-					if(rowIndex === nowArr[i]){
-						console.log(nowArr[i])
-						console.log(rowIndex)
-						return 'rowStyle'
-					}
+				if(this.selectRow.length > 0){
+					this.delBtnDisabled = false;
+				}else{
+					this.delBtnDisabled = true;
 				}
 			},
+		
 			// 获取员工列表
 			getStaff(num = 1){
 				// let that = this;
@@ -353,8 +365,8 @@
 							let infoType = '';
 							if(res.code == 1){
 								infoType = 'success';
+								this.editDialogForm = false;
 								this.form = {};
-								this.addDialogForm = false;
 							}else{
 								infoType = 'error'
 							}
@@ -437,6 +449,25 @@
 						type: msgType
 					});
 					this.getStaff(1);
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			/**
+			 * [batchDeleteStaff 批量删除]
+			 */
+			batchDeleteStaff(){
+				let delArr = JSON.stringify(this.selectRow);
+				this.$fetch(this.url+'batchDeleteStaff',{delArr})
+				.then(res => {
+					let msgType = res.code == 1 ? 'success' : 'error';
+					this.$message({
+						showClose: true,
+						message: res.msg,
+						type: msgType
+					});
+					this.getStaff(1);
+					console.log(res)
 				}).catch(err => {
 					console.log(err)
 				})
@@ -529,8 +560,4 @@
     height: 80px;
     display: block;
   }
-	.rowStyle{
-		background-color:orangered;
-		font-size: 20px;
-	}
 </style>
