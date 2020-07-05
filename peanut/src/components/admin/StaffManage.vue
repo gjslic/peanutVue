@@ -43,8 +43,39 @@
 		    <el-button type="primary" :plain="true" @click="addStaff(form)">确 定</el-button>
 		  </div>
 		</el-dialog>
+		<!-- 员工修改弹出框 -->
+		<el-dialog :title="dialogTitle" @close="closeFun" center :visible.sync="editDialogForm">
+		  <el-form :model="form" status-icon :rules="rules" ref="MyForm" class="demo-ruleForm">
+				<el-upload	class="avatar-uploader" style="text-align:center"	action="https://jsonplaceholder.typicode.com/posts/"	:show-file-list="false"	:on-success="uploadSuccess"	:before-upload="beforeUploadImg">
+					<img v-if="form.head_img" :src="form.head_img" class="avatar">
+					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+				</el-upload>
+		    <el-form-item label="员工账号" prop="account" :label-width="formLabelWidth">
+		      <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input>
+		    </el-form-item>
+		    <el-form-item label="昵称" prop="name" :label-width="formLabelWidth">
+		      <el-input v-model="form.name" placeholder="请输入昵称"></el-input>
+		    </el-form-item>
+		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
+		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
+		    </el-form-item>
+		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
+		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
+		        <el-option v-for="item in roleArr"  :key="item.id" :label="item.role_name" :value="item.role_name"></el-option>
+					</el-select>
+		    </el-form-item>
+		    <el-form-item label="性别" prop="sex" :label-width="formLabelWidth">
+		    	<el-radio v-model="form.sex" label="男">男</el-radio>
+		  		<el-radio v-model="form.sex" label="女">女</el-radio>
+		    </el-form-item>
+		  </el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="addDialogForm = false">取 消</el-button>
+		    <el-button type="primary" :plain="true" @click="enterEdit(form)">确 定</el-button>
+		  </div>
+		</el-dialog>
 		<!-- 员工信息展示区 -->
-	 	<el-table ref="multipleTable" border style="width:100%" :data="staffArr" tooltip-effect="dark">
+	 	<el-table ref="multipleTable" @selection-change="handleSelectionChange" highlight-current-row :row-class-name="rowStyle" border style="width:100%" :data="staffArr" tooltip-effect="dark">
 			<el-table-column align="center" type="selection"></el-table-column>
 			<el-table-column align="center" prop="id" sortable label="ID">
 			</el-table-column>
@@ -98,7 +129,6 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		
 	  <el-pagination background style="text-align:center" @current-change="getStaff" layout="prev, pager, next" :page-size="8" :total="allPages.total"></el-pagination>
 	</div>
 </template>
@@ -200,6 +230,7 @@
       	selectVal: '', //条件搜索
 				roleArr: [], // 职位列表
 				staffArr:[],  //员工列表
+				selectRow: [], //当前选中行
 				addDialogForm: false,  //添加弹出框初始状态
 				editDialogForm:false,  //修改弹出框初始状态
 				// 添加框绑定值
@@ -213,7 +244,6 @@
           sex: '男', // 性别
           delivery: false,
 				},
-				// form:{}, // 修改框绑定值
 				formLabelWidth: '120px',
 				options: [
 					{
@@ -243,6 +273,27 @@
 			that.getStaff(1);
     },
 		methods: {
+			handleSelectionChange(val){
+				let arr = [];
+				val.forEach((val, index) => {
+					this.staffArr.forEach((v, i) => {// id 是每一行的数据id
+						if(val.id == v.id){
+							arr.push(i)
+						}
+					})
+				})
+				this.selectRow = arr;
+			},
+			rowStyle({row,rowIndex}){
+				let nowArr = this.selectRow;
+				for(let i = 0;i < nowArr.length; i++){
+					if(rowIndex === nowArr[i]){
+						console.log(nowArr[i])
+						console.log(rowIndex)
+						return 'rowStyle'
+					}
+				}
+			},
 			// 获取员工列表
 			getStaff(num = 1){
 				// let that = this;
@@ -261,7 +312,6 @@
 			
 			/**
 			 * [addStaff 添加员工]
-			 
 			 */
 			addStaff(form){
 				this.$refs.MyForm.validate((valid) => {
@@ -282,7 +332,38 @@
 								message: res.msg,
 								type: infoType
 							});
-							this.getStaff(1);
+							this.getStaff(this.allPages.nowPage);
+						}).catch(err => {
+							console.log(err)
+						})
+          } else {
+            return false;
+          }
+        });
+			},
+			/**
+			 * [enterEdit 修改员工信息]
+			 */
+			enterEdit(form){
+				this.$refs.MyForm.validate((valid) => {
+          if (valid) {
+						this.$post(this.url+'editStaff',{
+							data: form
+						}).then(res => {
+							let infoType = '';
+							if(res.code == 1){
+								infoType = 'success';
+								this.form = {};
+								this.addDialogForm = false;
+							}else{
+								infoType = 'error'
+							}
+							this.$message({
+								showClose: true,
+								message: res.msg,
+								type: infoType
+							});
+							this.getStaff(this.allPages.nowPage);
 						}).catch(err => {
 							console.log(err)
 						})
@@ -328,7 +409,7 @@
 						message: res.msg,
 						type: msgType
 					});
-					that.getStaff(1);
+					that.getStaff(this.allPages.nowPage);
 				}).catch(err => {
 					console.log(err)
 				})
@@ -340,7 +421,7 @@
 				let that = this;
 				that.form = row;
 				that.dialogTitle = '修改员工信息';
-				that.addDialogForm = true;
+				that.editDialogForm = true;
 			},
 			/**
 			 * [delStaff 删除员工信息]
@@ -368,12 +449,17 @@
 					data: id
 				}).then( res =>{
 					let msgType = res.code == 1 ? 'success' : 'error';
+					let msgInfo = '';
+					if(res.data){
+						msgInfo = res.msg + ',初始密码为：' + res.data
+					}else{
+						msgInfo = res.msg
+					}
 					this.$message({
 						showClose: true,
-						message: res.msg + ',初始密码为：' + res.data,
+						message: msgInfo,
 						type: msgType
 					});
-					console.log(res)
 				}).catch(err =>{
 					console.log(err)
 				})
@@ -386,12 +472,19 @@
 				this.$refs.MyForm.resetFields();
 			},
 			/**
+			 * [uploadSuccess 上传成功]
+			 */
+			uploadSuccess(res, file) {
+				console.log(res)
+				console.log(file)
+        this.form.head_img = URL.createObjectURL(file.raw);
+      },
+			/**
 			 * [beforeUploadImg 上传头像定义规则 ]
 			 */
       beforeUploadImg(file) {
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
-
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!');
         }
@@ -399,7 +492,7 @@
           this.$message.error('上传头像图片大小不能超过 2MB!');
         }
         return isJPG && isLt2M;
-      }
+			}
     }
 	} 
 </script>
@@ -413,38 +506,31 @@
 		display: inline-block;
 		width: 50%;
 	}
-	.commit{
-		font-size:14px;
-		color: lightblue;
-		white-space: nowrap;
-		display: none;
-	}
-	.avatar-uploader{
-		border-radius: 6px;
-		position: relative;
-		overflow: hidden;
-	}
-	.avatar-uploader-icon{
-		display: inline-block;
-		text-align: center;
-		cursor: pointer;
-		outline: 0;
-		border: 1px dashed lightcoral;
-	}
-	.avatar-uploader .el-upload:hover {
-		border-color: #409EFF;
-	}
-	.avatar-uploader-icon {
-		font-size: 28px;
-		color: #8c939d;
-		width: 80px;
-		height: 80px;
-		line-height: 80px;
-		text-align: center;
-	}
-	.avatar {
-		width: 80px;
-		height: 80px;
-		display: block;
+	.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+  }
+  .avatar {
+    width: 80px;
+    height: 80px;
+    display: block;
+  }
+	.rowStyle{
+		background-color:orangered;
+		font-size: 20px;
 	}
 </style>
