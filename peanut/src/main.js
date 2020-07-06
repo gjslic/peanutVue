@@ -6,29 +6,17 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css';
 import App from './App'
 import router from './router/index'
-<<<<<<< HEAD
-<<<<<<< HEAD
 import store from './store'
 import axios from 'axios'
-import {post,fetch,patch,put} from './network/request'
-=======
-
-import axios from 'axios'
-
->>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
-=======
-
-import axios from 'axios'
-
->>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
+import { post, fetch, patch, put } from './network/request'
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
-Vue.prototype.$post=post;
-Vue.prototype.$fetch=fetch;
-Vue.prototype.$patch=patch;
-Vue.prototype.$put=put;
+Vue.prototype.$post = post;
+Vue.prototype.$fetch = fetch;
+Vue.prototype.$patch = patch;
+Vue.prototype.$put = put;
 
 /* eslint-disable no-new */
 new Vue({

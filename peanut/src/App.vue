@@ -1,26 +1,14 @@
 <template>
   <div id="app">
-<<<<<<< HEAD
+
     <router-view></router-view>
-=======
-    <Home/>
-    <!-- <Detail/> -->
-    <!-- <AdminLogin/> -->
-<<<<<<< HEAD
->>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
-=======
->>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
+
   </div>
 
 
 </template>
 
 <script>
-<<<<<<< HEAD
-export default {
-  name: 'App',
-  components: {
-=======
 import Home from './components/Home'
 import Detail from './components/Detail'
 import AdminLogin from './components/AdminLogin'
@@ -29,10 +17,6 @@ export default {
   components: {
     Home,
     Detail
-<<<<<<< HEAD
->>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
-=======
->>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
   }
 }
 </script>
