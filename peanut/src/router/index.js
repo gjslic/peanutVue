@@ -53,6 +53,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
 <<<<<<< HEAD
+<<<<<<< HEAD
     { 
       path: '/', 
       name: 'Homepage', 
@@ -113,6 +114,8 @@ export default new Router({
       component: Ad
   }
 =======
+=======
+>>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
     // {
     //   path: '/',
     //   name: 'Home',
@@ -179,6 +182,9 @@ export default new Router({
       name: 'order',
       component: Order
     }
+<<<<<<< HEAD
+>>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
+=======
 >>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
   ]
 })

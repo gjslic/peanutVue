@@ -6,6 +6,9 @@
     <Home/>
     <!-- <Detail/> -->
     <!-- <AdminLogin/> -->
+<<<<<<< HEAD
+>>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
+=======
 >>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
   </div>
 
@@ -26,6 +29,9 @@ export default {
   components: {
     Home,
     Detail
+<<<<<<< HEAD
+>>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
+=======
 >>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
   }
 }
