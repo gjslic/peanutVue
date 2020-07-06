@@ -109,7 +109,7 @@
                                                                 </el-radio-group>
                                                             </el-form-item>
                                                             <el-form-item>
-                                                                <el-button type="primary" @click="onSubmit = true">立即充值</el-button>
+                                                                <el-button type="primary" @click="onSubmitClick = true">立即充值</el-button>
                                                             </el-form-item>
                                                         </el-form>
                                                     </el-collapse-item>
@@ -421,7 +421,7 @@
                 </div>
             </el-col>
         </el-row>
-        <el-drawer :visible.sync="onSubmit" :direction="direction" :before-close="handleClose">
+        <!-- <el-drawer :visible.sync="onSubmit" :direction="direction" :before-close="handleClose">
             <div class="demo-drawer__content">
                 <el-form :model="form">
                     <el-row :gutter="20">
@@ -441,7 +441,7 @@
                 </el-form>
                 
             </div>
-        </el-drawer>
+        </el-drawer> -->
     </div>
 </template>
 
@@ -562,7 +562,7 @@ export default {
             })
         },
         //充值显示判断输入密码按钮
-        onSubmit() {
+        onSubmitClick() {
             
         },
         handleClose(done) {
