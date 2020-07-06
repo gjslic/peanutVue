@@ -15,7 +15,7 @@
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 				<el-input placeholder="请输入内容" v-model="selectInfo" class="input-with-select"></el-input>
-				<el-button icon="el-icon-search"></el-button>
+				<el-button icon="el-icon-search" @click="getStaff(allPages.nowPage,selectVal,selectInfo)"></el-button>
 		  </el-col>
 		</el-row>
 		<!-- 员工添加弹出框 -->
@@ -128,7 +128,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column align="center" label="操作" width="240px">
-				<template slot-scope="scope">
+				<template slot-scope="scope" v-if="scope.row.role_name != '超级管理员'" disabled >
 					<el-button type="warning" icon="el-icon-lock" v-if="scope.row.state == 1" @click="editState(scope.row.id,scope.row)" circle></el-button>
 					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 0" @click="editState(scope.row.id,scope.row)" circle></el-button>
 					<el-button type="primary" icon="el-icon-edit" @click="editStaff(scope.row)" circle></el-button>
@@ -290,11 +290,13 @@
     },
     // 获取员工列表
     mounted() {
-			console.log(this.allPages)
 			let that = this;
-			that.getStaff(1);
+			that.getStaff(1,'','');
     },
 		methods: {
+			/**
+			 * [handleSelectionChange 复选框状态改变]
+			 */
 			handleSelectionChange(val){
 				let arr = [];
 				val.forEach((val, index) => {
@@ -312,13 +314,15 @@
 				}
 			},
 		
-			// 获取员工列表
-			getStaff(num = 1){
-				// let that = this;
+			/**
+			 *[getStaff 获取员工列表]
+			 */ 
+			getStaff(num,searchType = '',searchInfo = ''){
+				this.allPages.nowPage = num;
 				this.staffArr = [];
-				let keyWord = this.selectVal;
 				this.$post(this.url+'getStaffArr',{
-					'keyWord': keyWord,
+					'type':searchType,
+					'keyWord': searchInfo,
 					'nowPage': num
 				}).then(res => {
 					this.allPages.total = res.count;
