@@ -4,15 +4,15 @@
     <el-header style="color: #fff">
       <span style="float: left; font-size: 24px;">Peanut后台管理系统</span>
       <div style="float: right">
+        <i class="el-icon-switch-button layOut" @click="loginOut"></i>
         <el-dropdown>
-          <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff"></i>
+          <span style="margin-right: 15px; color: #fff; font-size: 16px;">{{staffAcc}}</span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看</el-dropdown-item>
-            <el-dropdown-item>新增</el-dropdown-item>
-            <el-dropdown-item>删除</el-dropdown-item>
+            <router-link to="/AdminInfo">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
           </el-dropdown-menu>
         </el-dropdown>
-        <span style="text-align: right; font-size: 12px; ">王小虎</span>
       </div>
     </el-header>
     <el-container style="height: 500px; border: 1px solid #eee">
@@ -51,13 +51,20 @@
               <span slot="title">用户管理</span>
             </el-menu-item>
           </router-link>
-
-          <router-link to="/goods">
-            <el-menu-item index="6">
+          <el-submenu index="6">
+            <template slot="title">
               <i class="el-icon-s-shop"></i>
-              <span slot="title">商品管理</span>
-            </el-menu-item>
-          </router-link>
+              <span>商品管理</span>
+            </template>
+            <el-menu-item-group>
+              <router-link to="/goods">
+                <el-menu-item index="6-1">拍卖商品</el-menu-item>
+              </router-link>
+              <router-link to="/OldGoods">
+                <el-menu-item index="6-2">二手商品</el-menu-item>
+              </router-link>
+            </el-menu-item-group>
+          </el-submenu>
 
           <router-link to="/order">
             <el-menu-item index="7">
@@ -116,22 +123,89 @@
   text-align: center;
   line-height: 60px;
 }
+.layOut {
+  margin-right: 15px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
 </style>
 
 <script>
+import { request } from "../../network/request"; //引入axios请求
 export default {
   name: "Home",
-  components: {
-  },
+  components: {},
   data() {
-    const item = {
-      date: "2016-05-02",
-      name: "王小虎",
-      address: "上海市普陀区金沙江路 1518 弄"
-    };
     return {
-      tableData: Array(7).fill(item)
+      staffAcc: ""
     };
+  },
+  created() {
+    this.getKoken();
+  },
+  methods: {
+    // 后台登出
+    loginOut() {
+      this.$confirm("此操作将退出后台登录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          let token = JSON.parse(sessionStorage.getItem("token"));
+          let url = "adminLogin/index/delToken";
+          request({
+            method: "post",
+            url: url,
+            headers: {
+              "Access-Token": token
+            }
+          })
+            .then(res => {
+              console.log(res);
+              if (res.data.code == 1) {
+                this.$message.success({ message: res.data.msg });
+                this.$router.replace("/AdminLogin");
+              } else {
+                this.$message({ message: "退出失败" });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    // 获取token
+    getKoken() {
+      let token = JSON.parse(sessionStorage.getItem("token"));
+      let url = "adminLogin/index/validateToken";
+      request({
+        method: "post",
+        url: url,
+        headers: {
+          "Access-Token": token
+        }
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            let userMsg = JSON.parse(res.data.data);
+            this.staffAcc = userMsg[0].name;
+          } else {
+            this.$message({ message: "请先登录" });
+            this.$router.push("/AdminLogin");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>

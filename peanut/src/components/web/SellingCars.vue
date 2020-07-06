@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="SellingCars">
         <!-- 图片 -->
         <el-row class="margin_bottom_20">
             <el-col :span="24">
@@ -17,42 +17,24 @@
             <el-row :gutter="20">
                 <el-col :sm="5" :xs="1" style="height:1px"></el-col>
                 <el-col :span="18" >
-
                     <!-- <el-form-item label="活动名称">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item> -->
                     <el-row :gutter="24">
-                        <el-col :span="24" :offset="0">
-                            <el-form-item label="卖车城市">                      
-                                <el-select v-model="form.region" placeholder="省" class="margin_bottom_10">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                </el-select>
-                                <el-select v-model="form.region" placeholder="市" class="margin_bottom_10">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                </el-select>
-                                <el-select v-model="form.region" placeholder="区" class="margin_bottom_10">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter="24">
-                        <el-col :span="24" :offset="0">
-                            <el-form-item label="车辆牌照">
-                                <el-select v-model="form.region" placeholder="闽" class="margin_bottom_10">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                </el-select>
-                                <el-select v-model="form.region" placeholder="D" class="margin_bottom_10">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                </el-select>
-                                <el-input v-model="input" placeholder="输入后五位车牌" class="width_150" onKeyUp="value=value.replace(/[\W]/g,'')"></el-input>
-                            </el-form-item>
-                        </el-col>
+                        <el-form-item label="卖车城市">                      
+                            <el-select v-model="form.region" placeholder="省" class="margin_bottom_10">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                            <el-select v-model="form.region" placeholder="市" class="margin_bottom_10">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                            <el-select v-model="form.region" placeholder="区" class="margin_bottom_10">
+                                <el-option label="区域一" value="shanghai"></el-option>
+                                <el-option label="区域二" value="beijing"></el-option>
+                            </el-select>
+                        </el-form-item>
                     </el-row>
                     <el-form-item label="品牌车系">
                         <div class="block float_left margin_bottom_10 margin_right_4">
@@ -75,9 +57,15 @@
                             <el-radio :label="4" class="margin_bottom_5">泡水车车</el-radio>
                         </el-radio-group>
                     </el-form-item>
+                    <el-form-item label="卖车拍卖">
+                        <el-radio-group v-model="radio">
+                            <el-radio :label="1" class="margin_bottom_5">我要卖车</el-radio>
+                            <el-radio :label="2" class="margin_bottom_5">我要拍卖</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
                     <el-form-item label="车辆图片">
                         <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
-                            <el-button size="small" type="primary">点击上传车辆信息</el-button>
+                            <el-button size="small" type="primary" >点击上传车辆信息</el-button>
                             <div slot="tip" class="el-upload__tip ">只能上传jpg/png文件只取第一张</div>
                         </el-upload>
                     </el-form-item>
@@ -169,8 +157,8 @@ export default {
 
 <style scoped>
 .margin_left_20{
-        margin-left: -70px !important;
-    }
+    margin-left: -70px !important;
+}
 .margin_bottom_20{
     margin-bottom: 20px;
 }
@@ -204,5 +192,15 @@ export default {
     .margin_l_10{
         margin: 0 0 0 10%;
     }
+}
+</style>
+
+<style>
+#SellingCars .el-upload__input{
+    display: none;
+}
+#SellingCars .el-row{
+    margin-left: 0px !important;
+    width: 100%;
 }
 </style>
