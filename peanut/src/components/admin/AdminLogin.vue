@@ -92,7 +92,7 @@ export default {
     this.identifyCode = "";
     this.makeCode(this.identifyCodes, 4);
     // 获取后台redis数据测试
-    this.getRedisDataTest();
+    // this.getRedisDataTest();
   },
   methods: {
     //验证码随机数
@@ -150,17 +150,17 @@ export default {
       }
     },
     // 获取后台redis数据测试
-    getRedisDataTest() {
-      let url = "adminLogin/index/validateToken";
-      let data = {
-        token: sessionStorage.getItem("token")
-      };
-      sendParam(url, data)
-        .then(res => {
-          console.log(res.data);
-        })
-        .catch(err => {});
-    }
+    // getRedisDataTest() {
+    //   let url = "adminLogin/index/validateToken";
+    //   let data = {
+    //     token: sessionStorage.getItem("token")
+    //   };
+    //   sendParam(url, data)
+    //     .then(res => {
+    //       console.log(res.data);
+    //     })
+    //     .catch(err => {});
+    // }
   }
 };
 </script>

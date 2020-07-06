@@ -10,10 +10,9 @@ Router.prototype.push = function push(location) {
 const Homepage = () =>
     import ('@/components/web/Homepage')
 
-const Login = () =>
-    import ('@/components/web/Login')
-const Register = () =>
-    import ('@/components/web/Register')
+const Login = () => import('@/components/web/Login')
+const Register = () => import('@/components/web/Register')
+const Retrieve = () => import('@/components/web/Retrieve')
 
 const AddPersonalCenter = () =>
     import ('@/components/web/AddPersonalCenter')
@@ -37,59 +36,65 @@ import homeChild from './home'
 Vue.use(Router)
 
 export default new Router({
-    routes: [{
-            path: '/',
-            name: 'Homepage',
-            component: Homepage
-        },
+  routes: [
+    { 
+      path: '/', 
+      name: 'Homepage', 
+      component: Homepage 
+    },
+    
+    
+    {
+      path: '/AdminLogin',
+      name: 'AdminLogin',
+      component: AdminLogin
+    },
+    {
+      path: '/Login',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/Register',
+      name: 'Register',
+      component: Register
+    },
+    {
+      path: '/Retrieve',
+      name: 'Retrieve',
+      component: Retrieve
+    },
 
-
-        {
-            path: '/AdminLogin',
-            name: 'AdminLogin',
-            component: AdminLogin
-        },
-        {
-            path: '/Login',
-            name: 'Login',
-            component: Login
-        },
-        {
-            path: '/Register',
-            name: 'Register',
-            component: Register
-        },
-
-        {
-            path: '/AddPersonalCenter',
-            name: 'AddPersonalCenter',
-            component: AddPersonalCenter
-        },
-        {
-            path: '/AddSellingCars',
-            name: 'AddSellingCars',
-            component: AddSellingCars
-        },
-        {
-            path: '/home',
-            name: 'Home',
-            component: Home,
-            children: homeChild
-        },
-        {
-            path: '/BuyCar',
-            name: 'BuyCar',
-            component: BuyCar
-        },
-        {
-            path: '/auction',
-            name: 'auction',
-            component: auction
-        },
-        {
-            path: '/Ad',
-            name: 'Ad',
-            component: Ad
-        }
-    ]
+    {
+      path: '/AddPersonalCenter',
+      name: 'AddPersonalCenter',
+      component: AddPersonalCenter
+    },
+    {
+      path: '/AddSellingCars',
+      name: 'AddSellingCars',
+      component: AddSellingCars
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: Home,
+      children:homeChild 
+    },
+    { 
+      path: '/BuyCar', 
+      name: 'BuyCar', 
+      component: BuyCar
+    },
+    { 
+      path: '/auction', 
+      name: 'auction', 
+      component: auction 
+    },
+    {
+      path: '/Ad',
+      name: 'Ad',
+      component: Ad
+  }
+  ]
 })
