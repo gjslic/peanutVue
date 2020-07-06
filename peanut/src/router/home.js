@@ -1,5 +1,5 @@
 
-
+const OldGoods = () => import('../components/admin/OldGoods.vue')
 const Goods = () => import('../components/admin/Goods.vue')
 const Chat = () => import('../components/admin/Chat')
 const Welcome = () => import('../components/admin/Welcome')
@@ -32,6 +32,11 @@ const homeChild = [
     path: '/goods',
     name: 'Goods',
     component: Goods
+  },
+  {
+    path: '/OldGoods',
+    name: 'OldGoods',
+    component: OldGoods
   },
   {
     path: '/staffManage',

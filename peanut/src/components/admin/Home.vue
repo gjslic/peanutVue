@@ -4,14 +4,7 @@
     <el-header style="color: #fff">
       <span style="float: left; font-size: 24px;">Peanut后台管理系统</span>
       <div style="float: right">
-        <el-dropdown>
-          <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看</el-dropdown-item>
-            <el-dropdown-item>新增</el-dropdown-item>
-            <el-dropdown-item>删除</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff"></i>
         <span style="text-align: right; font-size: 12px; ">王小虎</span>
       </div>
     </el-header>
@@ -51,13 +44,21 @@
               <span slot="title">用户管理</span>
             </el-menu-item>
           </router-link>
-
-          <router-link to="/goods">
-            <el-menu-item index="6">
+           <el-submenu index="6">
+            <template slot="title">
               <i class="el-icon-s-shop"></i>
-              <span slot="title">商品管理</span>
-            </el-menu-item>
-          </router-link>
+              <span>商品管理</span>
+            </template>
+            <el-menu-item-group>
+              <router-link to="/goods">
+                <el-menu-item index="6-1">拍卖商品</el-menu-item>
+              </router-link>
+              <router-link to="/OldGoods">
+                <el-menu-item index="6-2">二手商品</el-menu-item>
+              </router-link>
+            </el-menu-item-group>
+          </el-submenu>
+          
 
           <router-link to="/order">
             <el-menu-item index="7">
@@ -121,8 +122,7 @@
 <script>
 export default {
   name: "Home",
-  components: {
-  },
+  components: {},
   data() {
     const item = {
       date: "2016-05-02",

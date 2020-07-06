@@ -12,7 +12,7 @@ const AddSellingCars = () => import('@/components/web/AddSellingCars')
 const BuyCar = () => import('@/components/web/BuyCar')
 //拍卖页面
 const auction = () => import('@/components/web/auction')
-
+// 后台
 const Home = () => import('@/components/admin/Home')
 const AdminLogin = () => import('@/components/admin/AdminLogin')
 import homeChild from './home'

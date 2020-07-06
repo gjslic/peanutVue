@@ -2,12 +2,12 @@
 <template>
   <div>
     <div style="margin: 15px 0;">
-      <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+      <el-input placeholder="请输入内容" v-model="seachVal" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="手机号" value="1"></el-option>
-          <el-option label="用户名" value="2"></el-option>
+          <el-option label="手机号" value="phone"></el-option>
+          <el-option label="用户名" value="name"></el-option>
         </el-select>
-        <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
       </el-input>
     </div>
     <el-table
@@ -30,6 +30,11 @@
           <img :src="scope.row.head_img" class="user_avator" />
         </template>
       </el-table-column>
+      <el-table-column label="账号" width="110">
+        <template slot-scope="scope">
+          <span>{{ scope.row.acc}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="用户名">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
@@ -41,27 +46,27 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="手机号" width="140">
+      <el-table-column label="手机号" width="110">
         <template slot-scope="scope">
           <span>{{ scope.row.phone }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="年龄">
+      <el-table-column label="年龄" width="70">
         <template slot-scope="scope">
           <span>{{ scope.row.age }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="性别">
+      <el-table-column label="性别" width="70">
         <template slot-scope="scope">
           <span>{{ scope.row.sex }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="信誉值">
+      <el-table-column label="信誉值" width="70">
         <template slot-scope="scope">
           <span>{{ scope.row.credit }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="余额">
+      <el-table-column label="余额" width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.money }}</span>
         </template>
@@ -71,7 +76,7 @@
           <span>{{ scope.row.state }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <el-button
             v-if="scope.row.state == '解锁'"
@@ -119,8 +124,8 @@ export default {
   name: "Users",
   data() {
     return {
-      input3: "",
-      select: "",
+      seachVal: "",
+      select: "name",
       userData: [],
       currentPage: 1, //初始页
       pagesize: 4 //    每页的数据
@@ -139,13 +144,6 @@ export default {
       this.$message({
         message: msg,
         type: "success"
-      });
-    },
-
-    open3(msg) {
-      this.$message({
-        message: "警告哦，这是一条警告消息",
-        type: "warning"
       });
     },
 
@@ -238,6 +236,25 @@ export default {
             type: "info",
             message: "已取消"
           });
+        });
+    },
+    // 搜索
+    handleSearch() {
+      let url = "/user/index/search";
+      let data = {
+        keyword: this.seachVal,
+        condition: this.select
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.userData = res.data.data;
+          } else {
+            this.open4(res.data.msg);
+          }
+        })
+        .catch(err => {
+          console.log(err);
         });
     }
   }
