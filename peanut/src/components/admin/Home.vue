@@ -4,16 +4,15 @@
     <el-header style="color: #fff">
       <span style="float: left; font-size: 24px;">Peanut后台管理系统</span>
       <div style="float: right">
-        <!-- <el-dropdown>
-          <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff" :click="loginOut"></i>
+        <i class="el-icon-switch-button layOut" @click="loginOut"></i>
+        <el-dropdown>
+          <span style="margin-right: 15px; color: #fff; font-size: 16px;">{{staffAcc}}</span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看</el-dropdown-item>
-            <el-dropdown-item>新增</el-dropdown-item>
-            <el-dropdown-item>删除</el-dropdown-item>
+            <router-link to="/AdminInfo">
+              <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
           </el-dropdown-menu>
-        </el-dropdown> -->
-        <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff" @click="loginOut"></i>
-        <span style="text-align: right; font-size: 16px;">{{staffAcc}}</span>
+        </el-dropdown>
       </div>
     </el-header>
     <el-container style="height: 500px; border: 1px solid #eee">
@@ -52,7 +51,7 @@
               <span slot="title">用户管理</span>
             </el-menu-item>
           </router-link>
-           <el-submenu index="6">
+          <el-submenu index="6">
             <template slot="title">
               <i class="el-icon-s-shop"></i>
               <span>商品管理</span>
@@ -66,7 +65,6 @@
               </router-link>
             </el-menu-item-group>
           </el-submenu>
-          
 
           <router-link to="/order">
             <el-menu-item index="7">
@@ -125,48 +123,89 @@
   text-align: center;
   line-height: 60px;
 }
+.layOut {
+  margin-right: 15px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
 </style>
 
 <script>
+import { request } from "../../network/request"; //引入axios请求
 export default {
   name: "Home",
   components: {},
   data() {
     return {
-      staffAcc:''
+      staffAcc: ""
     };
   },
   created() {
-    //主页登录状态判断
-    if (JSON.parse(sessionStorage.getItem("staffAcc"))!=null) {
-      this.staffAcc = JSON.parse(sessionStorage.getItem("staffAcc"))
-    }else{
-        this.$message({message: "请先登录"});
-        this.$router.push("/AdminLogin");
-    }
+    this.getKoken();
   },
-  methods:{
+  methods: {
     // 后台登出
-    loginOut(){
-        this.$confirm("此操作将退出后台登录, 是否继续?", "提示", {
+    loginOut() {
+      this.$confirm("此操作将退出后台登录, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-        })
+      })
         .then(() => {
-            this.$message.success('退出成功');
-            sessionStorage.removeItem('staffAcc');
-            this.$router.replace('/AdminLogin');
+          let token = JSON.parse(sessionStorage.getItem("token"));
+          let url = "adminLogin/index/delToken";
+          request({
+            method: "post",
+            url: url,
+            headers: {
+              "Access-Token": token
+            }
+          })
+            .then(res => {
+              console.log(res);
+              if (res.data.code == 1) {
+                this.$message.success({ message: res.data.msg });
+                this.$router.replace("/AdminLogin");
+              } else {
+                this.$message({ message: "退出失败" });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
         })
         .catch(() => {
-            this.$message({
+          this.$message({
             type: "info",
             message: "已取消"
-            });
-        })   
+          });
+        });
     },
-    
+    // 获取token
+    getKoken() {
+      let token = JSON.parse(sessionStorage.getItem("token"));
+      let url = "adminLogin/index/validateToken";
+      request({
+        method: "post",
+        url: url,
+        headers: {
+          "Access-Token": token
+        }
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            let userMsg = JSON.parse(res.data.data);
+            this.staffAcc = userMsg[0].name;
+          } else {
+            this.$message({ message: "请先登录" });
+            this.$router.push("/AdminLogin");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
-
 };
 </script>
