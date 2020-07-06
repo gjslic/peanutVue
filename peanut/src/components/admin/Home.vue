@@ -4,15 +4,16 @@
     <el-header style="color: #fff">
       <span style="float: left; font-size: 24px;">Peanut后台管理系统</span>
       <div style="float: right">
-        <el-dropdown>
-          <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff"></i>
+        <!-- <el-dropdown>
+          <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff" :click="loginOut"></i>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>查看</el-dropdown-item>
             <el-dropdown-item>新增</el-dropdown-item>
             <el-dropdown-item>删除</el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
-        <span style="text-align: right; font-size: 12px; ">王小虎</span>
+        </el-dropdown> -->
+        <i class="el-icon-switch-button" style="margin-right: 15px; color: #fff" @click="loginOut"></i>
+        <span style="text-align: right; font-size: 16px;">{{staffAcc}}</span>
       </div>
     </el-header>
     <el-container style="height: 500px; border: 1px solid #eee">
@@ -124,14 +125,41 @@ export default {
   components: {
   },
   data() {
-    const item = {
-      date: "2016-05-02",
-      name: "王小虎",
-      address: "上海市普陀区金沙江路 1518 弄"
-    };
     return {
-      tableData: Array(7).fill(item)
+      staffAcc:''
     };
+  },
+  created() {
+    //主页登录状态判断
+    if (JSON.parse(sessionStorage.getItem("staffAcc"))!=null) {
+      this.staffAcc = JSON.parse(sessionStorage.getItem("staffAcc"))
+    }else{
+        this.$message({message: "请先登录"});
+        this.$router.push("/AdminLogin");
+    }
+  },
+  methods:{
+    // 后台登出
+    loginOut(){
+        this.$confirm("此操作将退出后台登录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+        })
+        .then(() => {
+            this.$message.success('退出成功');
+            sessionStorage.removeItem('staffAcc');
+            this.$router.replace('/AdminLogin');
+        })
+        .catch(() => {
+            this.$message({
+            type: "info",
+            message: "已取消"
+            });
+        })   
+    },
+    
   }
+
 };
 </script>
