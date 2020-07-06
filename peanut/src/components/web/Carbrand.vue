@@ -9,129 +9,75 @@
               品牌
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
-            <el-dropdown-menu slot="dropdown">
+            <!-- <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>黄金糕</el-dropdown-item>
               <el-dropdown-item>狮子头</el-dropdown-item>
               <el-dropdown-item>螺蛳粉</el-dropdown-item>
               <el-dropdown-item disabled>双皮奶</el-dropdown-item>
               <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
-            </el-dropdown-menu>
+            </el-dropdown-menu> -->
           </el-dropdown>
         </div>
 
         <!-- 品牌图标 -->
-        <el-row >
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              大众
-            </div>
-          </el-col>
-
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              大众
-            </div>
-          </el-col>
-
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              丰田
-            </div>
-          </el-col>
-
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              本田
-            </div>
-          </el-col>
-
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              大众
-            </div>
-          </el-col>
-
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              大众
-            </div>
-          </el-col>
-
-          <el-col :md="4" :xs="8">
-            <div class="img_item">
-              <img src="../../assets/images/b_84.png" alt class="a_img" />
-
-              大众
+        <el-row>
+          <!--3, v-for放置在需要打印的元素中 -->
+          <el-col :md="4" :xs="8"  v-for="(item,index) in brandArr" :key="index">
+            <div class="img_item"  @click="passbrand(item.brand_id)">
+              <!-- 4,vue图片渲染需要require文件路径+数据库字段名 -->
+              <img :src="require('../../assets/carlogo/'+item.brand_img)" alt class="a_img" />
+              <span  class="brand_img_text">{{item.brand_name}}</span>
+              
             </div>
           </el-col>
         </el-row>
       </div>
     </el-col>
-
+  <!-- 价格分类 区间 -->
     <el-col :md="7" :xs="7" class="hidden-xs-only">
       <div class="car_barnd">
         <div class="brand_text">价格</div>
 
-        <el-row type="flex" class="row-bg">
-          <el-col :span="8">
-            <div class="price_text">
-              <span>分期购</span>
-            </div>
-          </el-col>
+          <!-- 价格区间 -->
+          <el-row>
 
-          <el-col :span="8">
-            <div class="price_text">
-              <span>分期购</span>
-            </div>
-          </el-col>
+            <el-col :md="8" :sm="8">
+                <div class="price_text" style="color:#ff5a37">
+                    分期购
+                </div>
+            </el-col>
 
-          <el-col :span="8">
-            <div class="price_text">
-              <span>分期购</span>
-            </div>
-          </el-col>
-        </el-row>
+             <el-col :md="8" :sm="8">
+                <div class="price_text" style="color:#ff5a37">
+                    低月供
+                </div>
+            </el-col>
+
+             <el-col :md="8" :sm="8" v-for="(price_item,index) in priceArr" :key="index">
+                <div class="price_text"  @click="passprice(price_item.price_id)">
+                    {{price_item.price}}万
+                </div>
+            </el-col>
+          </el-row>
       </div>
-    </el-col>
 
+    </el-col>
+    <!-- 车型 -->
     <el-col :md="7" :xs="7" class="hidden-xs-only">
       <div class="car_barnd">
         <div class="brand_text">车型</div>
 
-        <el-row type="flex" class="row-bg">
-          <el-col :span="8">
-            <div class="style_item">
-              <img src="../../assets/images/c-2.png" alt class="style_img" />
-              SUV
-            </div>
-          </el-col>
+          <el-row>
+            <el-col :md="8" :sm="8" v-for="(style_item,index) in styleArr" :key="index">
+                 <div class="style_item" @click="passstyle(style_item.style_id)">
+                    <img :src="require('../../assets/carstyle/'+style_item.style_img)"  alt class="style_img" />
+                    {{style_item.style_name}}
+                  </div>
+            </el-col>
 
-          <el-col :span="8">
-            <div class="style_item">
-              <img src="../../assets/images/c-2.png" alt class="style_img" />
-              SUV
-            </div>
-          </el-col>
+            
+          </el-row>
 
-          <el-col :span="8">
-            <div class="style_item">
-              <img src="../../assets/images/c-2.png" alt class="style_img" />
-              SUV
-            </div>
-          </el-col>
-        </el-row>
       </div>
     </el-col>
   </el-row>
@@ -140,10 +86,120 @@
 </template>
 
 <script>
-
+//引入网络请求
+import {request} from "../../network/request";
+import { getData, sendParam} from "../../network/home";
 export default {
-  name: "Carbrand"
+  name: "Carbrand",
+  //2,在data中，定义为空数组，返回出去
+  data(){
+    return{
+      brandArr:[],
+      priceArr:[],
+      styleArr:[]
+    }
+  },
+
+mounted(){
+    // 获取到车标
+    this.getbrand();
+
+    //获取到价格范围
+    this.getprice();
+
+     //获取到车辆类型
+    this.getstyle();
+},
+
+methods:{
+  //获取到车标
+  getbrand(){
+    let url = '/homepage/Homepage/carbran';
+    getData(url).then(res => {
+      //this获取到数据
+      console.log(res);
+        this.brandArr = res.data;
+    }).catch(err => {
+      console.log(err);
+    });
+  },
+  
+  //获取到价格范围
+  getprice(){
+    let url = '/homepage/Homepage/carprice';
+    getData(url).then(res => {
+      //this获取到数据
+        this.priceArr = res.data;
+        console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+  },
+
+  //获取到车辆类型
+  getstyle(){
+    let url = '/homepage/Homepage/carstyle';
+   getData(url).then(res => {
+      //this获取到数据
+        this.styleArr = res.data;
+        console.log(res);
+    }).catch(err => {
+      console.log(err);
+    });
+  },
+
+  //传递车标参数
+  passbrand(id){
+    console.log(id);
+    let url = '/homepage/Homepage/passbrand';
+    let data ={
+      brandid:id
+    }
+    sendParam(url ,data).then(res => {
+      this.passbrandArr = res.data;
+    }).catch(err => {
+      console.log(err);
+    });
+  },
+
+  //传递价格范围
+  passprice(id){
+    console.log(id);
+    let url = '/homepage/Homepage/passprice';
+    let data ={
+      price_id:id
+    }
+    sendParam(url ,data).then(res => {
+      this.passpriceArr = res.data;
+    }).catch(err => {
+      console.log(err);
+    });
+  },
+
+  //传递车辆类型
+    passstyle(id){
+    
+    let url = '/homepage/Homepage/passstyle';
+    let data ={
+      style_id:id
+    }
+    console.log(data);
+    sendParam(url ,data).then(res => {
+      this.passstyleArr = res.data;
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+}
+
+
+      
+
+
 };
+
+
+
 </script>
 
 <style scoped>
@@ -179,6 +235,12 @@ export default {
   font-size: 2rem;
 }
 
+.brand_img_text{
+      display: block;
+    padding-right: 4px;
+        width: 46px;
+    text-align: center;
+}
 /* 下拉菜单字体 */
 .el-dropdown-link {
   cursor: pointer;
@@ -198,29 +260,29 @@ export default {
 /* 品牌图片 */
 .a_img {
   display: block;
-  /* margin: 1rem; */
-  width: 100%;
-  margin-bottom: 1rem;
-  cursor: pointer;
+    /* margin: 1rem; */
+    width: 85%;
+    margin-bottom: 1rem;
+    cursor: pointer;
 }
 
 /* 品牌图标盒子 */
 .img_item {
-  padding: 17px;
-  text-align: center;
-  margin-top: 1rem;
-  height: 105px;
+    padding: 23px;
+    text-align: center;
+    /* margin-top: 1rem; */
+    height: 105px;
 }
 
 /* 价格说明 */
 .price_text {
-  padding: 35px;
+  padding: 25px;
   text-align: center;
   cursor: pointer;
   font-size: 1.5rem;
 }
 
-.price_text span:hover {
+.price_text:hover {
   color: #ff5a37;
 }
 /* 车型图标盒子 */

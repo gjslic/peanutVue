@@ -52,13 +52,13 @@
                     <el-col :md="12">
                         <div class="right_img">
 
-                            <el-col :md="4">
+                            <el-col :md="5">
                                 <div class="er_img">
                                     <img src="../../assets/images/public.jpg" alt="">
                                 </div>
                             </el-col>
 
-                             <el-col :md="6">
+                             <el-col :md="5">
                                 <div class="er_text">
                                     <p>微信公众号</p>
                                      
@@ -68,13 +68,13 @@
                                 </div>
                             </el-col>
 
-                            <el-col :md="4">
+                            <el-col :md="5">
                                 <div class="er_img">
                                     <img src="../../assets/images/public.jpg" alt="">
                                 </div>
                             </el-col>
 
-                             <el-col :md="6">
+                             <el-col :md="5">
                                 <div class="er_text">
                                     <p>下载APP</p>
                                      
@@ -248,6 +248,7 @@
             </div></el-col>
           
       </div>
+
     </el-col>
 
 
@@ -257,13 +258,11 @@
     <div class="phone_bottom">
         <el-dropdown trigger="click">
             <span class="el-dropdown-link">
-                点开菜单<i class="el-icon-caret-top el-icon--right"></i>
+                买车卖车<i class="el-icon-caret-top el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown" class="dropdown_box">
-                <el-dropdown-item icon="el-icon-s-promotion" class="dropdown_text">点我登录</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-s-finance" class="dropdown_text">我要买车</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-goods" class="dropdown_text">我要卖车</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-user-solid" class="dropdown_text">个人中心</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
     </div>
