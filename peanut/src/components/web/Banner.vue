@@ -22,16 +22,16 @@ export default {
 
       // 图片需要引入, 否则无法显示
       imgList: [
-        { id: 0, idView: require("../assets/images/banner.png") },
+        { id: 0, idView: require("../../assets/images/banner.png") },
         {
           id: 1,
           name: "详情",
-          idView: require("../assets/images/banner01.jpg")
+          idView: require("../../assets/images/banner01.jpg")
         },
         {
           id: 2,
           name: "推荐",
-          idView: require("../assets/images/banner02.jpeg")
+          idView: require("../../assets/images/banner02.jpeg")
         }
       ]
     };

@@ -54,7 +54,7 @@
 
                             <el-col :md="4">
                                 <div class="er_img">
-                                    <img src="../assets/images/public.jpg" alt="">
+                                    <img src="../../assets/images/public.jpg" alt="">
                                 </div>
                             </el-col>
 
@@ -70,7 +70,7 @@
 
                             <el-col :md="4">
                                 <div class="er_img">
-                                    <img src="../assets/images/public.jpg" alt="">
+                                    <img src="../../assets/images/public.jpg" alt="">
                                 </div>
                             </el-col>
 

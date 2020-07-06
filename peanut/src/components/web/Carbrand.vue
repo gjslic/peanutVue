@@ -23,7 +23,7 @@
         <el-row >
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               大众
             </div>
@@ -31,7 +31,7 @@
 
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               大众
             </div>
@@ -39,7 +39,7 @@
 
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               丰田
             </div>
@@ -47,7 +47,7 @@
 
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               本田
             </div>
@@ -55,7 +55,7 @@
 
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               大众
             </div>
@@ -63,7 +63,7 @@
 
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               大众
             </div>
@@ -71,7 +71,7 @@
 
           <el-col :md="4" :xs="8">
             <div class="img_item">
-              <img src="../assets/images/b_84.png" alt class="a_img" />
+              <img src="../../assets/images/b_84.png" alt class="a_img" />
 
               大众
             </div>
@@ -113,21 +113,21 @@
         <el-row type="flex" class="row-bg">
           <el-col :span="8">
             <div class="style_item">
-              <img src="../assets/images/c-2.png" alt class="style_img" />
+              <img src="../../assets/images/c-2.png" alt class="style_img" />
               SUV
             </div>
           </el-col>
 
           <el-col :span="8">
             <div class="style_item">
-              <img src="../assets/images/c-2.png" alt class="style_img" />
+              <img src="../../assets/images/c-2.png" alt class="style_img" />
               SUV
             </div>
           </el-col>
 
           <el-col :span="8">
             <div class="style_item">
-              <img src="../assets/images/c-2.png" alt class="style_img" />
+              <img src="../../assets/images/c-2.png" alt class="style_img" />
               SUV
             </div>
           </el-col>

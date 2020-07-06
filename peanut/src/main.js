@@ -3,15 +3,20 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import 'element-ui/lib/theme-chalk/display.css'
+import 'element-ui/lib/theme-chalk/display.css';
 import App from './App'
 import router from './router/index'
 import store from './store'
-// import axios from 'axios'
-
+import axios from 'axios'
+import {post,fetch,patch,put} from './network/request'
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
 Vue.config.productionTip = false
+
+Vue.prototype.$post=post;
+Vue.prototype.$fetch=fetch;
+Vue.prototype.$patch=patch;
+Vue.prototype.$put=put;
 
 /* eslint-disable no-new */
 new Vue({
@@ -21,12 +26,3 @@ new Vue({
     components: { App },
     template: '<App/>'
 })
-
-// import {request} from "./network/request";
-// request({
-//   url: ''
-// }).then(res => {
-  
-// }).catch(err => {
-  
-// })

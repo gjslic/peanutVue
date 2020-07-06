@@ -12,12 +12,12 @@
 </template>
 
 <script>
-import Menu from './components/Menu';
+import Menu from '../web/Menu';
 // import AuctionVehicle from './components/AuctionVehicle';
-import Banner from './components/Banner';
-import Carbrand from './components/Carbrand';
-import Carrecommend from './components/Carrecommend';
-import Bottom from './components/Bottom';
+import Banner from '../web/Banner';
+import Carbrand from '../web/Carbrand';
+import Carrecommend from '../web/Carrecommend';
+import Bottom from '../web/Bottom';
 export default {
     name:'Homepage',
     components:{
