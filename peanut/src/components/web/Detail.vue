@@ -302,7 +302,7 @@ export default {
 </script>
 
 <style scoped>
-@import "../assets/css/detail.css";
+@import "../../assets/css/detail.css";
 .server_box:nth-child(2) {
   padding: 0 8px;
 }
