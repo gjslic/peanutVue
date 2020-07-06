@@ -21,12 +21,3 @@ new Vue({
     components: { App },
     template: '<App/>'
 })
-
-// import {request} from "./network/request";
-// request({
-//   url: ''
-// }).then(res => {
-  
-// }).catch(err => {
-  
-// })
