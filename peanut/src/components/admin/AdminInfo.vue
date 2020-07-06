@@ -3,8 +3,7 @@
   <div>
     <div class="demo-fit">
       <div class="block">
-        <span class="title">{{ fit }}</span>
-        <el-avatar shape="square" :size="100" :fit="fit" :src="url"></el-avatar>
+        <el-avatar shape="square" :size="100"  :src="url"></el-avatar>
       </div>
     </div>
   </div>

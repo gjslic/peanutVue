@@ -11,19 +11,17 @@
 		  </el-col>
 		</el-row>
         <el-table :data="orderData" border style="width: 100%;text-align:center" :default-sort = "{prop: 'order_num', order: 'descending'}">
-            <el-table-column label="订单号" sortable>
-                <template slot-scope="scope">
+            <el-table-column prop="orderNum" label="订单号" sortable>
+                <!-- <template slot-scope="scope">
                     <span style="margin-left: 10px">{{ scope.row.order_num }}</span>
-                </template>
+                </template> -->
             </el-table-column>
-            <el-table-column label="卖家账号"></el-table-column>
-            <el-table-column label="买家账号"></el-table-column>
-            <el-table-column label="商品名"></el-table-column>
-            <el-table-column label="总价" sortable width="80px"></el-table-column>
-            <el-table-column label="下单时间" sortable></el-table-column>
-            <el-table-column label="操作" sortable>
-                <el-button icon="el-icon-search" type="primary" circle></el-button>
-                <el-button icon="el-icon-delete" type="danger" circle></el-button>
+            <el-table-column prop="orderData.buy_id" label="下单用户"></el-table-column>
+            <el-table-column prop="orderData.transaction_id" label="商品名"></el-table-column>
+            <el-table-column prop="orderData.transaction_id" label="总价" sortable width="80px"></el-table-column>
+            <el-table-column prop="orderData.transaction_time" label="下单时间" sortable></el-table-column>
+            <el-table-column prop="orderData.transaction_time" label="状态" sortable></el-table-column>
+            <el-table-column label="操作" center sortable>
                 <el-button icon="el-icon-search" type="primary" circle></el-button>
             </el-table-column>
         </el-table>
@@ -36,8 +34,15 @@
         name: 'Order',
         data() {
             return {
+                url: 'http://localhost/th5/public/adminOrder/Backorder/',
                 selectInfo: '',
-                orderData: [],
+                orderData: [{
+                    orderNum: '',
+                    buyer: '',
+                    shopName: '',
+                    money: 0,
+                    time: ''
+                }],
                 setInfo: [{
                     value: '选项一',
                     name: '买家账号'
@@ -51,14 +56,15 @@
         },
         mounted() {
             // getOrderArr(){
-                // var that = this;
-                // that.axios.post('http://localhost/th5/public/admin/Order/getOrderArr', {
-                // }).then(function (res) {
-                //     console.log(res);
-                //     that.orderData = res.data.list;
-                // }).catch(function (error) {
-                //     console.log(error)
-                // })
+                var that = this;
+                that.$post(this.url+'getOrderArr', {
+                }).then(function (res) {
+                    console.log(res);
+                    that.orderData = res.data;
+                    console.log(that.orderData)
+                }).catch(function (error) {
+                    console.log(error)
+                })
             // }
         },
         methods: {

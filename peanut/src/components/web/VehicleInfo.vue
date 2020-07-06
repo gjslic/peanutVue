@@ -1,30 +1,39 @@
 <!-- 车辆信息 -->
 <template>
   <div style="margin-bottom:50px">
+    <el-row class="breadcrumb">
+      <el-col :md="18" :offset="3" class="hidden-xs-only SortCarBox">
+       <el-col :sm="3" class="largeTitle"><span>全部车源({{vehicleArr.length}})</span></el-col>
+       <el-col :sm="5" :offset="16" class="SortBase">
+         <el-col :sm="8"><span class="SortCarBase" @click="defaultBase">默认排序</span></el-col>
+         <el-col :sm="8"><span class="SortCarBase" @click="timeBase">最新<i class="el-icon-sort"></i></span> </el-col>
+         <el-col :sm="8"><span class="SortCarBase" @click="priceBase">价格<i class="el-icon-sort"></i></span></el-col>
+       </el-col>
+      </el-col>
+    </el-row>
     <el-row class="outerFrame" :gutter="20">
-      <el-col :sm="3" :xs="0">
-        <p></p>
+      <el-col :sm="3" :xs="0" style="height:1px">
       </el-col>
       <el-col :md="18">
         <div class="infinite-list-wrapper" style="overflow:auto">
           <ul class="list" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-            <li v-for="i in count" class="list-item" :key="i">
+            <li v-for="(itme,index) in count" class="list-item" :key="index">
               <el-col :sm="6" :xs="24" class="outerFrameBox">
-                <router-link to="/BuyCarDetails">
+                <router-link to="/Detail" style="text-decoration:none;">
                   <el-card shadow="hover">
                     <div class="vehicleImg">
-                      <el-image
+                      <img
                         style="width:100%;height:100%"
-                        src="https://baidu-vr1.xin.com/car/tiles/71cf86f514e0572b410507ba3e557f8b/external/closed/cover_00.JPG"
-                      ></el-image>
+                        :src="vehicleArr[index].img"
+                      />
                     </div>
                     <P class="vehicleName">
-                      <span class="logo">花生</span> 广汽传祺 传祺GS8 2020款 2.0T 自动 GS8S 390T豪华智联版前驱
+                      <span class="logo">花生</span> {{vehicleArr[index].vehicle_name}}
                     </P>
                     <p class="minVehicleBox">
-                      <span class="vehicleTime">2020年 | 车况极佳</span>
-                      <span class="vehiclePrice">24.05万</span>
-                      <span class="priceFirst">首付4.81万</span>
+                      <span class="vehicleTime">{{vehicleArr[index].vehicle_time}}年 | {{vehicleArr[index].introduce}}</span>
+                      <span class="vehiclePrice">{{vehicleArr[index].price}}万</span>
+                      <span class="priceFirst">首付{{(vehicleArr[index].price*0.1).toFixed(2)}}万</span>
                     </p>
                     <div class="vehicleBtn hidden-xs-only">
                       <el-button type="warning" plain>立即购买</el-button>
@@ -43,29 +52,93 @@
 </template>
 
 <script>
+import { getData,sendParam } from "../../network/home";
 export default {
   name: "VehicleInfo",
   data() {
     return {
-      count: 8,
-      loading: false
+      count: 0,
+      loading: false,
+      vehicleArr :[],//车辆信息数组
+      num:0,
+      frequency:0,
+      timeBaseNum:0, //排序 最新  2==升  1==降
+      priceBaseNum:0 //排序 最新  2==升  1==降
     };
   },
   computed: {
     noMore() {
-      return this.count >= 20;
+      if(this.count>=this.vehicleArr.length){
+        return true;
+      }else{
+        return false;
+      }
+      
     },
     disabled() {
       return this.loading || this.noMore;
     }
   },
+   mounted() {
+    //获取车辆数据
+  },
   methods: {
     load() {
       this.loading = true;
       setTimeout(() => {
-        this.count += 4;
+        if(this.count + 4 >= this.vehicleArr.length){
+          this.count = this.count+(this.vehicleArr.length-this.count);
+        }else{
+          this.count += 4;
+        }
+        
         this.loading = false;
-      }, 2000);
+      }, 1000);
+    },
+    vehicleSel(brandID,seriesID,price='',timeBaseNum='',priceBaseNum='',search){
+      this.count = 0;
+      let url = "buyCar/Buycar/vehicle";
+      let data = {"brandID":brandID,"seriesID":seriesID,"price":price,"timeBaseNum":timeBaseNum,"priceBaseNum":priceBaseNum,"search":search};
+      sendParam(url,data)
+      .then(res => {
+        this.vehicleArr = res.data.data;
+        this.frequency = parseInt(this.vehicleArr.length/4);
+        this.num = this.vehicleArr.length-frequency;
+        if(frequency==0){
+          this.count = this.num;
+        }else{
+          this.count = 4;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    },
+    //排序
+    timeBase(){
+      this.priceBaseNum=0;
+      if(this.timeBaseNum==0){
+        this.timeBaseNum=1;
+      }else{
+        this.timeBaseNum= this.timeBaseNum==1 ? 2 : 1;
+      }
+      this.$parent.timeBase(this.timeBaseNum);
+    },
+    //价格
+    priceBase(){
+      this.timeBaseNum=0;
+      if(this.priceBaseNum==0){
+        this.priceBaseNum=1;
+      }else{
+        this.priceBaseNum= this.priceBaseNum==1 ? 2 : 1;
+      }
+      this.$parent.priceBase(this.priceBaseNum);
+    },
+    // 默认
+    defaultBase(){
+      this.timeBaseNum=0;
+      this.priceBaseNum=0;
+       this.$parent.defaultBase();
     }
   }
 };
@@ -85,6 +158,37 @@ export default {
   position: absolute;
   bottom: -52px;
   left: 45%;
+}
+.breadcrumb {
+  margin: 15px 0;
+  background-color: white;
+  padding: 0;
+}
+.SortCarBox{
+  height: 50px;
+  border: 1px solid #f4f4f4;
+  line-height: 50px;
+}
+.largeTitle{
+  color: #ff5837;
+  border-bottom: 1px solid #ff5837;
+  height: 49px;
+  text-align: center;
+    font-size: 17px;
+}
+.SortBase{
+  font-size: 13px;
+  text-align: center;
+}
+.SortCarBase{
+  display: inline-block;
+  border-right: 1px solid #eee;
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+}
+.SortCarBase{
+  cursor: pointer;
 }
 @media (max-width: 768px) {
   /* 手机端 */
@@ -158,6 +262,8 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     font: 400 14px/16px "Microsoft YaHei";
+    height: 27px;
+    line-height: 27px;
   }
   .vehicleTime {
     height: 14px;

@@ -1,11 +1,10 @@
-import { request } from './request'
+import {request} from './request'
 
-export function getData(url) {
+export function getData(url){
 
-    return request({
-        method: 'get',
-        url: url
-    })
+  return request({
+    url: url
+  })
 
 }
 
@@ -18,7 +17,7 @@ export function sendParam(url, data) {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
 
-    })
+  })
 
 
 }

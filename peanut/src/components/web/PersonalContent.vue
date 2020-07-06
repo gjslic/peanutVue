@@ -1,5 +1,5 @@
 <template>
-    <div class="PersonalContent">
+    <div id="PersonalContent" class="PersonalContent">
         <el-row :gutter="22">
             <el-col :span="22" :offset="1">
                 <div class="grid-content bg-purple">
@@ -14,63 +14,78 @@
                                             <el-card shadow="always">
                                                 <div class="Personal_img">
                                                     <div class="grid-content bg-purple width_60px">
-                                                        <img class="img" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="">
+                                                        <img class="img" :src="userMessage.head_img" alt="">
                                                     </div>
-                                                    <div class="grid-content bg-purple width_70 text_color"><el-link type="primary" :underline="false"><i class="el-icon-female font_size_20"></i></el-link>柚子啦啦啦</div>
+                                                    <!-- 如果数据库等于男的就是蓝色性别 -->
+                                                    <div class="grid-content bg-purple width_70 text_color" v-if="userMessage.sex == '男'">
+                                                        <el-link type="primary" :underline="false"><i class="el-icon-male font_size_20"></i></el-link>
+                                                        {{userMessage.name}}
+                                                    </div>
+                                                    <!-- else 就是红色性别 -->
+                                                    <div class="grid-content bg-purple width_70 text_color" v-else>
+                                                        <el-link type="danger" :underline="false"><i class="el-icon-female font_size_20"></i></el-link>
+                                                        {{userMessage.name}}
+                                                    </div>
                                                     <div class="grid-content bg-purple width_70">
-                                                        <el-progress :percentage="100" :format="format" :color="customColor"></el-progress>
+                                                        <el-progress :percentage="userMessage.credit" :format="format" :color="customColor"></el-progress>
                                                     </div>
-                                                </div>         
+                                                </div>
                                             </el-card>
-                                            <div class="padding_10_10">                                        
+                                            <div class="padding_10_10">          
                                                 <el-collapse v-model="activeName" accordion>
                                                     <!-- 用户信息 -->
-                                                    <el-collapse-item name="1">
+                                                    <el-collapse-item name="1"> 
                                                         <template slot="title" >
                                                             <i class="el-icon-s-custom font_size_20"></i><span class="text_color_2">用户信息</span>
                                                         </template>
                                                         <div>
                                                             <!-- 手机号：13395059606 -->
                                                             <el-link target="_blank" :underline="false">
-                                                            <i class="el-icon-phone-outline font_size_16"></i><span class="font_size_13">手机号：133*****606</span>
+                                                            <i class="el-icon-phone-outline font_size_16"></i><span class="font_size_13">手机号： {{userMessage.acc}}</span>
                                                             </el-link>
                                                         </div>
                                                         <div>
                                                             <!-- 年龄 -->
                                                             <el-link :underline="false">
-                                                            <i class="el-icon-star-off font_size_16"></i><span class="font_size_13">当前用户年龄：21</span>
+                                                            <i class="el-icon-star-off font_size_16"></i><span class="font_size_13">当前用户年龄：{{userMessage.age}} 岁</span>
                                                             </el-link>
                                                         </div>
                                                         <div>
                                                             <!-- 性别 -->
-                                                            <el-link target="_blank" :underline="false">
-                                                                <el-link type="danger" :underline="false"><i class="el-icon-male font_size_16"></i></el-link>
+                                                            <!-- 判断性别 -->
+                                                            <el-link target="_blank" :underline="false" v-if="userMessage.sex == '男'">
+                                                                <el-link type="danger" :underline="false"><i class="el-icon-female font_size_16"></i></el-link>
                                                                 <span class="font_size_13">性别：</span>
-                                                                <el-link type="primary" :underline="false"><i class="el-icon-female font_size_16"></i></el-link>
+                                                                <el-link type="primary" :underline="false"><i class="el-icon-male font_size_16"></i></el-link>
+                                                            </el-link>
+                                                            <el-link target="_blank" :underline="false" v-else>
+                                                                <el-link type="primary" :underline="false"><i class="el-icon-male font_size_16"></i></el-link>
+                                                                <span class="font_size_13">性别：</span>
+                                                                <el-link type="danger" :underline="false"><i class="el-icon-female font_size_16"></i></el-link>
                                                             </el-link>
                                                         </div>
                                                         <div>
                                                             <!-- 用户余额 -->
                                                             <el-link type="warning" target="_blank" :underline="false">
-                                                            <i class="el-icon-coin font_size_16"></i><span class="font_size_13">当前用户余额：<span class="color_ffb800">1314520</span></span>
+                                                            <i class="el-icon-coin font_size_16"></i><span class="font_size_13">当前用户余额：<span class="color_ffb800">{{userMessage.money}}</span></span>
                                                             </el-link>
                                                         </div>
                                                         <div>
                                                             <!-- 注册时间 -->
                                                             <el-link :underline="false">
-                                                            <i class="el-icon-map-location font_size_16"></i><span class="font_size_13">个人地址：福建省厦门市海沧区嵩屿南二里263号909室</span>
+                                                            <i class="el-icon-map-location font_size_16"></i><span class="font_size_13">个人地址：{{userMessage.add}}</span>
                                                             </el-link>
                                                         </div>
                                                         <div>
                                                             <!-- 注册时间 -->
                                                             <el-link :underline="false">
-                                                            <i class="el-icon-watch font_size_16"></i><span class="font_size_13">注册时间：2020-06-28</span>
+                                                            <i class="el-icon-watch font_size_16"></i><span class="font_size_13">注册时间：{{userMessage.register_time}}</span>
                                                             </el-link>
                                                         </div>
                                                         <div>
                                                             <!-- 当前登录时间 -->
                                                             <el-link :underline="false">
-                                                            <i class="el-icon-watch-1 font_size_16"></i><span class="font_size_13">当前登录时间：2020-06-29</span>
+                                                            <i class="el-icon-watch-1 font_size_16"></i><span class="font_size_13">当前登录时间：{{userMessage.last_time}}</span>
                                                             </el-link>
                                                         </div>
                                                     </el-collapse-item>
@@ -81,8 +96,8 @@
                                                         </template>
                                                         <el-form ref="form" :model="form" label-width="80px">
                                                             <el-row :gutter="20">
-                                                                <el-col :span="23" :offset="0">         
-                                                                <el-form-item label="充值金额">
+                                                                <el-col :span="23" :offset="0" class="padding-left-0">         
+                                                                <el-form-item label="充值金额" >
                                                                     <el-input v-model="form.name" onkeyup="this.value=this.value.replace(/\D/g,'')"></el-input>
                                                                 </el-form-item>
                                                                 </el-col>
@@ -94,8 +109,7 @@
                                                                 </el-radio-group>
                                                             </el-form-item>
                                                             <el-form-item>
-                                                                <el-button type="primary" @click="onSubmit">立即充值</el-button>
-                                                                <el-button>取消</el-button>
+                                                                <el-button type="primary" @click="onSubmitClick = true">立即充值</el-button>
                                                             </el-form-item>
                                                         </el-form>
                                                     </el-collapse-item>
@@ -136,7 +150,7 @@
                                                             </el-row>
                                                             <el-row :gutter="20">
                                                                 <el-col :span="18" :offset="3">
-                                                                    <el-button type="primary" plain class="button">确认修改密码</el-button>
+                                                                    <el-button type="primary" plain class="button" @click="change">确认修改密码</el-button>
                                                                 </el-col>
                                                             </el-row>
                                                         </el-form>
@@ -147,7 +161,7 @@
                                                             <i class="el-icon-picture font_size_20"></i><span class="text_color_2">修改头像</span>
                                                         </template>
                                                         <el-row :gutter="20">
-                                                            <el-col :span="16" :offset="5">
+                                                            <el-col :span="16" :offset="5" class="padding-left-0">
                                                                 <el-upload action="https://jsonplaceholder.typicode.com/posts/" list-type="picture-card" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                                                                     <i class="el-icon-plus" ></i>
                                                                 </el-upload>
@@ -176,7 +190,7 @@
                                                             </el-option>
                                                         </el-select>
                                                         <el-row :gutter="20">
-                                                            <el-col :span="18" :offset="0">
+                                                            <el-col :span="18" :offset="0" class="padding-left-0">
                                                                 <el-button type="primary" plain class="button_mt10px">确认修改性别</el-button>
                                                             </el-col>
                                                         </el-row>
@@ -209,12 +223,12 @@
                                                         </el-select>
                                                         <!-- 详细地址 -->
                                                         <el-row :gutter="20">
-                                                            <el-col :span="20" :offset="0">
+                                                            <el-col :span="20" :offset="0" class="padding-left-0">
                                                                     <el-input v-model="index1" class="button_mt10px" placeholder="请输入详细地址" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"></el-input>
                                                             </el-col>
                                                         </el-row>
                                                         <el-row :gutter="20">
-                                                            <el-col :span="18" :offset="0">
+                                                            <el-col :span="18" :offset="0" class="padding-left-0">
                                                                 <el-button type="primary" plain class="button_mt10px">确认修改地址</el-button>
                                                             </el-col>
                                                         </el-row>
@@ -224,19 +238,6 @@
                                         </div>
                                     </el-col>
                                 </el-row>
-                                <!-- <el-row>
-                                    <el-col :span="24">
-                                        <div class="grid-content bg-purple-dark">
-                                            <el-avatar class="margin_right_10px" :size="50" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-                                            <el-link :underline="false">
-                                                <el-col :span="24">
-                                                    <div class="grid-content bg-purple-dark">柚子啦啦啦</div>
-                                                </el-col>
-                                                
-                                            </el-link>
-                                        </div>
-                                    </el-col>
-                                </el-row> -->
                             </el-tab-pane>
                             <el-tab-pane>
                                 <span slot="label"> <el-link type="warning" :underline="false"><i class="el-icon-star-off"></i>我的收藏</el-link></span>
@@ -281,8 +282,7 @@
                                 </el-collapse>
                             </el-tab-pane>
                             <el-tab-pane>
-                                <span slot="label"><el-badge value="new" class="item"><i class="el-icon-chat-dot-round"></i>我的消息</el-badge></span>
-                               
+                                <span slot="label"><el-badge value="new" class="item"><i class="el-icon-chat-dot-round"></i>我的消息</el-badge></span>       
                             </el-tab-pane>
                             <el-tab-pane>
                                 <span slot="label"><i class="el-icon-truck"></i> 我发布的车车</span>
@@ -421,10 +421,32 @@
                 </div>
             </el-col>
         </el-row>
+        <!-- <el-drawer :visible.sync="onSubmit" :direction="direction" :before-close="handleClose">
+            <div class="demo-drawer__content">
+                <el-form :model="form">
+                    <el-row :gutter="20">
+                        <el-col :span="18" :offset="3">
+                            <div class="grid-content bg-purple">
+                                <el-form-item label="充值判断：请输入登录密码" :label-width="formLabelWidth" prop="newPassword">
+                                    <el-input type="password" placeholder="登录密码" v-model="ruleForm.newPassword" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
+                                    <i slot="prefix" class="el-input__icon el-icon-unlock"></i>
+                                    </el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="demo-drawer__footer">
+                                <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-form>
+                
+            </div>
+        </el-drawer> -->
     </div>
 </template>
 
 <script>
+import {getData , sendParam} from "../../network/home"
 
 export default {
     name: 'PersonalContent',
@@ -445,6 +467,9 @@ export default {
             }
         };
         return {
+            onSubmit: false,
+            direction: 'btt',
+            userMessage:[],
             options: [{
                 label: '省份名',
                 options: [{
@@ -506,15 +531,56 @@ export default {
             }
         }
     },
+    //开局
+    mounted(){
+        //验证
+        this.userAdd();
+    },
     methods: {
+        userAdd(){
+            //开局验证
+            let url = '/personal/Personal/personal';
+            let token = localStorage.getItem("token");
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                // let user = JSON.parse(res.data.data);
+                // console.log(user["id"]);
+                // localStorage.setItem('userId',user["id"]);
+                if(res.data.code==1){
+                    let userContent = res.data.data;
+                    this.userMessage = userContent;
+                    console.log(this.userMessage);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //充值显示判断输入密码按钮
+        onSubmitClick() {
+            
+        },
+        handleClose(done) {
+            this.$confirm('不冲钱了吗？')
+            .then(_ => {
+                done();
+            })
+            .catch(_ => {});
+        },
+        //修改密码
+        change() {
+
+        },       
         handleChange(val) {
             console.log(val);
         },
         format(percentage) {
             return percentage === 100 ? '满信誉' : `${percentage}%`;
-        },
-        onSubmit() {
-            console.log('submit!');
         },
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -549,6 +615,9 @@ export default {
 }
 .button{
     width: 100% !important;
+}
+.padding-left-0{
+    padding-left: 0px !important;
 }
 .button_mt10px{
     margin: 10px 0 0 0;
@@ -692,4 +761,16 @@ export default {
     height: 178px;
     display: block;
   }
+</style>
+<style>
+#PersonalContent .el-row{
+    width: 100%;
+    margin-left: 0px !important;
+}
+#PersonalContent .el-upload__input{
+    display: none;
+}
+.el-message-box{
+    width: 250px !important;
+}
 </style>
