@@ -5,6 +5,7 @@ const Homepage = () => import('@/components/web/Homepage')
 
 const Login = () => import('@/components/web/Login')
 const Register = () => import('@/components/web/Register')
+const Retrieve = () => import('@/components/web/Retrieve')
 
 const AddPersonalCenter = () => import('@/components/web/AddPersonalCenter')
 const AddSellingCars = () => import('@/components/web/AddSellingCars')
@@ -42,7 +43,12 @@ export default new Router({
       name: 'Register',
       component: Register
     },
-    
+    {
+      path: '/Retrieve',
+      name: 'Retrieve',
+      component: Retrieve
+    },
+
     {
       path: '/AddPersonalCenter',
       name: 'AddPersonalCenter',
