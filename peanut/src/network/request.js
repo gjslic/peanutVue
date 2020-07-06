@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 export function request(config){
   // 1.创建实例
   const instance = axios.create({
@@ -84,4 +85,5 @@ export function put(url,data = {}){
       reject(err)
     })
   })
+
 }

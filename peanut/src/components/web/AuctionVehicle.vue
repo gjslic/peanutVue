@@ -3,42 +3,77 @@
   <div style="margin-bottom:50px">
     <el-row class="breadcrumb hidden-xs-only">
       <el-col :md="18" :offset="3" class="hidden-xs-only auctionTitle">
-        <h3>竞拍中(22)</h3>
+        <el-col :sm="3" class="largeTitle">
+          <h3>竞拍中({{vehicleArr.length}})</h3>
+        </el-col>
+        <el-col :sm="5" :offset="16" class="SortBase">
+          <el-col :sm="8">
+            <span class="SortCarBase" @click="defaultBase">默认排序</span>
+          </el-col>
+          <el-col :sm="8">
+            <span class="SortCarBase" @click="timeBase">
+              最新
+              <i class="el-icon-sort"></i>
+            </span>
+          </el-col>
+          <el-col :sm="8">
+            <span class="SortCarBase" @click="priceBase">
+              价格
+              <i class="el-icon-sort"></i>
+            </span>
+          </el-col>
+        </el-col>
       </el-col>
     </el-row>
     <el-row class="outerFrame" :gutter="20">
-      <el-col :sm="3" :xs="0" style="height:1px">
-      </el-col>
+      <el-col :sm="3" :xs="0" style="height:1px"></el-col>
       <el-col :md="18">
         <div class="infinite-list-wrapper" style="overflow:auto">
           <ul class="list" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-            <li v-for="i in count" class="list-item" :key="i">
+            <li v-for="(item,index) in count" class="list-item" :key="index">
               <el-col :sm="24" :xs="24" class="outerFrameBox">
                 <el-card shadow="hover">
                   <div class="vehicleImg">
-                    <el-image
-                      style="width:100%;height:100%"
-                      src="https://baidu-vr1.xin.com/car/tiles/71cf86f514e0572b410507ba3e557f8b/external/closed/cover_00.JPG"
-                    ></el-image>
+                    <el-image style="width:100%;height:100%" :src="vehicleArr[index].img"></el-image>
                   </div>
                   <P class="vehicleName">
-                    <span class="logo">花生</span> 广汽传祺 传祺GS8 2020款 2.0T 自动 GS8S 390T豪华智联版前驱
+                    <span class="logo">花生</span>
+                    {{vehicleArr[index].vehicle_name}}
                   </P>
                   <div class="minVehicleBox">
                     <span class="vehicleTime">2020年 | 车况极佳</span>
                     <span class="priceDistance">8.98万公里</span>
-                    <span class="priceFirst">竞拍金额24.05万</span>
-                    <p class="vehiclePrice">
+                    <span class="priceFirst">竞拍金额{{vehicleArr[index].price}}万</span>
+                    <p
+                      class="vehiclePrice"
+                      @click="collection(vehicleArr[index].vehicle_id,0,vehicleArr[index].sell_id,index)"
+                      v-if="vehicleArr[index][0].collection==0"
+                    >
                       <i class="el-icon-star-off"></i>
                       <span style="font-size: 14px;">收藏</span>
+                    </p>
+                    <p
+                      class="vehiclePrice"
+                      @click="collection(vehicleArr[index].vehicle_id,1,vehicleArr[index].sell_id,index)"
+                      v-else
+                    >
+                      <i class="el-icon-star-on"></i>
+                      <span style="font-size: 14px;">已收藏</span>
                     </p>
                   </div>
                   <div class="vehicleBtn">
                     <p class="endTime">
                       距离结束：
-                      <span>11:30</span>
+                      <span>{{countDownList}}</span>
                     </p>
-                    <el-button type="warning" plain class="auctionBtn">出价</el-button>
+                    <el-button
+                      type="warning"
+                      plain
+                      class="auctionBtn"
+                      @click="open(vehicleArr[index].vehicle_id,vehicleArr[index].price)"
+                      :loading="btnFlag"
+                      id="offer"
+                    >出价</el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -53,29 +88,285 @@
 </template>
 
 <script>
+import { getData, sendParam } from "../../network/home";
 export default {
   name: "AuctionVehicle",
   data() {
     return {
-      count: 8,
-      loading: false
+      count: 0,
+      loading: false,
+      vehicleArr: [], //车辆信息数组
+      num: 0,
+      frequency: 0,
+      timeBaseNum: 0, //排序 最新  2==升  1==降
+      priceBaseNum: 0, //排序 最新  2==升  1==降
+      countDownList: 0, //倒计时时间
+      btnFlag: false
     };
   },
   computed: {
     noMore() {
-      return this.count >= 20;
+      if (this.count >= this.vehicleArr.length) {
+        return true;
+      } else {
+        return false;
+      }
     },
     disabled() {
       return this.loading || this.noMore;
     }
   },
+  mounted() {
+    //获取车辆数据
+    getData("auction/Auction/vehicle")
+      .then(res => {
+        this.vehicleArr = res.data.data;
+        //判断该时间是否有车辆
+        if (this.vehicleArr.length > 0) {
+          console.log(res.data.surplusTime);
+          this.timeFun(res.data.surplusTime);
+        }
+        this.frequency = parseInt(this.vehicleArr.length / 4);
+        this.num = this.vehicleArr.length - frequency;
+        this.num = this.vehicleArr.length - frequency;
+        if (frequency == 0) {
+          this.count = this.num;
+        } else {
+          this.count = 4;
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
   methods: {
     load() {
       this.loading = true;
       setTimeout(() => {
-        this.count += 4;
+        if (this.count + 4 >= this.vehicleArr.length) {
+          this.count = this.count + (this.vehicleArr.length - this.count);
+        } else {
+          this.count += 4;
+        }
+
         this.loading = false;
-      }, 2000);
+      }, 1000);
+    },
+    vehicleSel(
+      brandID,
+      seriesID,
+      price = "",
+      timeBaseNum = "",
+      priceBaseNum = ""
+    ) {
+      this.count = 0;
+      let url = "auction/Auction/vehicle";
+      let data = {
+        brandID: brandID,
+        seriesID: seriesID,
+        price: price,
+        timeBaseNum: timeBaseNum,
+        priceBaseNum: priceBaseNum
+      };
+      sendParam(url, data)
+        .then(res => {
+          this.vehicleArr = res.data.data;
+          this.frequency = parseInt(this.vehicleArr.length / 4);
+          this.num = this.vehicleArr.length - frequency;
+          if (frequency == 0) {
+            this.count = this.num;
+          } else {
+            this.count = 4;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    //排序
+    timeBase() {
+      this.priceBaseNum = 0;
+      if (this.timeBaseNum == 0) {
+        this.timeBaseNum = 1;
+      } else {
+        this.timeBaseNum = this.timeBaseNum == 1 ? 2 : 1;
+      }
+      this.$parent.timeBase(this.timeBaseNum);
+    },
+    //价格
+    priceBase() {
+      this.timeBaseNum = 0;
+      if (this.priceBaseNum == 0) {
+        this.priceBaseNum = 1;
+      } else {
+        this.priceBaseNum = this.priceBaseNum == 1 ? 2 : 1;
+      }
+      this.$parent.priceBase(this.priceBaseNum);
+    },
+    // 默认
+    defaultBase() {
+      this.timeBaseNum = 0;
+      this.priceBaseNum = 0;
+      this.$parent.defaultBase();
+    },
+    //收藏
+    collection(id, flag) {},
+    //判断时间
+    timeFormat(param) {
+      return param < 10 ? "0" + param : param;
+    },
+    //倒计时
+    timeFun(timeStamp) {
+      var interval = setInterval(() => {
+        // 如果活动未结束，对时间进行处理
+        let obj = null;
+        if (timeStamp > 0) {
+          // 获取时、分、秒
+          let hou = parseInt((timeStamp % (60 * 60 * 24)) / 3600);
+          let min = parseInt(((timeStamp % (60 * 60 * 24)) % 3600) / 60);
+          let sec = parseInt(((timeStamp % (60 * 60 * 24)) % 3600) % 60);
+
+          obj = {
+            hou: this.timeFormat(hou),
+            min: this.timeFormat(min),
+            sec: this.timeFormat(sec)
+          };
+          timeStamp--;
+        } else {
+          // 活动已结束，全部设置为'00'
+          obj = {
+            hou: "00",
+            min: "00",
+            sec: "00"
+          };
+          clearInterval(interval);
+          this.$parent.priceBase();
+        }
+        this.countDownList = obj.hou + "时" + obj.min + "分" + obj.sec + "秒";
+      }, 1000);
+    },
+    //出价框
+    open(id, price) {
+      this.$prompt("单位：万", "请输入金额", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /^\d+(\.\d+)?$/,
+        inputErrorMessage: "金额格式不正确",
+        type: "warning"
+      })
+        .then(({ value }) => {
+          if (value > price) {
+            this.$message({
+              type: "success",
+              message: "感谢您的出价,出价中请稍后"
+            });
+            offer.innerHTML = "出价中";
+            this.btnFlag = true;
+            this.hairPrice(id, value);
+          } else {
+            this.$message({
+              type: "info",
+              message: "您输入的价格未大于拍卖价"
+            });
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入"
+          });
+        });
+    },
+    //发送价格
+    hairPrice(id, price) {
+      let url = "auction/Auction/Price";
+      let data = {
+        id: id,
+        price: price
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            var resDate = {
+              msg: "出价成功",
+              type: "success"
+            };
+          } else {
+            var resDate = {
+              msg: "出价失败！请稍后再试",
+              type: "warning"
+            };
+          }
+          setTimeout(() => {
+            this.$message({
+              type: resDate.type,
+              message: resDate.msg
+            });
+            offer.innerHTML = "出价";
+            this.btnFlag = false;
+            this.$parent.priceBase();
+          }, 2000);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    //收藏
+    collection(vehicleID, flag, sellID,index ) {
+      let url = "auction/Auction/collection";
+      let data = {
+        vehicleID: vehicleID,
+        flag: flag,
+        sellID: sellID
+      };
+      if (flag == 0) {
+        this.$message({
+          message: "收藏中，请稍后",
+          type: "warning"
+        });
+      } else {
+        this.$message({
+          message: "取消中，请稍后",
+          type: "warning"
+        });
+      }
+      sendParam(url, data)
+        .then(res => {
+          if (flag == 0) {
+            if (res.data.code == 1) {
+              var resDate = {
+                msg: "收藏成功",
+                type: "success"
+              };
+              this.$set(this.vehicleArr[index][0],'collection',1);
+            } else {
+              var resDate = {
+                msg: "收藏失败！请稍后再试",
+                type: "warning"
+              };
+            }
+          } else {
+            if (res.data.code == 1) {
+              var resDate = {
+                msg: "取消成功",
+                type: "success"
+              };
+              this.$set(this.vehicleArr[index][0],'collection',0);
+            } else {
+              var resDate = {
+                msg: "取消失败！请稍后再试",
+                type: "warning"
+              };
+            }
+          }
+          this.$message({
+            type: resDate.type,
+            message: resDate.msg
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
@@ -91,14 +382,34 @@ export default {
   margin: 0;
   padding: 0;
 }
-
+.breadcrumb {
+  margin: 15px 0;
+  background-color: white;
+  padding: 0;
+}
 .auctionTitle {
   position: relative;
   text-align: initial;
   color: #ff5837;
+  height: 50px;
+  border: 1px solid #f4f4f4;
+  line-height: 50px;
 }
 .auctionTitle h3 {
-  margin: 10px 0 0 0;
+  margin: 10px 0 0 14px;
+}
+.SortBase {
+  font-size: 13px;
+  text-align: center;
+}
+.SortCarBase {
+  display: inline-block;
+  border-right: 1px solid #eee;
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  cursor: pointer;
+  color: black;
 }
 @media (max-width: 768px) {
   /* 手机端 */
