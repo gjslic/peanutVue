@@ -6,9 +6,15 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css';
 import App from './App'
 import router from './router/index'
+<<<<<<< HEAD
 import store from './store'
 import axios from 'axios'
 import {post,fetch,patch,put} from './network/request'
+=======
+
+import axios from 'axios'
+
+>>>>>>> dfd19563cf830a90e5752582917e16b01ba524c8
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
 Vue.config.productionTip = false
