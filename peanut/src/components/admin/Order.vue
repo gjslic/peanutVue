@@ -1,15 +1,22 @@
 <template>
   <div class="contanir">
     <h1>订单管理</h1>
-    <el-row type="flex" push="3" class="row-bg">
-		  <el-col :span="12">
-			<el-select v-model="setInfo.value" placeholder="请选择" style="width:100px;float:left">
-				<el-option v-for="item in setInfo" :key="item.name" :label="item.name" :value="item.name"></el-option>
-			</el-select>
-			<el-input placeholder="请输入内容" v-model="selectInfo" style="width:150px;float:left" class="input-with-select"></el-input>
-			<el-button icon="el-icon-search"></el-button>
-		  </el-col>
-		</el-row>
+    <!-- 头部菜单区 -->
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="全部订单">全部订单</el-menu-item>
+      <el-menu-item index="未完成">未完成</el-menu-item>
+      <el-menu-item index="待审核">待审核</el-menu-item>
+      <el-menu-item index="已完成">已完成</el-menu-item>
+      <!-- 搜索框 -->
+      <div style="float:right">
+        <el-select v-model="setInfo.value" placeholder="请选择" style="width:100px;float:left">
+          <el-option v-for="item in setInfo" :key="item.name" :label="item.name" :value="item.name"></el-option>
+        </el-select>
+        <el-input placeholder="请输入内容" v-model="selectInfo" style="width:150px;float:left" class="input-with-select"></el-input>
+        <el-button icon="el-icon-search"></el-button>
+      </div>
+    </el-menu>
+    <!-- 订单展示区 -->
     <el-table :data="orderData" border :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" style="width: 100%;text-align:center" :default-sort = "{prop: 'order_num', order: 'descending'}">
       <el-table-column align="center" prop="id" label="ID" width="80px" sortable></el-table-column>
       <el-table-column align="center" prop="orderNum" label="订单号" sortable>
@@ -31,27 +38,48 @@
           <el-popover trigger="click" placement="top">
             <img :src="scope.row.carImg" style="max-width:200px;max-height:200px">
             <div slot="reference" class="name-wrapper">
-              <span style="cursor:pointer">{{ scope.row.carName }}</span>
+              <span>{{ scope.row.carName }}</span>
             </div>
           </el-popover>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="price" label="总价/万"  sortable ></el-table-column>
-      <el-table-column align="center" prop="orderTime" label="下单时间" sortable></el-table-column>
+      <el-table-column align="center" prop="orderTime" width="180px" label="下单时间" sortable></el-table-column>
       <el-table-column align="center" prop="state" label="状态" sortable></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button icon="el-icon-search" type="primary" circle @click="getNowOrder(scope.row)"></el-button>
+          <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="enterOption(scope.row)"></el-button>
+          <el-button icon="el-icon-view" type="primary" circle @click="getNowOrder(scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
     <el-dialog title="当前订单展示" :visible.sync="dialogFormVisible">
       <el-form :model="nowData">
-        <el-form-item label="车辆展示" :label-width="formLabelWidth">
-          <el-image :src="nowData.carImg" width="200px"></el-image>
+          <!-- <el-image :src="nowData.carImg" width="200px"></el-image> -->
+        <el-form-item label="下单用户：" :label-width="formLabelWidth">
+          <span>{{nowData.uName}}</span>
         </el-form-item>
-        <el-form-item label="下单用户" :label-width="formLabelWidth">
-
+        <el-form-item label="联系方式：" :label-width="formLabelWidth">
+          <span>{{nowData.phone}}</span>
+        </el-form-item>
+        
+        <el-form-item label="卖家信息：" :label-width="formLabelWidth"  v-model="sellerInfo">
+          <template>
+            <el-popover trigger="hover" placement="top" >
+              <p>账号: {{ sellerInfo.seller }}</p>
+              <p>联系方式: {{ sellerInfo.sellerTel }}</p>
+              <div slot="reference" style="width:120px" class="name-wrapper">
+                <span>{{sellerInfo.sName}}</span>
+                <!-- <el-tag size="medium">{{sellerInfo.sName}}</el-tag> -->
+              </div>
+            </el-popover>
+          </template>
+        </el-form-item>
+        <el-form-item label="商品名称：" :label-width="formLabelWidth">
+          <span>{{nowData.carName}}</span>
+        </el-form-item>
+        <el-form-item label="商品价格：" :label-width="formLabelWidth">
+          <span>{{nowData.price}}万</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -59,7 +87,7 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
-	  <el-pagination background style="text-align:center" :page-size='8' layout="prev, pager, next" :total="100"></el-pagination>
+	  <el-pagination background style="text-align:center" :page-size='12' layout="prev, pager, next" :total="100"></el-pagination>
   </div>
 </template>
 
@@ -72,7 +100,10 @@
         selectInfo: '', //搜索关键字
         orderData: [], // 所有订单显示
         nowData: [], // 当前订单显示
+        sellerInfo: {},
+        // menuDisabled: false,
         dialogFormVisible: false, //显示框
+        activeIndex: '全部订单', //默认显示订单列表
         formLabelWidth: '120px',
         setInfo: [{
           value: '1',
@@ -86,28 +117,89 @@
       }
     },
     mounted() {
-      var that = this;
-      that.$post(this.url+'getOrderArr', {
-      }).then(function (res) {
-          console.log(res);
-          that.orderData = res.data;
-      }).catch(function (error) {
-          console.log(error)
-      })
+      this.getOrderList('全部订单');
     },
     methods: {
-      formatter(row, column) {
-          return row.address;
+      getOrderList(type){
+        console.log(type);
+        let that = this;
+        that.$post(that.url+'getOrderArr', {
+          'showType': type
+        }).then(function (res) {
+            that.orderData = res.data;
+        }).catch(function (error) {
+            console.log(error)
+        })
       },
+      
+      /**
+       * [getNowOrder 获取当前订单信息]
+       */
       getNowOrder(row){
         this.nowData = row;
-        this.dialogFormVisible = true;
+        this.$post(this.url+'getNowOrder',{nowId:row.id})
+        .then(res => {
+          if(res.code == 1){
+            this.sellerInfo = res.data;
+            this.dialogFormVisible = true;
+          }else{
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: 'error'
+            });
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      /**
+       * [enterOption 审核操作]
+       */
+      enterOption(row){
+        console.log(row)
+        this.$post(this.url+'editState',{
+          'nowId': row.id,
+          'buyId': row.buyer,
+          'price': row.price 
+        }).then(res => {
+          let msgType = '';
+          if(res.code == 1){
+            row.state = '退款成功';
+            msgType = 'success'
+          }else{
+            row.state = '退款失败';
+            msgType = 'error'
+          }
+          this.$message({
+            showClose: true,
+            message: res.msg,
+            type: msgType
+          });
+          console.log(res)
+        }).catch(err => { 
+          console.log(err)
+        })
+        console.log(row);
+      },
+      /**
+       * [handleSelect 选择]
+       */
+      handleSelect(key, keyPath) {
+        this.getOrderList(key);
       }
     }
   }
 </script>
 <style scoped>
-.sort-caret{
-  color:white;
+  .el-row {
+    margin-bottom: 20px;
+  }
+  .el-col {
+    border-radius: 4px;
+  }
+.name-wrapper:hover{
+  color:red;
+  cursor:pointer;
 }
 </style>

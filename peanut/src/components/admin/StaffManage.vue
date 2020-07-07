@@ -34,7 +34,7 @@
 		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
-		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
+		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
 						<template v-for="(item , index) in roleArr"  >
 		        	<el-option :key="index" v-if="item.role_name == '超级管理员'" disabled :value="item.role_name"></el-option>
 							<el-option v-else :key="index" :label="item.role_name" :value="item.role_name"></el-option>
@@ -68,7 +68,7 @@
 		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
 		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
-		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
+		    <el-form-item label="员工职位" prop="role_name" :label-width="formLabelWidth" >
 		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
 						<template v-for="(item , index) in roleArr"  >
 		        	<el-option :key="index" v-if="item.role_name == '超级管理员'" disabled :value="item.role_name"></el-option>
@@ -207,6 +207,7 @@
 			};
 			// 角色判断不为空
 			let checkRole = (rule , value , callback) => {
+				console.log(this.form.checkRole)
 				if(this.form.checkRole === ''){
 					callback(new Error('请选择职位'));
 				}else{
@@ -259,6 +260,7 @@
           password: '',// 添加密码
           phone: '',     // 添加电话
 					head_img: 'https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1091405991,859863778&fm=26&gp=0.jpg', //图片路径
+					role_name: '',
 					checkRole: '',
           sex: '男', // 性别
           delivery: false,
@@ -336,6 +338,8 @@
 			 * [addStaff 添加员工]
 			 */
 			addStaff(form){
+				console.log(form)
+				console.log(this.form.checkRole)
 				this.$refs.MyForm.validate((valid) => {
           if (valid) {
 						this.$post(this.url+'addStaff',{
