@@ -41,7 +41,7 @@ export default {
     getInfoData() {
       let url = "/adminCenter/Center/get";
       let data = {
-        token: JSON.parse(sessionStorage.getItem("token"))
+        token: JSON.parse(localStorage.getItem("token"))
       }
       sendParam(url, data)
         .then(res => {

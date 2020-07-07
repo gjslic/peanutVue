@@ -1,45 +1,35 @@
-<!-- @tlh广告滚动条 -->
+<!-- @tlh前台公告新闻告滚动条 -->
 <template>
-<div class="marquee">
-
-      <div class="marquee_title">
-                 <span>平台公告</span>
-      </div>
-        <div class="marquee_box">
-                <ul class="marquee_list" :class="{marquee_top:animate}">
-                        <li v-for="(item,index) in marqueeList">{{item.name}}</li>
-                </ul>
-        </div>
-</div>
+  <div class="marquee">
+    <div class="marquee_title">
+      <span>平台公告</span>
+    </div>
+    <div class="marquee_box">
+      <ul class="marquee_list" :class="{marquee_top:animate}">
+        <li v-for="(item,index) in marqueeList" :key="index">{{item.notice_cont}}</li>
+      </ul>
+    </div>
+  </div>
 </template> 
+
+
 <script>
+import { request } from "../../network/request"; //引入axios请求
+import { getData } from "../../network/home"; //引入axios封装的函数
+import { sendParam } from "../../network/home"; //引入axios封装的函数
 export default {
   data() {
     return {
       animate: false,
 
-      marqueeList: [
-        {
-          name: "1军电视剧烦恼是的空间开发"
-        },
-
-        {
-          name: "2军水电费了羧甲淀粉钠盛开"
-        },
-
-        {
-          name: "3军第三方库收到货否"
-        },
-
-        {
-          name: "4军杜师傅iOS"
-        }
-      ]
+      marqueeList: []
     };
   },
   created: function() {
     // 页面显示
     setInterval(this.showMarquee, 2000);
+    // 加载后端数据库数据
+    this.getInfo();
   },
   methods: {
     showMarquee: function() {
@@ -52,11 +42,21 @@ export default {
 
         this.animate = false;
       }, 500);
+    },
+
+    getInfo() {
+      sendParam("anotice/index/index", "")
+        .then(res => {
+          this.marqueeList = res.data.data;
+          console.log(this.marqueeList);
+        })
+        .catch(err => {});
     }
   }
 };
 </script>
  
+
 <style scoped>
 .marquee {
   width: 100%;
@@ -67,7 +67,7 @@ export default {
 
   color: #3a3a3a;
 
-  background-color: white;
+  background-color: #fff;
 
   display: flex;
 
@@ -81,11 +81,13 @@ export default {
 
   height: 21px;
 
-  font-size: 14px;
+  font-size: 16px;
 
   border-right: 1px solid #d8d8d8;
 
   align-items: center;
+
+  margin-left: 70%;
 }
 
 .marquee_box {
@@ -93,7 +95,7 @@ export default {
 
   position: relative;
 
-  width: 60%;
+  width: 20%;
 
   height: 30px;
 
@@ -121,7 +123,7 @@ export default {
 
   line-height: 30px;
 
-  font-size: 14px;
+  font-size: 16px;
 
   padding-left: 20px;
 }
