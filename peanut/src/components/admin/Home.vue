@@ -17,85 +17,23 @@
     </el-header>
     <el-container style="height: 500px; border: 1px solid #eee">
       <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-        <el-menu :default-openeds="['1', '11']">
-          <router-link to="/welcome">
-            <el-menu-item index="1">
-              <i class="el-icon-s-home"></i>
-              <span slot="title">主页</span>
-            </el-menu-item>
-          </router-link>
+        <el-menu v-for="(item,i) in menuData" :key="i" router :default-active="$route.path">
+          <el-menu-item :index="item.menu_url" v-if="item.fid == 0 && item.child == 0">
+            <i :class="item.menu_class"></i>
+            <span slot="title">{{item.menu_name}}</span>
+          </el-menu-item>
 
-          <router-link to="/AdminRole">
-            <el-menu-item index="2">
-              <i class="el-icon-s-help"></i>
-              <span slot="title">角色管理</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/Jurisdiction">
-            <el-menu-item index="3">
-              <i class="el-icon-s-shop"></i>
-              <span slot="title">权限管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <router-link to="/staffManage">
-            <el-menu-item index="4">
-              <i class="el-icon-s-custom"></i>
-              <span slot="title">员工管理</span>
-            </el-menu-item>
-          </router-link>
-
-          <router-link to="/users">
-            <el-menu-item index="5">
-              <i class="el-icon-user-solid"></i>
-              <span slot="title">用户管理</span>
-            </el-menu-item>
-          </router-link>
-          <el-submenu index="6">
+          <el-submenu index="1" v-else-if="item.fid == 0 && item.child == 1">
             <template slot="title">
-              <i class="el-icon-s-shop"></i>
-              <span>商品管理</span>
+              <i :class="item.menu_class"></i>
+              <span>{{item.menu_name}}</span>
             </template>
-            <el-menu-item-group>
-              <router-link to="/goods">
-                <el-menu-item index="6-1">拍卖商品</el-menu-item>
-              </router-link>
-              <router-link to="/OldGoods">
-                <el-menu-item index="6-2">二手商品</el-menu-item>
-              </router-link>
-            </el-menu-item-group>
+            <div v-for="(val,n) in menuData" :key="n">
+              <el-menu-item-group v-if="val.fid == item.id">
+                <el-menu-item :index="val.menu_url">{{val.menu_name}}</el-menu-item>
+              </el-menu-item-group>
+            </div>
           </el-submenu>
-
-          <router-link to="/order">
-            <el-menu-item index="7">
-              <i class="el-icon-s-goods"></i>
-              <span slot="title">订单管理</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/AdminEcharts">
-            <el-menu-item index="8">
-              <i class="el-icon-s-data"></i>
-              <span slot="title">报表管理</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/AdminComplain">
-            <el-menu-item index="9">
-              <i class="el-icon-message-solid"></i>
-              <span slot="title">举报管理</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/AdminNotice">
-            <el-menu-item index="10">
-              <i class="el-icon-message-solid"></i>
-              <span slot="title">公告管理</span>
-            </el-menu-item>
-          </router-link>
-          <router-link to="/chat">
-            <el-menu-item index="11">
-              <i class="el-icon-phone"></i>
-              <span slot="title">客服聊天</span>
-            </el-menu-item>
-          </router-link>
         </el-menu>
       </el-aside>
       <el-container>
@@ -114,7 +52,12 @@
   color: #333;
   line-height: 60px;
 }
-
+.el-container .el-submenu__title:hover {
+  background-color: #b3c0d1;
+}
+.el-container .el-menu {
+  background-color: none;
+}
 .el-aside {
   color: #333;
 }
@@ -133,18 +76,52 @@
 
 <script>
 import { request } from "../../network/request"; //引入axios请求
+import { getData, sendParam } from "../../network/home";
 export default {
   name: "Home",
   components: {},
   data() {
     return {
-      staffAcc: ""
+      staffAcc: "",
+      rid: "",
+      menuData: []
     };
   },
   created() {
     this.getKoken();
   },
   methods: {
+    // -------------网络请求--------
+    getMenu() {
+      let url = "/info/Center/getMenu";
+      let data = {
+        rid: this.rid
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            let mid = res.data.data[0].menu_id;
+            console.log(res.data.menu);
+
+            var menuID = mid.split(",");
+            var newArr = [];
+            for (var i = 0; i < menuID.length; i++) {
+              for (var j = 0; j < res.data.menu.length; j++) {
+                if (menuID[i] == res.data.menu[j].id) {
+                  newArr.push(res.data.menu[j]);
+                }
+              }
+            }
+            this.menuData = newArr;
+            console.log(this.menuData);
+          } else {
+            this.$message({ message: res.data.data.msg });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 后台登出
     loginOut() {
       this.$confirm("此操作将退出后台登录, 是否继续?", "提示", {
@@ -153,7 +130,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          let token = JSON.parse(sessionStorage.getItem("token"));
+          let token = JSON.parse(localStorage.getItem("token"));
           let url = "adminLogin/index/delToken";
           request({
             method: "post",
@@ -184,7 +161,7 @@ export default {
     },
     // 获取token
     getKoken() {
-      let token = JSON.parse(sessionStorage.getItem("token"));
+      let token = JSON.parse(localStorage.getItem("token"));
       let url = "adminLogin/index/validateToken";
       request({
         method: "post",
@@ -197,6 +174,9 @@ export default {
           if (res.data.code == 1) {
             let userMsg = JSON.parse(res.data.data);
             this.staffAcc = userMsg[0].name;
+            this.rid = userMsg[0].role_id;
+            console.log(this.rid);
+            this.getMenu();
           } else {
             this.$message({ message: "请先登录" });
             this.$router.push("/AdminLogin");

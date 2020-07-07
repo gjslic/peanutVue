@@ -75,11 +75,11 @@ export default {
   },
   created() {
     if (
-      JSON.parse(sessionStorage.getItem("user")) &&
-      JSON.parse(sessionStorage.getItem("user")).userName
+      JSON.parse(localStorage.getItem("user")) &&
+      JSON.parse(localStorage.getItem("user")).userName
     ) {
-      this.userName = JSON.parse(sessionStorage.getItem("user")).userName;
-      this.password = JSON.parse(sessionStorage.getItem("user")).password;
+      this.userName = JSON.parse(localStorage.getItem("user")).userName;
+      this.password = JSON.parse(localStorage.getItem("user")).password;
     }
   },
   computed: {
@@ -140,8 +140,8 @@ export default {
               console.log(res.data.data.token);
               this.$message.success(res.data.msg);
               this.$router.push('/home');
-              sessionStorage.setItem("token",JSON.stringify(res.data.data.token));
-              sessionStorage.setItem("staffAcc",JSON.stringify(this.userName));
+              localStorage.setItem("token",JSON.stringify(res.data.data.token));
+              localStorage.setItem("staffAcc",JSON.stringify(this.userName));
             } else {
               this.$message.error(res.data.msg);
             }
@@ -153,7 +153,7 @@ export default {
     // getRedisDataTest() {
     //   let url = "adminLogin/index/validateToken";
     //   let data = {
-    //     token: sessionStorage.getItem("token")
+    //     token: localStorage.getItem("token")
     //   };
     //   sendParam(url, data)
     //     .then(res => {
