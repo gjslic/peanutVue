@@ -19,7 +19,7 @@
           <ul class="list" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
             <li v-for="(itme,index) in count" class="list-item" :key="index">
               <el-col :sm="6" :xs="24" class="outerFrameBox">
-                <router-link to="/Detail" style="text-decoration:none;">
+                <div @click="detail(vehicleArr[index].vehicle_id)" style="text-decoration:none;">
                   <el-card shadow="hover">
                     <div class="vehicleImg">
                       <img
@@ -39,7 +39,7 @@
                       <el-button type="warning" plain>立即购买</el-button>
                     </div>
                   </el-card>
-                </router-link>
+                </div>
               </el-col>
             </li>
           </ul>
@@ -139,6 +139,9 @@ export default {
       this.timeBaseNum=0;
       this.priceBaseNum=0;
        this.$parent.defaultBase();
+    },
+    detail(id){
+      this.$router.push({ name: 'Detail', query: { vehicleID: id }});
     }
   }
 };

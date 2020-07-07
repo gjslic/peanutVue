@@ -148,19 +148,7 @@ export default {
           })
           .catch(err => {});
       }
-    },
-    // 获取后台redis数据测试
-    // getRedisDataTest() {
-    //   let url = "adminLogin/index/validateToken";
-    //   let data = {
-    //     token: localStorage.getItem("token")
-    //   };
-    //   sendParam(url, data)
-    //     .then(res => {
-    //       console.log(res.data);
-    //     })
-    //     .catch(err => {});
-    // }
+    }
   }
 };
 </script>

@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- 导航栏 -->
-    <div class="nav_top"></div>
+    <Menu />
     <!-- 购买 -->
     <el-row>
       <el-col :md="12" :sm="24">
         <!-- 图片轮播 -->
         <div class="img_detail">
-          <img src="../assets/images/cover_00.jpg" alt />
+          <img src="../../assets/images/cover_00.jpg" alt />
         </div>
       </el-col>
       <el-col :md="12" :sm="24">
@@ -48,70 +48,11 @@
     </el-row>
     <div class="buy_server">
       <CarNavTitle />
-      <el-row>
-        <el-col :span="8" class="server_box">
-          <ServerItem />
-        </el-col>
-        <el-col :span="8" class="server_box">
-          <ServerItem>
-            <p slot="title_name">交易服务</p>
-            <span slot="span_one">包过户</span>
-            <span slot="span_two">上门服务</span>
-            <span slot="span_three">车辆整备</span>
-          </ServerItem>
-        </el-col>
-        <el-col :span="8" class="server_box">
-          <ServerItem>
-            <p slot="title_name">售后服务</p>
-            <span slot="span_one">一年包退</span>
-            <span slot="span_two">一年保修</span>
-            <span slot="span_three">全国联保</span>
-          </ServerItem>
-        </el-col>
-      </el-row>
+      <!-- 购车服务 -->
+      <BuyCarServer />
       <CarNavTitle>车辆信息</CarNavTitle>
-      <el-row>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem">HUD显示</span>
-          </div>
-        </el-col>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem ci_1">自动驻车</span>
-          </div>
-        </el-col>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem ci_2">并线辅助</span>
-          </div>
-        </el-col>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem ci_3">方向盘换挡</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_4">随动转向大灯</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_5">主动自动</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_6">自动灯头</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_7">电动座椅</span>
-          </div>
-        </el-col>
-      </el-row>
+      <!-- 车辆信息 -->
+      <CarInfoImg />
       <!-- 卖家信息 -->
       <CarNavTitle>卖家信息</CarNavTitle>
       <div class="sell_info_box">
@@ -126,7 +67,7 @@
               <el-row>
                 <el-col :md="10" :xs="10" :sm="14">
                   <div class="sell_user_img">
-                    <img src="../assets/images/cover_00.jpg" alt />
+                    <img src="../../assets/images/cover_00.jpg" alt />
                   </div>
                 </el-col>
                 <el-col :md="14" :xs="14" :sm="14">
@@ -181,7 +122,7 @@
                 <p class="remark_item_hd">
                   <span class="remark_user_box">
                     <span>
-                      <img src="../assets/images/avator.jpg" alt />
+                      <img src="../../assets/images/avator.jpg" alt />
                     </span>
                     <span class="u_name">李红艳</span>
                     <span>
@@ -202,28 +143,7 @@
                 <p class="remark_item_hd">
                   <span class="remark_user_box">
                     <span>
-                      <img src="../assets/images/avator.jpg" alt />
-                    </span>
-                    <span class="u_name">李红艳</span>
-                    <span>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                    </span>
-                  </span>
-                  <span class="remark_date">2020-12-30</span>
-                </p>
-                <p
-                  class="remark_content"
-                >李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol</p>
-              </li>
-              <li class="remark_item">
-                <p class="remark_item_hd">
-                  <span class="remark_user_box">
-                    <span>
-                      <img src="../assets/images/avator.jpg" alt />
+                      <img src="../../assets/images/avator.jpg" alt />
                     </span>
                     <span class="u_name">李红艳</span>
                     <span>
@@ -254,24 +174,24 @@
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
             <div class="car_de_img">
-              <img src="../assets/images/car_de1.jpg" alt />
+              <img src="../../assets/images/car_de1.jpg" alt />
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12">
             <div class="car_de_img">
-              <img src="../assets/images/car_de2.jpg" alt />
+              <img src="../../assets/images/car_de2.jpg" alt />
             </div>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
             <div class="car_de_img">
-              <img src="../assets/images/car_de1.jpg" alt />
+              <img src="../../assets/images/car_de1.jpg" alt />
             </div>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12">
             <div class="car_de_img">
-              <img src="../assets/images/car_de2.jpg" alt />
+              <img src="../../assets/images/car_de2.jpg" alt />
             </div>
           </el-col>
         </el-row>
@@ -281,22 +201,31 @@
       <el-row>
         <el-col :md="24">
           <div class="server_bg">
-            <img src="../assets/images/fwbz_1f13928.png" alt="">
+            <img src="../../assets/images/fwbz_1f13928.png" alt="">
           </div>
         </el-col>
       </el-row>
     </div>
+    <Bottom />
   </div>
 </template>
 
 <script>
-import CarNavTitle from "../components/CarNavTitle";
-import ServerItem from "../components/ServerItem";
+const CarNavTitle = () => import("./CarNavTitle");
+const BuyCarServer = () => import("./BuyCarServer");
+const CarInfoImg = () => import("./CarInfoImg");
+//导航栏
+const Menu = () => import("@/components/web/Menu");
+//底部
+const Bottom = () => import("@/components/web/Bottom");
 export default {
   name: "Detail",
   components: {
     CarNavTitle,
-    ServerItem
+    BuyCarServer,
+    CarInfoImg,
+    Menu,
+    Bottom
   }
 };
 </script>
