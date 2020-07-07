@@ -17,43 +17,13 @@
       <el-col :xs="24" :sm="6" :md="24" >
         <div class="recommend_img">
             <el-tabs v-model="activeName" @tab-click="handleClick">
+
                 <el-tab-pane label="省油代步" name="first" class="name_text">
-                    
                   <el-row :gutter="5">
                     <el-col :xs="12" :md="6"  v-for="(reccar_item,index) in reccarArr" :key="index">
-                      <div class="grid-content bg-purple-light">
-                        <el-card class="box-card" shadow="hover">
+                      <div class="grid-content bg-purple-light" @click="passReccar(reccar_item.tab_id)">
+                        <el-card class="box-card" shadow="hover" >
                             <div class="car_img" >
-
-                               <el-row :gutter="5" >
-                                  <el-col :xs="24" :md="24" class="car_img_box" @click="passReccar(reccar_item.tab_id)">
-                                      <img :src="reccar_item.img" alt="" style="width:100%;height:100%">
-                                  </el-col>
-                               </el-row>
-
-                                <el-row :gutter="5">
-                                  <el-col :xs="12" :md="12" class="car_text_box">
-                                      {{reccar_item.vehicle_name}}
-                                  </el-col>
-
-                                   <el-col :xs="12" :md="12" class="car_text_box" style="color: #ff5837;">
-                                      {{reccar_item.price}}万
-                                  </el-col>
-                               </el-row>
-
-                            </div>
-                        </el-card>
-                      </div>
-                    </el-col>
-                  </el-row>
-
-                </el-tab-pane>
-                <el-tab-pane label="超值豪华" name="second" class="name_text">
-                    <el-row :gutter="5">
-                    <el-col :xs="12" :md="6"  v-for="(reccar_item,index) in reccarArr" :key="index">
-                      <div class="grid-content bg-purple-light">
-                        <el-card class="box-card" shadow="hover">
-                            <div class="car_img" @click="passReccar(reccar_item.tab_id)">
 
                                <el-row :gutter="5" >
                                   <el-col :xs="24" :md="24" class="car_img_box" >
@@ -77,12 +47,43 @@
                     </el-col>
                   </el-row>
                 </el-tab-pane>
+
+                <el-tab-pane label="超值豪华" name="second" class="name_text">
+                    <el-row :gutter="5">
+                      <el-col :xs="12" :md="6"  v-for="(reccar_item,index) in reccarArr" :key="index">
+                        <div class="grid-content bg-purple-light" @click="passReccar(reccar_item.tab_id)">
+                          <el-card class="box-card" shadow="hover">
+                              <div class="car_img" >
+
+                                <el-row :gutter="5" >
+                                    <el-col :xs="24" :md="24" class="car_img_box" >
+                                        <img :src="reccar_item.img" alt="" style="width:100%;height:100%">
+                                    </el-col>
+                                </el-row>
+
+                                  <el-row :gutter="5">
+                                    <el-col :xs="12" :md="12" class="car_text_box">
+                                        {{reccar_item.vehicle_name}}
+                                    </el-col>
+
+                                    <el-col :xs="12" :md="12" class="car_text_box" style="color: #ff5837;">
+                                        {{reccar_item.price}}万
+                                    </el-col>
+                                </el-row>
+
+                              </div>
+                          </el-card>
+                        </div>
+                      </el-col>
+                    </el-row>
+                </el-tab-pane>
+
                 <el-tab-pane label="家用首选" name="third" class="name_text">
                   <el-row :gutter="5">
                     <el-col :xs="12" :md="6"  v-for="(reccar_item,index) in reccarArr" :key="index">
-                      <div class="grid-content bg-purple-light">
+                      <div class="grid-content bg-purple-light" @click="passReccar(reccar_item.tab_id)">
                         <el-card class="box-card" shadow="hover">
-                            <div class="car_img" @click="passReccar(reccar_item.tab_id)">
+                            <div class="car_img" >
 
                                <el-row :gutter="5" >
                                   <el-col :xs="24" :md="24" class="car_img_box">
@@ -106,12 +107,13 @@
                     </el-col>
                   </el-row>
                 </el-tab-pane>
+
                 <el-tab-pane label="保值神车" name="fourth" class="name_text">
                   <el-row :gutter="5">
                     <el-col :xs="12" :md="6"  v-for="(reccar_item,index) in reccarArr" :key="index">
-                      <div class="grid-content bg-purple-light">
+                      <div class="grid-content bg-purple-light" @click="passReccar(reccar_item.tab_id)">
                         <el-card class="box-card" shadow="hover">
-                            <div class="car_img" @click="passReccar(reccar_item.tab_id)">
+                            <div class="car_img" >
 
                                <el-row :gutter="5" >
                                   <el-col :xs="24" :md="24" class="car_img_box">
@@ -139,9 +141,9 @@
                 <el-tab-pane label="都市白领" name="fifth" class="name_text">
                   <el-row :gutter="5">
                     <el-col :xs="12" :md="6"  v-for="(reccar_item,index) in reccarArr" :key="index">
-                      <div class="grid-content bg-purple-light">
+                      <div class="grid-content bg-purple-light"  @click="passReccar(reccar_item.tab_id)">
                         <el-card class="box-card" shadow="hover">
-                            <div class="car_img" @click="passReccar(reccar_item.tab_id)">
+                            <div class="car_img">
 
                                <el-row :gutter="5" >
                                   <el-col :xs="24" :md="24" class="car_img_box">
@@ -165,11 +167,13 @@
                     </el-col>
                   </el-row>
                 </el-tab-pane>
+
             </el-tabs>
         </div>
       </el-col>
 
     </el-row>
+
   </el-row>
 
 
@@ -203,7 +207,7 @@ export default {
         }
         sendParam(url,data).then(res => {
         //this获取到数据
-        console.log(res);
+        // console.log(res);
           this.reccarArr = res.data;
         }).catch(err => {
           console.log(err);
@@ -217,7 +221,7 @@ export default {
           let url = '/homepage/Homepage/getreccar';
           getData(url).then(res => {
             //this获取到数据
-            console.log(res);
+            // console.log(res);
               this.reccarArr = res.data;
           }).catch(err => {
             console.log(err);
@@ -230,8 +234,16 @@ export default {
           let data = {
             reccarid :id
           }
+          console.log(data);
           sendParam(url ,data).then(res => {
             this.passbrandArr = res.data;
+             // 路由傳參到買車頁
+            this.$router.push({
+              name:"BuyCar",
+              params:{
+                passstyleArr:'passstyleArr',
+              }
+            })
           }).catch(err => {
             console.log(err);
           });

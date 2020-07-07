@@ -9,13 +9,13 @@
               品牌
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
-            <!-- <el-dropdown-menu slot="dropdown">
+            <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>黄金糕</el-dropdown-item>
               <el-dropdown-item>狮子头</el-dropdown-item>
               <el-dropdown-item>螺蛳粉</el-dropdown-item>
               <el-dropdown-item disabled>双皮奶</el-dropdown-item>
               <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
-            </el-dropdown-menu> -->
+            </el-dropdown-menu>
           </el-dropdown>
         </div>
 
@@ -157,6 +157,15 @@ methods:{
     }
     sendParam(url ,data).then(res => {
       this.passbrandArr = res.data;
+
+      // 路由傳參到買車頁
+      this.$router.push({
+        name:"BuyCar",
+        params:{
+          passbrandArr:'passbrandArr',
+        }
+      })
+
     }).catch(err => {
       console.log(err);
     });
@@ -171,6 +180,14 @@ methods:{
     }
     sendParam(url ,data).then(res => {
       this.passpriceArr = res.data;
+
+      // 路由傳參到買車頁
+      this.$router.push({
+        name:"BuyCar",
+        params:{
+          passpriceArr:'passpriceArr',
+        }
+      })
     }).catch(err => {
       console.log(err);
     });
@@ -186,6 +203,13 @@ methods:{
     console.log(data);
     sendParam(url ,data).then(res => {
       this.passstyleArr = res.data;
+      // 路由傳參到買車頁
+      this.$router.push({
+        name:"BuyCar",
+        params:{
+          passstyleArr:'passstyleArr',
+        }
+      })
     }).catch(err => {
       console.log(err);
     });

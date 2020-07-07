@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
 
 <el-menu
   :default-active="activeIndex2"
@@ -12,7 +11,7 @@
     <!-- 导航栏标题 -->
       <el-col :xs="8" :md="5" class="hidden-xs-only">
         <div>
-           <router-link to="/Homepage" class="text_a">
+           <router-link to="/" class="text_a">
             <div class="nav_tit">花生二手车</div>
             </router-link>
         </div>
@@ -26,40 +25,6 @@
 
 
 
-=======
-  <el-menu
-    :default-active="activeIndex2"
-    class="el-menu-demo"
-    mode="horizontal"
-    @select="handleSelect"
-    text-color="#fff"
-    active-text-color="#ffd04b"
-  >
-    <el-row>
-      <!-- 导航栏标题 -->
-      <el-col :xs="8" :md="5">
-        <div>
-          <div class="nav_tit">花生二手车</div>
-        </div>
-      </el-col>
-      <!-- 导航栏城市 -->
-      <el-col :xs="4" :md="2">
-        <div class="dropdown_box">
-          <el-dropdown :hide-on-click="false">
-            <span class="el-dropdown-link">
-              厦门
-              <i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>黄金糕</el-dropdown-item>
-              <el-dropdown-item>狮子头</el-dropdown-item>
-              <el-dropdown-item>螺蛳粉</el-dropdown-item>
-              <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-              <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
->>>>>>> master
       </el-col>
       <!-- 导航栏搜索框 -->
       <el-col :xs="12" :md="6">
@@ -69,25 +34,19 @@
       </el-col>
 
       <!-- 搜索按钮 -->
-<<<<<<< HEAD
-      <el-col :xs="2" :md="2" class="hidden-xs-only hidden-sm-and-down">
-        <div class="ss_button" >
-             <el-button plain>搜索车辆</el-button>
-=======
       <el-col :xs="8" :md="2" class="hidden-xs-only">
         <div class="ss_button">
-            <el-button plain @click="routerTo">搜索车辆</el-button>
->>>>>>> master
+            <el-button plain>搜索车辆</el-button>
+             <!-- @click="routerTo" -->
         </div>
       </el-col>
 
       <!-- 导航栏右侧信息 -->
       <el-col :xs="8" :md="8" class="hidden-xs-only hidden-sm-and-down">
         <div class="right_text">
-<<<<<<< HEAD
 
                <el-col :xs="8" :md="6" >
-                  <router-link to="/Homepage" class="text_a">
+                  <router-link to="/" class="text_a">
                     <div class="text_box">
                         首页
                     </div>
@@ -105,9 +64,11 @@
 
 
               <el-col :xs="8" :md="6" >
-                  <div class="text_box">
-                      卖车
-                  </div>
+                 <router-link to="/SellingCars" class="text_a">
+                    <div class="text_box">
+                        卖车
+                    </div>
+                  </router-link>
               </el-col>
              
              <!-- 跳转登录 -->
@@ -145,41 +106,15 @@
       <el-col :xs="2" style="padding-top: 9px;" class="hidden-sm-and-up">
         <div class="user_img" >
           <img src="https://ae01.alicdn.com/kf/H7108f159b55c4f58b096702e2b066de4Q.jpg" alt="" style="width:100% ;border-radius: 50%;">
-=======
-          <el-col :xs="8" :md="6">
-            <router-link to="/">
-              <div class="text_box">首页</div>
-            </router-link>
-          </el-col>
-          <el-col :xs="8" :md="6">
-            <router-link to="/BuyCar">
-              <div class="text_box">买车</div>
-            </router-link>
-          </el-col>
-          <el-col :xs="8" :md="6">
-            <router-link to="/AddSellingCars">
-              <div class="text_box">卖车</div>
-            </router-link>
-          </el-col>
-
-          <el-col :xs="8" :md="6">
-            <router-link to="/Login">
-              <div class="text_box">登录</div>
-            </router-link>
-          </el-col>
->>>>>>> master
         </div>
       </el-col>
     </el-row>
-  </el-menu>
-
-<<<<<<< HEAD
-      <!-- 城市显示 -->
+     <!-- 城市显示 -->
       <el-drawer
         title="请选择您的城市"
         :visible.sync="drawer"
         :direction="direction"
-        :before-close="handleClose">
+        :before-close="handleClose" >
         <el-row>
           <!-- 城市输入框 -->
               <el-col :md="24" :xs="24" style="padding: 10px;">
@@ -234,15 +169,15 @@
     
 
       </el-drawer>
-  </el-row>
+  </el-menu>
 
-</el-menu>
+     
 
 
 
-=======
-  <!-- 手机端导航栏 -->
->>>>>>> master
+
+
+
 </template>
 
 <script>
@@ -250,7 +185,6 @@
 import {request} from "../../network/request";
 import { getData, sendParam} from "../../network/home";
 export default {
-<<<<<<< HEAD
     name: 'Menu',
     // 组件js
     data(){
@@ -300,9 +234,18 @@ mounted(){
         let data = {
           passCityid:id
         }
-            console.log(data);
+          console.log(data);
         sendParam(url ,data).then(res => {
           this.passCityArr = res.data;
+
+          // 路由傳參到買車頁
+          this.$router.push({
+            name:"BuyCar",
+            params:{
+              passCityArr:'passCityArr',
+            }
+          })
+
         }).catch(err => {
           console.log(err);
         });
@@ -320,49 +263,6 @@ mounted(){
   }
   .bg-purple {
     background: #d3dce6;
-=======
-  name: "Menu",
-  data() {
-    return {
-      input2: "",
-      activeIndex2: ""
-    };
-  },
-  methods: {
-    handleSelect(e) {
-      console.log(e);
-    },
-    routerTo(){
-      this.$router.push({ name: 'BuyCar', query: { id: this.input2 }});
-    }
-  }
-};
-</script>
-
-<style scoped>
-.el-col {
-  border-radius: 4px;
-}
-.bg-purple-dark {
-  background: #99a9bf;
-}
-.bg-purple {
-  background: #d3dce6;
-}
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
-}
-
-/* 下拉框样式  电脑*/
-@media (min-width: 768px) {
-  .el-dropdown-link {
-    cursor: pointer;
-    color: #409eff;
->>>>>>> master
   }
   .el-icon-arrow-down {
     font-size: 12px;
@@ -379,7 +279,6 @@ mounted(){
     padding-top: 10px;
   }
 
-<<<<<<< HEAD
   /* 下拉框样式  电脑*/
   @media (min-width: 768px){
     .el-dropdown-link {
@@ -415,18 +314,8 @@ mounted(){
     .ss_button{
       padding: 12px;
     }
-=======
-  /* 搜索框 */
-  .sreach_box {
-    padding: 5px;
-  }
->>>>>>> master
 
-  .ss_button {
-    padding: 5px;
-  }
 
-<<<<<<< HEAD
     .text_box{
       text-align: center;
       font-size: 1.5rem;
@@ -442,6 +331,10 @@ mounted(){
       text-decoration: none;
     }
 
+    .right_text{
+      padding-top: 12px;
+    }
+
     /* 用户头像 */
     .user_head{
       background-color:crimson;
@@ -449,9 +342,7 @@ mounted(){
       border-radius: 50%;
       cursor: pointer;
     }
-    .user_head:hover{
 
-    }
     .user_name{
       display: block;
       overflow: hidden;
@@ -514,7 +405,7 @@ mounted(){
       background-color: #409EFF;
       border-color: #409EFF;
       height: 3rem;
-    padding: 6px;
+      padding: 6px;
     }
 
     .user_img{
@@ -526,40 +417,11 @@ mounted(){
       height:65px;
       background-color:whitesmoke;
     }
-=======
-  /* 导航栏右侧信息 */
-  .right_text {
-    padding: 15px;
-  }
-
-  .text_box {
-    text-align: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-
-  .text_box:hover {
-    color: cornflowerblue;
-  }
-}
-
-/* 手机端 */
-@media (max-width: 768px) {
-  .nav_tit {
-    font-weight: 600;
-    font-size: 1.5rem;
-    padding-left: 20px;
-    padding-top: 10px;
-  }
-  /* 城市下拉 */
-  .dropdown_box {
-    padding-top: 10px;
->>>>>>> master
   }
 
   /* 手机端搜索按钮 */
   .ss_button {
     padding-left: 10px;
   }
-}
+
 </style>

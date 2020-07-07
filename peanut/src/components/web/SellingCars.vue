@@ -20,27 +20,33 @@
                     <!-- <el-form-item label="活动名称">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item> -->
+
+                    <!-- 选择城市 -->
                     <el-row :gutter="24">
-                        <el-form-item label="卖车城市">                      
-                            <el-select v-model="form.region" placeholder="省" class="margin_bottom_10">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                            <el-select v-model="form.region" placeholder="市" class="margin_bottom_10">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                            <el-select v-model="form.region" placeholder="区" class="margin_bottom_10">
-                                <el-option label="区域一" value="shanghai"></el-option>
-                                <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
+                         <el-form-item label="选择城市">
+                            <el-autocomplete
+                            v-model="citystate"
+                            :fetch-suggestions="querySearchcity"
+                            placeholder="请选择所在城市"
+                            @select="citySelect"
+                            ></el-autocomplete>
+                         </el-form-item>
                     </el-row>
+                    <!-- 选择品牌 -->
                     <el-form-item label="品牌车系">
+
                         <div class="block float_left margin_bottom_10 margin_right_4">
-                            <el-cascader v-model="value" :options="options" @change="handleChange"></el-cascader>
+
+                            <el-autocomplete
+                            v-model="brandstate"
+                            :fetch-suggestions="querySearchbrand"
+                            placeholder="请选择车辆品牌"
+                            @select="brandSelect"
+                            ></el-autocomplete>
+
                         </div>
-                        <el-input v-model="input1" placeholder="车型" class="width_160" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"></el-input>
+
+                        <el-input v-model="input1" placeholder="请输入车型" class="width_160" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"></el-input>
                     </el-form-item>
                     <el-form-item label="上牌时间">
                         <el-date-picker v-model="value1" type="date" placeholder="选择时间">
@@ -54,13 +60,17 @@
                             <el-radio :label="1" class="margin_bottom_5">车况极佳</el-radio>
                             <el-radio :label="2" class="margin_bottom_5">稍微刮伤</el-radio>
                             <el-radio :label="3" class="margin_bottom_5">严重刮伤</el-radio>
-                            <el-radio :label="4" class="margin_bottom_5">泡水车车</el-radio>
+                            <el-radio :label="4" class="margin_bottom_5">是否泡水</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="卖车拍卖">
                         <el-radio-group v-model="radio">
-                            <el-radio :label="1" class="margin_bottom_5">我要卖车</el-radio>
-                            <el-radio :label="2" class="margin_bottom_5">我要拍卖</el-radio>
+                            <!-- <el-radio :label="5" class="margin_bottom_5">我要卖车</el-radio> -->
+                              <div>
+                                <el-checkbox v-model="checked1" label="我要拍卖" border></el-checkbox>
+                                <!-- <el-checkbox v-model="checked2" label="备选项2" border></el-checkbox> -->
+                            </div>
+                            <!-- <el-radio :label="6" class="margin_bottom_5">我要拍卖</el-radio> -->
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="车辆图片">
@@ -84,10 +94,17 @@
 </template>
 
 <script>
+import { getData, sendParam} from "../../network/home";
 export default {
     name: 'SellingCars',
     data(){
         return {
+            citystate: '',
+            brandstate:'',
+
+            checked1: true,
+            // 时间选择器
+            cityArr:[],
             checked: true,
             input: '',
             input1: '',
@@ -102,6 +119,7 @@ export default {
                     return time.getTime() > Date.now();
                 }
             },
+            //单选框
             radio: 1,
             form: {
                 name: '',
@@ -113,43 +131,70 @@ export default {
                 resource: '',
                 desc: ''
             },
-            value: [],
-            options: [{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则'
-                }, {
-                    value: 'daohang',
-                    label: '导航'
-                }]
-                },{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则'
-                }, {
-                    value: 'daohang',
-                    label: '导航'
-                }]
-            }]
+          
         }
     },
+    // mounted(){
+    // // 获取到城市数据
+    // this.getsellingCity();
+    // },
     methods: {
-        onSubmit() {
-            console.log('submit!');
+        // 城市输入建议
+        querySearchcity(queryString, callback) {
+        var citylist = [{}];
+        let url = '/homepage/Homepage/getsellingCity';
+        getData(url).then(res => {
+            //this获取到数据
+            // console.log(res);
+                this.cityArr = res.data;
+                for(let i of res.data){
+                    i.value = i.city_name;  //将想要展示的数据作为value
+                }
+                citylist = res.data;
+                callback(citylist);
+            }).catch(err => {
+            console.log(err);
+        });
         },
-        handleChange(value) {
-            console.log(value);
+
+        citySelect(item) {
+            console.log(item);
         },
+
+        // 品牌输入建议
+        querySearchbrand(queryString,callback){
+            var brandlist = [{}];
+            let url = '/homepage/Homepage/getsellingbrand';
+            getData(url).then(res => {
+            //this获取到数据
+            // console.log(res);
+                for(let i of res.data){
+                    i.value = i.brand_name;  //将想要展示的数据作为value
+                }
+                brandlist = res.data;
+                callback(brandlist);
+            }).catch(err => {
+            console.log(err);
+        });
+        },
+
+         brandSelect(item) {
+            console.log(item);
+        },
+
+
+        // 提交表单
+        onSubmit() { 
+            // console.log('submit!');
+            
+        },
+
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
         handlePreview(file) {
             console.log(file);
-        }
+        },
     }
     
 }

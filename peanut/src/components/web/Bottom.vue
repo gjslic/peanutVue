@@ -381,7 +381,7 @@ export default {
   @media (max-width: 768px){
     .phone_bottom{
         height: 50px;
-        padding-left: 167px;
+        padding-left: 145px;
         padding-top: 10px;
     }
 

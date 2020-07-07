@@ -7,7 +7,7 @@
       </div>
         <div class="marquee_box">
                 <ul class="marquee_list" :class="{marquee_top:animate}">
-                        <li v-for="(item,index) in marqueeList">{{item.name}}</li>
+                        <li v-for="(item,index) in marqueeList" :key="index">{{item.name}}</li>
                 </ul>
         </div>
 </div>
