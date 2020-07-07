@@ -176,16 +176,15 @@
             message: res.msg,
             type: msgType
           });
-          console.log(res)
         }).catch(err => { 
           console.log(err)
         })
-        console.log(row);
       },
       /**
        * [handleSelect 选择]
        */
       handleSelect(key, keyPath) {
+        console.log(key);
         this.getOrderList(key);
       }
     }
