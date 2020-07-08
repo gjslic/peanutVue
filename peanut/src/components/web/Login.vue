@@ -90,6 +90,7 @@
 
 const AddCode = () => import('./AddCode')
 import {getData , sendParam} from "../../network/home"
+// const store = () => import('../../store/index')
 
 var phone = /^1[3456789]\d{9}$/; //手机号
 var account=/^\d{11}$/ //账号
@@ -123,7 +124,7 @@ export default {
         };
         return {
             fits: ['fill'],
-            url: 'https://uat-vgic2019cms.wedochina.cn/images/files/Homepage/2020Q220200420/19201080.jpg', 
+            url: 'https://www.mercedes-benz.com.cn/content/dam/mb-cn/vehicles/amg/amg-s63-s65/new0904-amg-s-front-pc.jpg', 
             identifyCodes: "0123456789qwertyuiopasdfghjklzxcvbnm",
             identifyCode: "",          
             ruleForm: {
@@ -201,8 +202,9 @@ export default {
                 };
                 sendParam(url, data).then(res => {
                     if(res.data.code==1){
-                        console.log(res.data);
                         localStorage.setItem('token',res.data.data.token);
+                        // this.$store.commit('setUserToken',res.data.data.token);
+                        // console.log(this.$store.state.UserToken);
                         //登录成功返回
                         this.$message({
                             message: res.data.msg,
@@ -256,11 +258,11 @@ export default {
 </script>
 
 <style scoped>
-    .el-row {
+    /* .el-row {
         &:last-child {
         margin-bottom: 0;
         }
-    }
+    } */
     .font_size_30{
         font-size: 25px !important;
     }

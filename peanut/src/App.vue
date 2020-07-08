@@ -15,6 +15,9 @@ export default {
 </script>
 
 <style>
+
+
+
   body,ul,h1,p{
     margin: 0;
     padding: 0;
