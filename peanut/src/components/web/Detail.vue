@@ -35,7 +35,7 @@
             <el-button type="warning">
               <i class="el-icon-chat-dot-round"></i> 在线客服
             </el-button>
-            <el-button type="danger">
+            <el-button type="danger" @click="handelbBuy">
               <i class="el-icon-shopping-bag-1"></i> 立即购买
             </el-button>
           </div>
@@ -300,6 +300,11 @@ export default {
       
       window.location.reload();
       window.scrollTo(0, 0);
+    },
+    // 点击购买
+    handelbBuy(){
+      // 1.判断是否登录 2.判断金额是否够
+      if(window.localStorage.getItem(''));
     }
   }
 };
