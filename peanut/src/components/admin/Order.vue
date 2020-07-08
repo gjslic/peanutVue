@@ -90,7 +90,7 @@
       :page-sizes="[5, 10, 15, 100]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="orderData.length">
+      :total="total">
     </el-pagination>
   </div>
 </template>
@@ -112,6 +112,7 @@
         searchArr: [],
         nowPage: 1,
         pageSize: 5,
+        total: 0
       }
     },
     mounted() {
@@ -122,14 +123,19 @@
        * [getOrderList 获取当前类别订单列表]
        */
       getOrderList(type,num,searchInfo){
+        console.log(this.nowPage)
         let that = this;
         let pageSize = that.pageSize;
         that.orderData = [];
         that.$post(that.url+'getOrderArr', {
           'showType': type,
           'searchInfo': searchInfo,
+          'page': that.nowPage,
+          'pageSize': that.pageSize
         }).then(function (res) {
+          console.log(res)
           that.orderData = res.data;
+          that.total = res.count;
         }).catch(function (error) {
             console.log(error)
         })
@@ -191,12 +197,12 @@
       },
       handleSizeChange(page_size) {
         this.pageSize = page_size;
-        this.getOrderList();
+        this.getOrderList(this.activeIndex,this.nowPage,'');
       },
       handleCurrentChange(currentPage) {
         this.nowPage = currentPage;
-        this.getOrderList();
-
+        console.log(currentPage)
+        this.getOrderList(this.activeIndex,currentPage,'');
       }
     }
   }
