@@ -1,5 +1,9 @@
 <template>
 	<div id="contanir" v-cloak>
+    <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size:20px">
+      <el-breadcrumb-item>Peanut后台</el-breadcrumb-item>
+      <el-breadcrumb-item>员工管理</el-breadcrumb-item>
+    </el-breadcrumb>
 		<!-- 页面头部操作框 -->
 		<el-row type="flex" push="3" class="row-bg">
 		  <el-col :span="3">
@@ -14,7 +18,7 @@
 				<el-select v-model="selectVal" placeholder="请选择" style="width:100px">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
-				<el-input placeholder="请输入内容" v-model="selectInfo" @blur="getSearchInfo(selectInfo)" class="input-with-select"></el-input>
+				<el-input placeholder="请输入内容" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" v-model="selectInfo" @blur="getSearchInfo(selectInfo)" class="input-with-select"></el-input>
 				<el-button icon="el-icon-search" @click="getStaff(nowPage,selectVal,selectInfo)"></el-button>
 		  </el-col>
 			<el-col :span="3">
@@ -25,16 +29,16 @@
 		<el-dialog :title="dialogTitle" @close="closeFun" center :visible.sync="addDialogForm">
 		  <el-form :model="form" status-icon :rules="rules" ref="MyForm" class="demo-ruleForm">
 		    <el-form-item label="员工账号" prop="account" :label-width="formLabelWidth">
-		      <el-input v-model="form.account" required="true" placeholder="请输入账号"></el-input>
+		      <el-input v-model="form.account" onKeyUp="value=value.replace(/[\W]/g,'')" required="true" placeholder="请输入账号"></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工密码" prop="password" :label-width="formLabelWidth">
-		    	<el-input placeholder="请输入密码" v-model="form.password" show-password></el-input>
+		    	<el-input placeholder="请输入密码" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="form.password" show-password></el-input>
 		    </el-form-item>
 		    <el-form-item label="昵称" prop="name" :label-width="formLabelWidth">
-		      <el-input v-model="form.name" placeholder="请输入昵称"></el-input>
+		      <el-input v-model="form.name" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" placeholder="请输入昵称"></el-input>
 		    </el-form-item>
 		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
-		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
+		    	<el-input type="text" placeholder="请输入手机号" onkeyup="this.value=this.value.replace(/\D/g,'')" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
 		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
@@ -65,10 +69,10 @@
 					<span>{{form.account}}</span>
 		    </el-form-item>
 		    <el-form-item label="昵称" prop="name" :label-width="formLabelWidth">
-		      <el-input v-model="form.name" placeholder="请输入昵称"></el-input>
+		      <el-input v-model="form.name" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" placeholder="请输入昵称"></el-input>
 		    </el-form-item>
 		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
-		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
+		    	<el-input type="text" placeholder="请输入手机号" onkeyup="this.value=this.value.replace(/\D/g,'')" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="role_name" :label-width="formLabelWidth" >
 		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
@@ -89,7 +93,7 @@
 		  </div>
 		</el-dialog>
 		<!-- 员工信息展示区 -->
-	 	<el-table ref="multipleTable" @selection-change="handleSelectionChange" highlight-current-row border style="width:100%" :data="staffArr.slice((nowPage - 1) * pageSize,nowPage*pageSize)" tooltip-effect="dark">
+	 	<el-table ref="multipleTable" @selection-change="handleSelectionChange" :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" highlight-current-row border style="width:100%;border-radius:10px" :data="staffArr.slice((nowPage - 1) * pageSize,nowPage*pageSize)" tooltip-effect="dark">
 			<el-table-column align="center" type="selection"></el-table-column>
 			<el-table-column align="center" prop="id" sortable label="ID">
 			</el-table-column>
@@ -303,6 +307,7 @@
     // 获取员工列表
     mounted() {
 			let that = this;
+			that.loadBack();
 			that.getStaff(that.nowPage,'','');
     },
 		methods: {
@@ -372,6 +377,7 @@
 			addStaff(form){
 				this.$refs.MyForm.validate((valid) => {
           if (valid) {
+						this.loadBack();
 						this.$post(this.url+'addStaff',{
 							data: form
 						}).then(res => {
@@ -403,6 +409,7 @@
 			enterEdit(form){
 				this.$refs.MyForm.validate((valid) => {
           if (valid) {
+						this.loadBack();
 						this.$post(this.url+'editStaff',{
 							data: form
 						}).then(res => {
@@ -448,6 +455,7 @@
 			 * [editState 修改状态]
 			 */
 			editState(id,row) {
+				this.loadBack();
 				if(row.state == 1){
 					row.state = 0;
 				}else{
@@ -474,6 +482,20 @@
 					console.log(err)
 				})
 			},
+			/**
+			 * [loadBack 事件触发延时]
+			 */
+			loadBack() {
+        const loading = this.$loading({
+          lock: true,
+					text: '拼命加载中',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close();
+        }, 2000);
+      },
 			/**
 			 * [editStaff 修改员工信息弹出框]
 			 */
@@ -523,6 +545,7 @@
 			 * [resetPsw 重置密码]
 			 */
 			resetPsw(id){
+				this.loadBack();
 				this.$fetch(this.url+'resetPsw',{
 					data: id
 				}).then( res =>{
@@ -564,6 +587,11 @@
 	[v-cloak]{
 		display: none;
 	}
+  .row-bg.el-row.el-row--flex {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
 	.el-input {
 		position: relative;
 		font-size: 14px;
