@@ -14,12 +14,14 @@
   .car_title {
     font-size: 20px !important;
   }
-  .buy_server .sell_info_box{
+
+  .buy_server .sell_info_box {
     background: none;
   }
 }
+
 @media screen and (max-width:1200px) {
-  .buy_server .sell_info_box{
+  .buy_server .sell_info_box {
     background: none;
   }
 }
@@ -134,7 +136,7 @@
 
 .collect i {
   font-size: 23px;
-  vertical-align: -1px;
+  vertical-align: -3px;
   margin-right: 10px;
   cursor: pointer;
 }
@@ -221,9 +223,6 @@
 
 .sell_info_box {
   margin-top: 40px;
-  background: url(../images/bg_1302e0b.png) no-repeat;
-  background-size: 100%;
-  height: 560px;
 }
 
 .sell_title {
@@ -284,8 +283,7 @@
 
 .top_us {
   border-bottom: dotted 1px #e7ebf0;
-  height: 72px;
-  padding-bottom: 20px;
+  height: 90px;
   margin: 0 40px;
 }
 
@@ -319,17 +317,10 @@
 
 }
 
-.remark_user_box {
-  display: flex;
-  justify-content: center;
-}
 
-.remark_user_box span:nth-child(1){
-  flex: 5%;
-}
 
 .remark_user_box span:nth-child(2) {
-  flex: 35%;
+
   text-align: center;
   line-height: 30px;
   padding: 0 10px;
@@ -337,26 +328,43 @@
   font-size: 14px;
 }
 
-.remark_user_box span:nth-child(3){
-  flex: 60%;
+.remark_user_box span:nth-child(3) {
+
   display: flex;
 }
+
 .remark_content {
   font-size: 14px;
 }
-.remark_user_box span:nth-child(3) i{
+
+.remark_user_box span:nth-child(3) i {
   line-height: 30px;
   color: #f85d00;
 }
-.remark_date{
+
+.remark_date {
   font-size: 14px;
+  text-align: right;
 }
-.car_de_img{
+
+.car_de_img {
   padding-top: 15px;
 }
-.car_de_img img{
+
+.car_de_img img {
   width: 100%;
 }
-.server_bg img{
+
+.server_bg img {
   width: 100%;
+}
+.noData{
+  text-align: center;
+  display: block;
+  font-size: 20px;
+  color: #999;
+}
+.nodataImg{
+  font-size: 40px;
+  margin: 20px;
 }
