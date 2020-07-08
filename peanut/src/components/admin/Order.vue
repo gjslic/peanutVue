@@ -8,12 +8,10 @@
       <el-menu-item index="待审核">待审核</el-menu-item>
       <el-menu-item index="已完成">已完成</el-menu-item>
       <!-- 搜索框 -->
-      <div style="float:right">
-        <el-select v-model="setInfo.value" placeholder="请选择" style="width:100px;float:left">
-          <el-option v-for="item in setInfo" :key="item.name" :label="item.name" :value="item.name"></el-option>
-        </el-select>
-        <el-input placeholder="请输入内容" v-model="selectInfo" style="width:150px;float:left" class="input-with-select"></el-input>
-        <el-button icon="el-icon-search"></el-button>
+      <div class="searchBox">
+        <el-input placeholder="请输入订单号进行搜索" v-model="selectInfo" class="input-with-select">
+          <el-button slot="append" icon="el-icon-search" @click="getOrderList(activeIndex,nowPage,selectInfo)"></el-button>
+        </el-input>
       </div>
     </el-menu>
     <!-- 订单展示区 -->
@@ -55,14 +53,13 @@
     </el-table>
     <el-dialog title="当前订单展示" :visible.sync="dialogFormVisible">
       <el-form :model="nowData">
-          <!-- <el-image :src="nowData.carImg" width="200px"></el-image> -->
+          <el-image :src="nowData.carImg" ></el-image>
         <el-form-item label="下单用户：" :label-width="formLabelWidth">
           <span>{{nowData.uName}}</span>
         </el-form-item>
         <el-form-item label="联系方式：" :label-width="formLabelWidth">
           <span>{{nowData.phone}}</span>
         </el-form-item>
-        
         <el-form-item label="卖家信息：" :label-width="formLabelWidth"  v-model="sellerInfo">
           <template>
             <el-popover trigger="hover" placement="top" >
@@ -70,7 +67,6 @@
               <p>联系方式: {{ sellerInfo.sellerTel }}</p>
               <div slot="reference" style="width:120px" class="name-wrapper">
                 <span>{{sellerInfo.sName}}</span>
-                <!-- <el-tag size="medium">{{sellerInfo.sName}}</el-tag> -->
               </div>
             </el-popover>
           </template>
@@ -87,7 +83,15 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
-	  <el-pagination background style="text-align:center" :page-size='12' layout="prev, pager, next" :total="100"></el-pagination>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="nowPage"
+      :page-sizes="[5, 10, 15, 100]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="orderData.length">
+    </el-pagination>
   </div>
 </template>
 
@@ -105,33 +109,31 @@
         dialogFormVisible: false, //显示框
         activeIndex: '全部订单', //默认显示订单列表
         formLabelWidth: '120px',
-        setInfo: [{
-          value: '1',
-          name: '买家账号'
-        },
-        {
-          value: '2',
-          name: '订单号'
-        }],
-        
+        searchArr: [],
+        nowPage: 1,
+        pageSize: 5,
       }
     },
     mounted() {
-      this.getOrderList('全部订单');
+      this.getOrderList('全部订单',this.nowPage,'');
     },
     methods: {
-      getOrderList(type){
-        console.log(type);
+      /**
+       * [getOrderList 获取当前类别订单列表]
+       */
+      getOrderList(type,num,searchInfo){
         let that = this;
+        let pageSize = that.pageSize;
+        that.orderData = [];
         that.$post(that.url+'getOrderArr', {
-          'showType': type
+          'showType': type,
+          'searchInfo': searchInfo,
         }).then(function (res) {
-            that.orderData = res.data;
+          that.orderData = res.data;
         }).catch(function (error) {
             console.log(error)
         })
       },
-      
       /**
        * [getNowOrder 获取当前订单信息]
        */
@@ -186,6 +188,15 @@
       handleSelect(key, keyPath) {
         console.log(key);
         this.getOrderList(key);
+      },
+      handleSizeChange(page_size) {
+        this.pageSize = page_size;
+        this.getOrderList();
+      },
+      handleCurrentChange(currentPage) {
+        this.nowPage = currentPage;
+        this.getOrderList();
+
       }
     }
   }
@@ -200,5 +211,10 @@
 .name-wrapper:hover{
   color:red;
   cursor:pointer;
+}
+.searchBox{
+  width: 400px;
+  float: right;
+  margin-right: 100px;
 }
 </style>

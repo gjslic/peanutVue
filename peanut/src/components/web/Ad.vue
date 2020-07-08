@@ -1,5 +1,6 @@
 <!-- @tlh前台公告新闻告滚动条 -->
 <template>
+<<<<<<< HEAD
 <div class="marquee">
 
       <div class="marquee_title">
@@ -11,6 +12,18 @@
                 </ul>
         </div>
 </div>
+=======
+  <div class="marquee">
+    <div class="marquee_title">
+      <span>平台公告</span>
+    </div>
+    <div class="marquee_box">
+      <ul class="marquee_list" :class="{marquee_top:animate}">
+        <li v-for="(item,index) in marqueeList" :key="index">{{item.notice_cont}}</li>
+      </ul>
+    </div>
+  </div>
+>>>>>>> master
 </template> 
 
 

@@ -181,7 +181,7 @@ export default {
         };
         return {
           fits: ['fill'],
-          url: 'https://uat-vgic2019cms.wedochina.cn/images/files/CarType/Touareg/20200619cheshu/banner192010801_1.jpg',
+          url: 'https://www.mercedes-benz.com.cn/content/dam/mb-cn/vehicles/sedan/e-class-l/feature1.jpg',
           identifyCodes: "0123456789qwertyuiopasdfghjklzxcvbnm",
           identifyCode: "",
           ruleForm: {

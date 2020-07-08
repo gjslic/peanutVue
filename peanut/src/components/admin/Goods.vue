@@ -326,11 +326,8 @@ export default {
       let url = "/goods/index/getTab";
       getData(url)
         .then(res => {
-          console.log(res);
-          if (res.data.code == 1) {
-            
+          if (res.data.code == 1) { 
             this.tabData = res.data.data;
-            console.log(this.tabData)
           }
         })
         .catch(err => {
@@ -552,7 +549,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.ruleForm);
           let url = "/goods/index/issue";
           let data = {
             imgUrl: this.lastImgUrl,
@@ -577,8 +573,7 @@ export default {
         }
       });
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleRemove(file, fileList) {;
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
