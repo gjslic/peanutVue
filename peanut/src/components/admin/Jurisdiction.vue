@@ -42,7 +42,7 @@
         name: 'Jurisdic',
         data() {
             return {
-                url: 'http://localhost/th5/public/adminJurisdiction/Jurisdition/',
+                url: 'http://localhost/th5/public/admin_jurisdiction/Jurisdition/',
                 tableData: [], // 左侧菜单容器
                 menuData: [], // 右侧权限列表容器
                 allMenuArr: [], // 初始菜单

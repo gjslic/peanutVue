@@ -1,36 +1,36 @@
 <template>
   <div>
     <!-- 导航栏 -->
-    <div class="nav_top"></div>
+    <Menu />
     <!-- 购买 -->
     <el-row>
       <el-col :md="12" :sm="24">
         <!-- 图片轮播 -->
         <div class="img_detail">
-          <img src="../assets/images/cover_00.jpg" alt />
+          <img :src="allInfo.img" alt />
         </div>
       </el-col>
       <el-col :md="12" :sm="24">
         <div class="text_detail">
-          <h1 class="car_title">奔驰 C级 2011款 1.8T 自动 C200时尚型CGI</h1>
+          <h1 class="car_title">{{allInfo.vehicle_name}}</h1>
           <p class="car_price">
             <span class="now_price">
-              <b>￥12.99万</b>
+              <b>￥{{allInfo.price}}万</b>
             </span>
             <span class="new_car_price">
-              新车含税价：42.23万
+              新车含税价：{{(allInfo.price * 1.5).toFixed(2)}}万
               <i class="el-icon-info"></i>
             </span>
           </p>
           <p class="car_address">
             <span class="postage">包物流</span>
-            <span class="car_from">由东北仓运往福州 可迁本市</span>
+            <span class="car_from">由{{allInfo.city_name}}运往本市</span>
           </p>
           <div class="down_payment">
-            <span>首付低至2.60万</span>
-            <span>月供3421元</span>
+            <span>首付低至{{(allInfo.price * 0.1).toFixed(2)}}万</span>
+            <span>月供可跟卖家商量</span>
           </div>
-          <div class="detail_txt hidden-xs-only">汽车详情信息汽车详情信息汽车详情信息汽车详情信息汽车详情信息汽车详情信息汽车详情信息</div>
+          <div class="detail_txt hidden-xs-only">{{allInfo.introduce}} 上架时间 {{allInfo.vehicle_time}}</div>
           <div class="btn_box">
             <el-button type="warning">
               <i class="el-icon-chat-dot-round"></i> 在线客服
@@ -48,70 +48,11 @@
     </el-row>
     <div class="buy_server">
       <CarNavTitle />
-      <el-row>
-        <el-col :span="8" class="server_box">
-          <ServerItem />
-        </el-col>
-        <el-col :span="8" class="server_box">
-          <ServerItem>
-            <p slot="title_name">交易服务</p>
-            <span slot="span_one">包过户</span>
-            <span slot="span_two">上门服务</span>
-            <span slot="span_three">车辆整备</span>
-          </ServerItem>
-        </el-col>
-        <el-col :span="8" class="server_box">
-          <ServerItem>
-            <p slot="title_name">售后服务</p>
-            <span slot="span_one">一年包退</span>
-            <span slot="span_two">一年保修</span>
-            <span slot="span_three">全国联保</span>
-          </ServerItem>
-        </el-col>
-      </el-row>
+      <!-- 购车服务 -->
+      <BuyCarServer />
       <CarNavTitle>车辆信息</CarNavTitle>
-      <el-row>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem">HUD显示</span>
-          </div>
-        </el-col>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem ci_1">自动驻车</span>
-          </div>
-        </el-col>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem ci_2">并线辅助</span>
-          </div>
-        </el-col>
-        <el-col :md="3" :sm="6" :xs="6">
-          <div>
-            <span class="carInfoItem ci_3">方向盘换挡</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_4">随动转向大灯</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_5">主动自动</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_6">自动灯头</span>
-          </div>
-        </el-col>
-        <el-col :md="3" class="hidden-sm-only hidden-xs-only">
-          <div>
-            <span class="carInfoItem ci_7">电动座椅</span>
-          </div>
-        </el-col>
-      </el-row>
+      <!-- 车辆信息 -->
+      <CarInfoImg />
       <!-- 卖家信息 -->
       <CarNavTitle>卖家信息</CarNavTitle>
       <div class="sell_info_box">
@@ -126,12 +67,12 @@
               <el-row>
                 <el-col :md="10" :xs="10" :sm="14">
                   <div class="sell_user_img">
-                    <img src="../assets/images/cover_00.jpg" alt />
+                    <img :src="allInfo.head_img" alt />
                   </div>
                 </el-col>
                 <el-col :md="14" :xs="14" :sm="14">
                   <p class="sell_user_name">
-                    <span>徐师傅</span>
+                    <span>{{allInfo.name}}</span>
                     <span>车辆检测员</span>
                   </p>
                   <p>
@@ -144,19 +85,13 @@
               <el-row :gutter="10">
                 <el-col :md="8">
                   <div class="right_item">
-                    <span class="credit">信用值</span>
+                    <span class="credit">信用值：{{allInfo.credit}} 分</span>
                   </div>
                 </el-col>
                 <el-col :md="8">
                   <div class="right_item">
-                    <span>好评值</span>
-                    <p class="star_five">
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                    </p>
+                    <span>联系方式：</span>
+                    <span>{{allInfo.phone}}</span>
                   </div>
                 </el-col>
                 <el-col :md="8">
@@ -177,73 +112,41 @@
               <span class="remark">用户评价</span>
             </div>
             <ul>
-              <li class="remark_item">
+              <li
+                class="remark_item"
+                v-for="(item, index) in remarkData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                :key="index"
+              >
                 <p class="remark_item_hd">
                   <span class="remark_user_box">
                     <span>
-                      <img src="../assets/images/avator.jpg" alt />
+                      <img :src="item.head_img" alt />
                     </span>
-                    <span class="u_name">李红艳</span>
+                    <span class="u_name">{{item.name}}</span>
                     <span>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
+                      <i class="el-icon-star-on" v-for="(num,i) in item.comment_num" :key="i"></i>
                     </span>
                   </span>
-                  <span class="remark_date">2020-12-30</span>
+                  <span class="remark_date">{{item.comment_time}}</span>
                 </p>
-                <p
-                  class="remark_content"
-                >李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol</p>
-              </li>
-              <li class="remark_item">
-                <p class="remark_item_hd">
-                  <span class="remark_user_box">
-                    <span>
-                      <img src="../assets/images/avator.jpg" alt />
-                    </span>
-                    <span class="u_name">李红艳</span>
-                    <span>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                    </span>
-                  </span>
-                  <span class="remark_date">2020-12-30</span>
-                </p>
-                <p
-                  class="remark_content"
-                >李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol</p>
-              </li>
-              <li class="remark_item">
-                <p class="remark_item_hd">
-                  <span class="remark_user_box">
-                    <span>
-                      <img src="../assets/images/avator.jpg" alt />
-                    </span>
-                    <span class="u_name">李红艳</span>
-                    <span>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                      <i class="el-icon-star-on"></i>
-                    </span>
-                  </span>
-                  <span class="remark_date">2020-12-30</span>
-                </p>
-                <p
-                  class="remark_content"
-                >李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol李红艳haopiaol</p>
+                <p class="remark_content">{{item.content}}</p>
               </li>
             </ul>
+            <!-- 没有评价时显示 -->
+            <div v-if="remarkData.length == 0">
+              <i class="el-icon-document noData nodataImg"></i>
+              <p class="noData">暂无数据</p>
+            </div>
             <div class="block">
               <span class="demonstration"></span>
-              <el-pagination background layout="prev, pager, next" :total="50"></el-pagination>
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :page-size="pagesize"
+                :total="remarkData.length"
+                @current-change="handleCurrentChange"
+                hide-on-single-page
+              ></el-pagination>
             </div>
           </el-col>
         </el-row>
@@ -251,27 +154,10 @@
       <!-- 车图描述 -->
       <CarNavTitle>车图描述</CarNavTitle>
       <div class="car_img_box">
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12">
+        <el-row :gutter="20" v-for="(item,index) in 2" :key="index">
+          <el-col :xs="24" :sm="24" :md="12" v-for="(i,ins) in 2" :key="ins">
             <div class="car_de_img">
-              <img src="../assets/images/car_de1.jpg" alt />
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12">
-            <div class="car_de_img">
-              <img src="../assets/images/car_de2.jpg" alt />
-            </div>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :xs="24" :sm="24" :md="12">
-            <div class="car_de_img">
-              <img src="../assets/images/car_de1.jpg" alt />
-            </div>
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12">
-            <div class="car_de_img">
-              <img src="../assets/images/car_de2.jpg" alt />
+              <img :src="allInfo.img" alt />
             </div>
           </el-col>
         </el-row>
@@ -281,22 +167,140 @@
       <el-row>
         <el-col :md="24">
           <div class="server_bg">
-            <img src="../assets/images/fwbz_1f13928.png" alt="">
+            <img src="../../assets/images/fwbz_1f13928.png" alt />
           </div>
         </el-col>
       </el-row>
+      <!-- 猜你喜欢 -->
+      <CarNavTitle>猜你喜欢</CarNavTitle>
+      <div class="like_box">
+        <el-row :gutter="25">
+          <el-col :xs="12" :md="6" v-for="(o, index) in likeData" :key="index" class="like_item">
+            <div @click="detail(o.vehicle_id)">
+              <el-card :body-style="{ padding: '0px' }">
+                <img :src="o.img" class="image" />
+                <div style="padding: 14px;">
+                  <span>{{o.vehicle_name}}</span>
+                  <p class="time">{{ o.vehicle_time }}</p>
+                  <div class="bottom clearfix">
+                    <span class="priceFirst">首付{{(o.price*0.1).toFixed(2)}}万</span>
+                    <el-button type="warning" plain class="button" size="mini">立即购买</el-button>
+                  </div>
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
     </div>
+    <Bottom />
   </div>
 </template>
 
 <script>
-import CarNavTitle from "../components/CarNavTitle";
-import ServerItem from "../components/ServerItem";
+const CarNavTitle = () => import("./CarNavTitle");
+const BuyCarServer = () => import("./BuyCarServer");
+const CarInfoImg = () => import("./CarInfoImg");
+//导航栏
+const Menu = () => import("@/components/web/Menu");
+//底部
+const Bottom = () => import("@/components/web/Bottom");
+//引入网络请求
+import { getData, sendParam } from "../../network/home";
 export default {
   name: "Detail",
   components: {
     CarNavTitle,
-    ServerItem
+    BuyCarServer,
+    CarInfoImg,
+    Menu,
+    Bottom
+  },
+  data() {
+    return {
+      vid: this.$route.query,
+      allInfo: {},
+      uid: "",
+      tid: "",
+      currentDate: new Date(),
+      remarkData: [],
+      likeData: [],
+      currentPage: 1, //初始页
+      pagesize: 2 //    每页的数据
+    };
+  },
+  mounted() {
+    this.getCarInfo();
+  },
+  methods: {
+    // ------------网络请求---------
+    getCarInfo() {
+      let url = "/detail/index/get";
+      let data = {
+        id: this.vid.vehicleID
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.allInfo = res.data.data[0];
+            this.uid = res.data.data[0].sell_id;
+            this.tid = res.data.data[0].tab_id;
+            this.getRemark();
+            this.getLike();
+          } else {
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 评价列表
+    getRemark() {
+      let url = "/detail/index/remark";
+      let data = {
+        uid: this.uid
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.remarkData = res.data.data;
+          } else {
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 猜你喜欢
+    getLike() {
+      let url = "/detail/index/like";
+      let data = {
+        tid: this.tid
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            console.log(res.data.data);
+            this.likeData = res.data.data;
+          } else {
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // --------数据操作----------
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage; //点击第几页
+    },
+    // 跳转详情页
+    detail(id) {
+      console.log(id)
+      this.$router.push({ name: "Detail", query: { vehicleID: id } });
+      
+      window.location.reload();
+      window.scrollTo(0, 0);
+    }
   }
 };
 </script>
@@ -307,20 +311,49 @@ export default {
   padding: 0 8px;
 }
 
-
 .block {
   margin: 5px 20px;
 }
 </style>
 <style>
-.block .el-pagination.is-background .el-pager li {
-  background: none;
-}
-.block .el-pagination.is-background .el-pager li:not(.disabled).active{
+.block .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #fd7a3a;
   color: #fff;
 }
-.block .el-pagination.is-background .el-pager li:not(.disabled):hover {
-    color: #fd7a3a;
+.time {
+  font-size: 13px;
+  color: #999;
+}
+
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
+
+.button {
+  float: right;
+}
+
+.image {
+  width: 100%;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
+.priceFirst {
+  font-size: 16px;
+  color: #f85d00;
+  float: left;
+}
+.like_item {
+  margin-bottom: 25px;
 }
 </style>
