@@ -145,7 +145,7 @@ export default {
         };
         return {
             fits: ['fill'],
-            url: 'https://ae01.alicdn.com/kf/Hd07bb66275fa421bb4c13045481e1829B.jpg', 
+            url: 'https://www.mercedes-benz.com.cn/content/dam/mb-cn/homepage/d-mb-homepage-test-drive-promo-banner.jpg', 
             identifyCodes: "0123456789qwertyuiopasdfghjklzxcvbnm",
             identifyCode: "",          
             ruleForm: {
