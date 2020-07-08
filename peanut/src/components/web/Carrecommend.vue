@@ -1,5 +1,6 @@
 <template>
-  <el-row style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) margin-top:20px; ">
+
+    <el-row style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) margin-top:20px; ">
     <el-col :sm="12" :md="24">
       <div class="recommend_box">
 
@@ -175,6 +176,8 @@
     </el-row>
 
   </el-row>
+
+
 
 
 

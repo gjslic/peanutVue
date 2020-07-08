@@ -12,7 +12,7 @@
       <el-col :xs="8" :md="5" class="hidden-xs-only">
         <div>
            <router-link to="/" class="text_a">
-            <div class="nav_tit">花生二手车</div>
+              <div class="nav_tit">花生二手车</div>
             </router-link>
         </div>
       </el-col>
