@@ -27,7 +27,7 @@
         </el-table>
         <el-dialog :title="jurTitle" destroy-on-close :visible.sync="editJurDialog" width="50%" :before-close="handleClose">
             <template >
-                <el-transfer v-model="editJurVal" :titles="transferTitle" :data="editJurData"></el-transfer>
+                <el-transfer v-model="editJurVal" :titles="transferTitle" @left-check-change="aaa" @right-check-change="configRules" :data="editJurData"></el-transfer>
             </template>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editJurDialog = false">取 消</el-button>
@@ -65,7 +65,25 @@
             that.getJurisditionList('权限列表')
         },
         methods : {
-           
+            aaa(key){
+                console.log(this.editJurVal)
+                if(key == 6){
+                    for(let x of this.editJurData){
+                        if(x.key == 14 || x.key == 15){
+                            this.editJurVal.push(x.key)
+                        }
+                    }
+                }
+                if(key == 14 || key == 15){
+                    for(let y of this.editJurData){
+                        if(y.key == 6){
+                            this.editJurVal.push(y.key)
+                            console.log(this.editJurVal)
+                        }
+                    }
+                }
+               
+            },
             /**
              * [ 获取所有权限列表]
              */
@@ -215,8 +233,19 @@
              * [editJurisdition 修改角色权限]
              */
             editJurisdition(){
-                console.log(this.nowRoleId)
+                // console.log(this.nowRoleId)
                 let nowJur = this.editJurVal;
+                // if(nowJur.indexOf(6)){
+                //     nowJur.push(6,14,15)
+                // }
+                console.log(nowJur)
+                // if(nowJur.indexOf(14)){
+                //     nowJur.push(6)
+                // }
+                // if(nowJur.indexOf(15)){
+                //     nowJur.push(6)
+                // }
+                
                 this.$fetch(this.url+'editJurisdition',{'nowJurArr': JSON.stringify(nowJur),'nowRoleId': this.nowRoleId})
                 .then(res => {
                     let msgType = '';
@@ -234,6 +263,30 @@
                 }).catch(err => {
                     console.log(err)
                 })
+            },
+            /**
+             * [configRules 权限配置规则]
+             */
+            configRules(){
+                // let nowJur = this.editJurVal;
+                // let allJur = this.editJurData;
+                // if(nowJur.indexOf(6)){
+                //     nowJur.push(14,15)
+                // }
+                // if(nowJur.indexOf(14)){
+                //     nowJur.push(6)
+                // }
+                // if(nowJur.indexOf(15)){
+                //     nowJur.push(6)
+                // }
+                // if(!find(nowJur,6)){
+                //     for(let x of nowJur){
+
+                //         console.log(x)
+                //     }
+                    
+                // }
+
             }
         }
     } 

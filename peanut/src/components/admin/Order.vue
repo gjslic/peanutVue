@@ -15,9 +15,10 @@
       </div>
     </el-menu>
     <!-- 订单展示区 -->
-    <el-table :data="orderData" border :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" style="width: 100%;text-align:center" :default-sort = "{prop: 'order_num', order: 'descending'}">
+    <el-table :data="orderData.slice((nowPage - 1) * pageSize,nowPage*pageSize)" v-if="orderData == undefined || orderData == null || orderData.length <= 0 ? ''  : orderData"  border :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" style="width: 100%;text-align:center" :default-sort = "{prop: 'order_num', order: 'descending'}">
       <el-table-column align="center" prop="id" label="ID" width="80px" sortable></el-table-column>
-      <el-table-column align="center" prop="orderNum" label="订单号" sortable>
+
+      <el-table-column align="center" prop="orderNum" width="150px" label="订单号" sortable>
       </el-table-column>
       <el-table-column align="center" label="下单账号">
         <template slot-scope="scope">
@@ -84,13 +85,15 @@
       </div>
     </el-dialog>
     <el-pagination
+      background
+			style="text-align:center"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="nowPage"
       :page-sizes="[5, 10, 15, 100]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total">
+      :total="orderData.length">
     </el-pagination>
   </div>
 </template>
@@ -105,14 +108,12 @@
         orderData: [], // 所有订单显示
         nowData: [], // 当前订单显示
         sellerInfo: {},
-        // menuDisabled: false,
         dialogFormVisible: false, //显示框
         activeIndex: '全部订单', //默认显示订单列表
         formLabelWidth: '120px',
         searchArr: [],
         nowPage: 1,
         pageSize: 5,
-        total: 0
       }
     },
     mounted() {
@@ -123,7 +124,6 @@
        * [getOrderList 获取当前类别订单列表]
        */
       getOrderList(type,num,searchInfo){
-        console.log(this.nowPage)
         let that = this;
         let pageSize = that.pageSize;
         that.orderData = [];
@@ -133,9 +133,11 @@
           'page': that.nowPage,
           'pageSize': that.pageSize
         }).then(function (res) {
-          console.log(res)
-          that.orderData = res.data;
-          that.total = res.count;
+          if(res.code == 1){
+            that.orderData = res.data;
+          }else{
+            that.orderData = [];
+          }
         }).catch(function (error) {
             console.log(error)
         })
@@ -165,7 +167,6 @@
        * [enterOption 审核操作]
        */
       enterOption(row){
-        console.log(row)
         this.$post(this.url+'editState',{
           'nowId': row.id,
           'buyId': row.buyer,
@@ -192,17 +193,13 @@
        * [handleSelect 选择]
        */
       handleSelect(key, keyPath) {
-        console.log(key);
         this.getOrderList(key);
       },
       handleSizeChange(page_size) {
         this.pageSize = page_size;
-        this.getOrderList(this.activeIndex,this.nowPage,'');
       },
       handleCurrentChange(currentPage) {
         this.nowPage = currentPage;
-        console.log(currentPage)
-        this.getOrderList(this.activeIndex,currentPage,'');
       }
     }
   }
@@ -214,13 +211,13 @@
   .el-col {
     border-radius: 4px;
   }
-.name-wrapper:hover{
-  color:red;
-  cursor:pointer;
-}
-.searchBox{
-  width: 400px;
-  float: right;
-  margin-right: 100px;
-}
+  .name-wrapper:hover{
+    color:red;
+    cursor:pointer;
+  }
+  .searchBox{
+    width: 400px;
+    float: right;
+    margin-right: 100px;
+  }
 </style>
