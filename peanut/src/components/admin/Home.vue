@@ -153,8 +153,8 @@ export default {
         type: "warning"
       })
         .then(() => {
-          let token = JSON.parse(sessionStorage.getItem("token"));
-          let url = "adminLogin/index/delToken";
+          let token = JSON.parse(localStorage.getItem("token"));
+          let url = "alogin/index/delToken";
           request({
             method: "post",
             url: url,
@@ -184,8 +184,8 @@ export default {
     },
     // 获取token
     getKoken() {
-      let token = JSON.parse(sessionStorage.getItem("token"));
-      let url = "adminLogin/index/validateToken";
+      let token = JSON.parse(localStorage.getItem("token"));
+      let url = "alogin/index/validateToken";
       request({
         method: "post",
         url: url,

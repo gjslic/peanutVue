@@ -75,11 +75,11 @@ export default {
   },
   created() {
     if (
-      JSON.parse(sessionStorage.getItem("user")) &&
-      JSON.parse(sessionStorage.getItem("user")).userName
+      JSON.parse(localStorage.getItem("user")) &&
+      JSON.parse(localStorage.getItem("user")).userName
     ) {
-      this.userName = JSON.parse(sessionStorage.getItem("user")).userName;
-      this.password = JSON.parse(sessionStorage.getItem("user")).password;
+      this.userName = JSON.parse(localStorage.getItem("user")).userName;
+      this.password = JSON.parse(localStorage.getItem("user")).password;
     }
   },
   computed: {
@@ -91,8 +91,6 @@ export default {
   mounted() {
     this.identifyCode = "";
     this.makeCode(this.identifyCodes, 4);
-    // 获取后台redis数据测试
-    // this.getRedisDataTest();
   },
   methods: {
     //验证码随机数
@@ -127,9 +125,9 @@ export default {
         return;
       }
       if (this.codeNum != this.identifyCode) {
-        this.$message.success("验证码错误");
+        this.$message.error("验证码错误");
       } else {
-        let url = "adminLogin/index/index";
+        let url = "alogin/index/index";
         let data = {
           userName: this.userName,
           password: this.password
@@ -137,11 +135,10 @@ export default {
         sendParam(url, data)
           .then(res => {
             if (res.data.code == 1) {
-              console.log(res.data.data.token);
               this.$message.success(res.data.msg);
               this.$router.push('/home');
-              sessionStorage.setItem("token",JSON.stringify(res.data.data.token));
-              sessionStorage.setItem("staffAcc",JSON.stringify(this.userName));
+              localStorage.setItem("token",JSON.stringify(res.data.data.token));
+              localStorage.setItem("staffAcc",JSON.stringify(this.userName));
             } else {
               this.$message.error(res.data.msg);
             }
@@ -149,18 +146,6 @@ export default {
           .catch(err => {});
       }
     },
-    // 获取后台redis数据测试
-    // getRedisDataTest() {
-    //   let url = "adminLogin/index/validateToken";
-    //   let data = {
-    //     token: sessionStorage.getItem("token")
-    //   };
-    //   sendParam(url, data)
-    //     .then(res => {
-    //       console.log(res.data);
-    //     })
-    //     .catch(err => {});
-    // }
   }
 };
 </script>
@@ -172,7 +157,7 @@ export default {
   left: 0;
   top: 0;
   width: 100%;
-  height: 300px;
+  height: 517px;
   text-align: center;
   filter: brightness(1.4);
 }

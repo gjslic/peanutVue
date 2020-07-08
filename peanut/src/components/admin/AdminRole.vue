@@ -64,6 +64,7 @@
   </div>
 </template>
 
+
 <script>
 import { request } from "../../network/request"; //引入axios请求
 import { getData } from "../../network/home"; //引入axios封装的函数
@@ -92,7 +93,7 @@ export default {
   methods: {
     //获取角色
     getRole() {
-      sendParam("adminRole/index/index", "")
+      sendParam("arole/index/index", "")
         .then(res => {
           this.tableData = res.data.data;
         })
@@ -108,7 +109,7 @@ export default {
         this.$message.error("请输入角色描述");
         return;
     }
-    let url = "adminRole/index/add";
+    let url = "arole/index/add";
     let data = {
     roleName: this.form.roleName,
     roleDesc: this.form.roleDesc
@@ -141,7 +142,7 @@ export default {
         this.$message.error("请输入角色描述");
         return;
     }
-    let url = "adminRole/index/update";
+    let url = "arole/index/update";
     let data = {
         id: this.updateForm.id,
         role_name: this.updateForm.nowRoleName,
@@ -177,7 +178,7 @@ export default {
     },
     // 封装删除角色函数
     deleteRole(row) {
-      let url = "adminRole/index/delete";
+      let url = "arole/index/delete";
       let data = {
         id: row.id,
         role_name: row.role_name,

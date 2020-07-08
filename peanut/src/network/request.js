@@ -3,7 +3,11 @@ import axios from 'axios'
 export function request(config){
   // 1.创建实例
   const instance = axios.create({
+<<<<<<< HEAD
     baseURL: 'http://127.0.0.1/nodejs/peanut/th5/public',
+=======
+    baseURL: 'http://127.0.0.1/peanut/th5/public/',
+>>>>>>> master
     timeout: 5000 
   })
   // 设置post请求头
