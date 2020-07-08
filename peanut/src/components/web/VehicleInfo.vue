@@ -95,10 +95,10 @@ export default {
         this.loading = false;
       }, 1000);
     },
-    vehicleSel(brandID,seriesID,price='',timeBaseNum='',priceBaseNum='',search){
+    vehicleSel(brandID,seriesID,price='',citID='',timeBaseNum='',priceBaseNum='',search){
       this.count = 0;
       let url = "buyCar/Buycar/vehicle";
-      let data = {"brandID":brandID,"seriesID":seriesID,"price":price,"timeBaseNum":timeBaseNum,"priceBaseNum":priceBaseNum,"search":search};
+      let data = {"brandID":brandID,"seriesID":seriesID,"price":price,"timeBaseNum":timeBaseNum,"priceBaseNum":priceBaseNum,"search":search,"citID":citID};
       sendParam(url,data)
       .then(res => {
         this.vehicleArr = res.data.data;
