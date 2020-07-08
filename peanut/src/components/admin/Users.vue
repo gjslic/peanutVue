@@ -155,7 +155,6 @@ export default {
       let url = "/user/index/get";
       getData(url)
         .then(res => {
-          console.log(res);
           if (res.data.code == 1) {
             this.userData = res.data.data;
           }
