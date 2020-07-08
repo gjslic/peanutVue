@@ -5,7 +5,23 @@
             <el-col :span="24">
                 <div class="grid-content bg-purple">
                     <el-container>
-                        <el-header>销量表</el-header>
+                        <el-header>
+                        <div class="block">
+                        <!-- <span class="demonstration">月份搜索</span> -->
+                        <el-date-picker
+                            v-model="value2"
+                            type="datetimerange"
+                            :picker-options="pickerOptions"
+                            @change="getSTime"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            value-format="yyyy-MM-dd HH：mm：ss" 
+                            align="right">
+                        </el-date-picker>
+                    </div>
+
+                        </el-header>
                         <el-main>
                             <div id="chart_demo"></div>
                         </el-main>
@@ -26,74 +42,124 @@
     name: 'EchartsSale',
     data() {
       return {
-        saleMonth: JSON.parse(sessionStorage.getItem("saleMonth")),
-        order:JSON.parse(sessionStorage.getItem("order"))
+        saleMonth: [],
+        order:[],
+         pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
+        value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
+        value2: ''
       }
     },
     mounted() {
-      let this_ = this;
-      let myChart = echarts.init(document.getElementById('chart_demo'));
-      let option = {
-        color: ['#67C23A'],
-        title: {
-            text: '订单/每月'
-        },
-        tooltip : {
-          trigger: 'axis',
-          axisPointer : {
-            type : 'shadow'
-          }
-        },
-        xAxis : [
-          {
-            type : 'category',
-            data : this.saleMonth,
-            axisTick: {
-              alignWithLabel: true
-            }
-          }
-        ],
-        yAxis : [
-          {
-            type : 'value'
-          }
-        ],
-        series : [
-          {
-            name:'每月订单数',
-            type:'bar',
-            barWidth: '60%',
-            data:this.order
-          }
-        ]
-      };
-      myChart.setOption(option);
-
-      //建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
-      window.addEventListener('resize',function() {myChart.resize()});
+      
 
       this.getInfo()
     },
     methods: {
         getInfo(){
-            sendParam('adminEcharts/index/sale','')
-            .then(res => {            
+            sendParam('aecharts/index/sale','')
+            .then(res => {        
                 this.saleMonth = res.data.data.categories
                 this.order = res.data.data.data
-                sessionStorage.setItem("saleMonth",JSON.stringify(this.saleMonth));
-                sessionStorage.setItem("order",JSON.stringify(this.order));
-                console.log(this.saleMonth);
-                console.log(this.order);
+                this.xuanran();  
             })
             .catch(err => {  
                 
             })
-        }
-    },
-    watch: {},
-    created() {
+        },
+        xuanran(){
+            let this_ = this;
+            let myChart = echarts.init(document.getElementById('chart_demo'));
+            let option = {
+                color: ['#409EFF'],
+                title: {
+                    text: '销量表'
+                },
+                tooltip : {
+                trigger: 'axis',
+                axisPointer : {
+                    type : 'shadow'
+                }
+                },
+                xAxis : [
+                {
+                    name: '月份',
+                    type : 'category',
+                    data : this.saleMonth,
+                    axisTick: {
+                    alignWithLabel: true
+                    }
+                }
+                ],
+                yAxis : [
+                {
+                    name : '订单数',
+                    type : 'value'
+                }
+                ],
+                series : [
+                {
+                    name:'每月订单数',
+                    type:'bar',
+                    barWidth: '60%',
+                    data:this.order
+                }
+                ]
+            };
+            myChart.setOption(option);
+            //建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
+            window.addEventListener('resize',function() {myChart.resize()});
+        },
+        getSTime(val) {
+            this.value2=val;//这个sTime是在data中声明的，也就是v-model绑定的值
+            let dataArr = {
+                starTime:this.value2[0],
+                endTime:this.value2[1]
+            }
+            sendParam("aecharts/index/saleMonth", dataArr)
+            .then(res => {
+                if(res.data.code == 1000){
+                    this.saleMonth = res.data.data.categories;
+                    this.order = res.data.data.data;
+                    this.xuanran();   
+                }
+                if(res.data.code == 1001){
+                    this.$message.error("当前时间段暂无数据哦，为您展示默认信息");
+                }    
+            })
+            .catch(err => {
 
-    }
+            });    
+        },
+
+
+    },
+   
   }
 </script>
 

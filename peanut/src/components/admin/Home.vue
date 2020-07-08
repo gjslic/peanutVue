@@ -101,7 +101,6 @@ export default {
         .then(res => {
           if (res.data.code == 1) {
             let mid = res.data.data[0].menu_id;
-            console.log(res.data.menu);
 
             var menuID = mid.split(",");
             var newArr = [];
@@ -113,7 +112,6 @@ export default {
               }
             }
             this.menuData = newArr;
-            console.log(this.menuData);
           } else {
             this.$message({ message: res.data.data.msg });
           }
@@ -131,7 +129,7 @@ export default {
       })
         .then(() => {
           let token = JSON.parse(localStorage.getItem("token"));
-          let url = "adminLogin/index/delToken";
+          let url = "alogin/index/delToken";
           request({
             method: "post",
             url: url,
@@ -140,7 +138,6 @@ export default {
             }
           })
             .then(res => {
-              console.log(res);
               if (res.data.code == 1) {
                 this.$message.success({ message: res.data.msg });
                 this.$router.replace("/AdminLogin");
@@ -162,7 +159,7 @@ export default {
     // 获取token
     getKoken() {
       let token = JSON.parse(localStorage.getItem("token"));
-      let url = "adminLogin/index/validateToken";
+      let url = "alogin/index/validateToken";
       request({
         method: "post",
         url: url,
@@ -175,7 +172,6 @@ export default {
             let userMsg = JSON.parse(res.data.data);
             this.staffAcc = userMsg[0].name;
             this.rid = userMsg[0].role_id;
-            console.log(this.rid);
             this.getMenu();
           } else {
             this.$message({ message: "请先登录" });

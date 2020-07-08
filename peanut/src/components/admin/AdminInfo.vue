@@ -264,7 +264,6 @@ export default {
           };
           sendParam(url, data)
             .then(res => {
-              console.log(res.data.data);
               if (res.data.code == 1) {
                 this.$message.success(res.data.msg);
                 this.adminInfo.phone = this.ruleForm.phone;
