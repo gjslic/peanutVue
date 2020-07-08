@@ -15,7 +15,7 @@
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 				<el-input placeholder="请输入内容" v-model="selectInfo" class="input-with-select"></el-input>
-				<el-button icon="el-icon-search"></el-button>
+				<el-button icon="el-icon-search" @click="getStaff(allPages.nowPage,selectVal,selectInfo)"></el-button>
 		  </el-col>
 		</el-row>
 		<!-- 员工添加弹出框 -->
@@ -34,7 +34,7 @@
 		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
-		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
+		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
 						<template v-for="(item , index) in roleArr"  >
 		        	<el-option :key="index" v-if="item.role_name == '超级管理员'" disabled :value="item.role_name"></el-option>
 							<el-option v-else :key="index" :label="item.role_name" :value="item.role_name"></el-option>
@@ -68,7 +68,7 @@
 		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
 		    	<el-input type="text" placeholder="请输入手机号" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
-		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
+		    <el-form-item label="员工职位" prop="role_name" :label-width="formLabelWidth" >
 		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
 						<template v-for="(item , index) in roleArr"  >
 		        	<el-option :key="index" v-if="item.role_name == '超级管理员'" disabled :value="item.role_name"></el-option>
@@ -128,7 +128,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column align="center" label="操作" width="240px">
-				<template slot-scope="scope">
+				<template slot-scope="scope" v-if="scope.row.role_name != '超级管理员'" disabled >
 					<el-button type="warning" icon="el-icon-lock" v-if="scope.row.state == 1" @click="editState(scope.row.id,scope.row)" circle></el-button>
 					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 0" @click="editState(scope.row.id,scope.row)" circle></el-button>
 					<el-button type="primary" icon="el-icon-edit" @click="editStaff(scope.row)" circle></el-button>
@@ -207,6 +207,7 @@
 			};
 			// 角色判断不为空
 			let checkRole = (rule , value , callback) => {
+				console.log(this.form.checkRole)
 				if(this.form.checkRole === ''){
 					callback(new Error('请选择职位'));
 				}else{
@@ -222,7 +223,7 @@
 				}
 			};
       return {
-				url: 'http://localhost/th5/public/adminStaffManage/staff/',
+				url: 'http://localhost/th5/public/admin_staff/staff/',
 				rules: {
           name: [
             { validator: checkName, trigger: 'blur' }
@@ -259,6 +260,7 @@
           password: '',// 添加密码
           phone: '',     // 添加电话
 					head_img: 'https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1091405991,859863778&fm=26&gp=0.jpg', //图片路径
+					role_name: '',
 					checkRole: '',
           sex: '男', // 性别
           delivery: false,
@@ -290,11 +292,13 @@
     },
     // 获取员工列表
     mounted() {
-			console.log(this.allPages)
 			let that = this;
-			that.getStaff(1);
+			that.getStaff(1,'','');
     },
 		methods: {
+			/**
+			 * [handleSelectionChange 复选框状态改变]
+			 */
 			handleSelectionChange(val){
 				let arr = [];
 				val.forEach((val, index) => {
@@ -312,13 +316,15 @@
 				}
 			},
 		
-			// 获取员工列表
-			getStaff(num = 1){
-				// let that = this;
+			/**
+			 *[getStaff 获取员工列表]
+			 */ 
+			getStaff(num,searchType = '',searchInfo = ''){
+				this.allPages.nowPage = num;
 				this.staffArr = [];
-				let keyWord = this.selectVal;
 				this.$post(this.url+'getStaffArr',{
-					'keyWord': keyWord,
+					'type':searchType,
+					'keyWord': searchInfo,
 					'nowPage': num
 				}).then(res => {
 					this.allPages.total = res.count;
@@ -332,6 +338,8 @@
 			 * [addStaff 添加员工]
 			 */
 			addStaff(form){
+				console.log(form)
+				console.log(this.form.checkRole)
 				this.$refs.MyForm.validate((valid) => {
           if (valid) {
 						this.$post(this.url+'addStaff',{

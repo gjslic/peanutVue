@@ -11,6 +11,7 @@ const AdminRole = () => import('../components/admin/AdminRole')
 const AdminEcharts = () => import('../components/admin/AdminEcharts')
 const AdminNotice = () => import('../components/admin/AdminNotice')
 const AdminComplain = () => import('../components/admin/AdminComplain')
+const AdminInfo = () => import('../components/admin/AdminInfo')//个人中心
 
 
 
@@ -27,6 +28,11 @@ const homeChild = [
     name: 'Welcome',
     component: Welcome
 
+  },
+  {
+    path: '/AdminInfo',
+    name: 'AdminInfo',
+    component: AdminInfo
   },
   {
     path: '/goods',

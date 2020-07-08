@@ -258,11 +258,11 @@ export default {
 </script>
 
 <style scoped>
-    .el-row {
+    /* .el-row {
         &:last-child {
         margin-bottom: 0;
         }
-    }
+    } */
     .font_size_30{
         font-size: 25px !important;
     }

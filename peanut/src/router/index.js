@@ -21,6 +21,10 @@ const AddSellingCars = () =>
     //买车页面
 const BuyCar = () =>
     import ('@/components/web/BuyCar')
+        //賣车页面
+const SellingCars = () =>
+import ('@/components/web/SellingCars')
+
     //拍卖页面
 const auction = () =>
     import ('@/components/web/auction')
@@ -95,6 +99,11 @@ export default new Router({
       path: '/Ad',
       name: 'Ad',
       component: Ad
-  }
+    },
+    {
+      path: '/SellingCars',
+      name: 'SellingCars',
+      component: SellingCars
+    },
   ]
 })

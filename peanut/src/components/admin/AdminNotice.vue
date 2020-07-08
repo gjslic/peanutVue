@@ -45,7 +45,7 @@
 
 
     <!-- 公告数据渲染 -->
-    <el-table :data="tableData" style="width: 100%">
+    <el-table :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)" style="width: 100%">
       <el-table-column prop="id" label="ID" width="180"></el-table-column>
       <el-table-column prop="notice_Publisher" label="发布者" width="180"></el-table-column>
       <el-table-column prop="notice_cont" label="公告描述"></el-table-column>
@@ -56,6 +56,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pagesize"
+        :page-sizes="[4, 8, 16, 32]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.length"
+      ></el-pagination>
+    </div>
   </div>
 </template>
 
@@ -70,15 +81,17 @@ export default {
             addDialogForm: false,  //添加弹出框初始状态
             formLabelWidth: '80px',
             form: {
-                publish: JSON.parse(sessionStorage.getItem("staffAcc")),  
+                publish: JSON.parse(localStorage.getItem("staffAcc")),  
                 noticeCont: '' 
             },
             updateDialogForm: false,
             updateForm: {
                 id:'',
-                nowPublish: JSON.parse(sessionStorage.getItem("staffAcc")),  
+                nowPublish: JSON.parse(localStorage.getItem("staffAcc")),  
                 nowNoticeCont: '' 
             },
+            currentPage: 1, // 初始页
+            pagesize: 4 // 每页的数据
         }
     },
     mounted(){
@@ -87,7 +100,7 @@ export default {
     methods: {
         //获取公告
         getInfo(){
-            sendParam('adminNotice/index/index','')
+            sendParam('anotice/index/index','')
             .then(res => {            
                 this.tableData = res.data.data;
             })
@@ -101,7 +114,7 @@ export default {
                 this.$message.error("请输入公告内容");
                 return;
             }
-            let url = "adminNotice/index/add";
+            let url = "anotice/index/add";
             let data = {
                 publish:this.form.publish,
                 noticeCont:this.form.noticeCont
@@ -130,7 +143,7 @@ export default {
                 this.$message.error("请输入公告内容");
                 return;
             }
-            let url = "adminNotice/index/update";
+            let url = "anotice/index/update";
             let data = {
                 id:this.updateForm.id,
                 notice_Publisher:this.updateForm.nowPublish,
@@ -165,7 +178,7 @@ export default {
         },
         // 封装删除公告函数
         deleteRole(row){
-            let url = "adminNotice/index/delete";
+            let url = "anotice/index/delete";
             let data = {
                 id:row.id,
                 notice_Publisher:row.notice_Publisher,
@@ -181,8 +194,14 @@ export default {
             }).catch(err => {  
                 
             })
-        }
-        
+        },
+        // 初始页currentPage、初始每页数据数pagesize和数据data
+        handleSizeChange: function(size) {
+            this.pagesize = size; //每页下拉显示数据
+        },
+        handleCurrentChange(currentPage) {
+            this.currentPage = currentPage; //点击第几页
+        },
 
 
 
@@ -195,3 +214,20 @@ export default {
     }
 };
 </script>
+
+<style scope>
+.el-select .el-input {
+  width: 130px;
+}
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+.block {
+  margin: 10px 0;
+}
+.user_avator {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+</style>
