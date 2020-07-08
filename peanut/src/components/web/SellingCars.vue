@@ -54,8 +54,8 @@
 
                         <div class="block float_left margin_bottom_10 margin_right_4">
 
-                             <el-input v-model="ruleForm.date1" class="form_input" placeholder="请输入该品牌下的车系" 
-                               onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"
+                             <el-input v-model="ruleForm.date1" class="form_input" maxlength="10" placeholder="请输入该品牌下的车系" 
+                             @input="styleLimit"
                              >
 
                             </el-input>
@@ -78,10 +78,10 @@
 
                     <el-form-item label="车况标签" prop="resource">
                         <el-radio-group v-model="ruleForm.resource">
-                            <el-radio :label="1" class="margin_bottom_5">车况极佳</el-radio>
-                            <el-radio :label="2" class="margin_bottom_5">稍微刮伤</el-radio>
-                            <el-radio :label="3" class="margin_bottom_5">严重刮伤</el-radio>
-                            <el-radio :label="4" class="margin_bottom_5">是否泡水</el-radio>
+                            <el-radio :label="'车况极佳'" class="margin_bottom_5">车况极佳</el-radio>
+                            <el-radio :label="'稍微刮伤'" class="margin_bottom_5">稍微刮伤</el-radio>
+                            <el-radio :label="'严重刮伤'" class="margin_bottom_5">严重刮伤</el-radio>
+                            <el-radio :label="'是否泡水'" class="margin_bottom_5">是否泡水</el-radio>
                         </el-radio-group>
                     </el-form-item>
 
@@ -188,10 +188,14 @@ export default {
         }
     },
 
+
     methods: {
         //防止输入特殊符号
          brandLimit:function(){
              this.ruleForm.brand = this.ruleForm.brand.replace(/[ `~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '');
+        },
+        styleLimit:function(){
+             this.ruleForm.date1 = this.ruleForm.date1.replace(/[ `~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '');
         },
         
         //判断是否填写输入框
