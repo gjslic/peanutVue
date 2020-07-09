@@ -25,7 +25,7 @@
           <el-col :md="4" :xs="8"  v-for="(item,index) in brandArr" :key="index">
             <div class="img_item"  @click="passbrand(item.brand_id)">
               <!-- 4,vue图片渲染需要require文件路径+数据库字段名 -->
-              <img :src="require('../../assets/carlogo/'+item.brand_img)" alt class="a_img" />
+              <img :src="item.brand_img" alt class="a_img" />
               <span  class="brand_img_text">{{item.brand_name}}</span>
               
             </div>
@@ -70,7 +70,7 @@
           <el-row>
             <el-col :md="8" :sm="8" v-for="(style_item,index) in styleArr" :key="index">
                  <div class="style_item" @click="passstyle(style_item.style_id)">
-                    <img :src="require('../../assets/carstyle/'+style_item.style_img)"  alt class="style_img" />
+                    <img :src="style_item.style_img"  alt class="style_img" />
                     {{style_item.style_name}}
                   </div>
             </el-col>
