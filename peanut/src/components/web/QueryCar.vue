@@ -13,10 +13,10 @@
           <div class="keyword-content">
             <el-row>
               <el-col :sm="1" :xs="1" class="content-mar">
-                <div :class="{queryHei:true,brand:brandNum==0}" @click="brandFun(0)">不限</div>
+                <div :class="{queryHei:true,brand:brandID==0}" @click="brandFun(0)">不限</div>
               </el-col>
               <el-col :sm="1" :xs="1" class="content-mar" v-for="(item,index) in brandArr" :key="index">
-                <div :class="{queryHei:true,brand:brandNum==item.brand_id}" @click="brandFun(item.brand_id)">{{item.brand_name}}</div>
+                <div :class="{queryHei:true,brand:brandID==item.brand_id}" @click="brandFun(item.brand_id)">{{item.brand_name}}</div>
               </el-col>
             </el-row>
           </div>
@@ -84,7 +84,7 @@
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="(item,index) in brandArr" :key="index" :command="item.brand_id">{{item.brand_name}}</el-dropdown-item>
+              <el-dropdown-item v-for="(item,index) in brandArr" :key="index"  :command="item.brand_id">{{item.brand_name}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -123,9 +123,7 @@ export default {
   name: "QueryCar",
   data() {
     return {
-      brandNum:0,
       seriesNum:0,
-      priceNum:0,
       timeBaseNum:0, //排序 最新  2==升  1==降
       priceBaseNum:0 //排序 最新  2==升  1==降
     };
@@ -133,8 +131,8 @@ export default {
   methods:{
     // 品牌点击
     brandFun:function(subscript){
-      this.brandNum = subscript;
       this.seriesNum = 0;
+      this.$emit('brandID',subscript);
       this.$emit('brandFun',subscript);
     },
     // 系类点击
@@ -144,12 +142,13 @@ export default {
     },
     //价格范围
     priceFun:function(subscript,price){
-      this.priceNum = subscript;
       this.$emit('priceFun',subscript,price);
+      this.$emit('priceNum',subscript);
     },
     minPriceFun(da){
       this.priceFun(da.id,da.price);
     },
+    
     //排序
     timeBase(){
       this.priceBaseNum=0;
@@ -190,7 +189,7 @@ export default {
       }
     }
   },
-  props:['brandArr','seriesArr','priceArr']
+  props:['brandArr','seriesArr','priceArr','priceNum','brandID']
 };
 </script>
 
