@@ -224,7 +224,6 @@
 			};
 			// 角色判断不为空
 			let checkRole = (rule , value , callback) => {
-				console.log(this.form.checkRole)
 				if(this.form.checkRole === ''){
 					callback(new Error('请选择职位'));
 				}else{
@@ -367,8 +366,6 @@
 					}).catch(err => {
 						console.log(err)
 					})
-				}else{
-					console.log(1)
 				}
 			},
 			/**
