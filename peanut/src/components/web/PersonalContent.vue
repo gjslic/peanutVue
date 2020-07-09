@@ -740,7 +740,7 @@ export default {
         userCollection(){
             //开局验证
             let url = '/personal/Personal/collection';
-            let token = localStorage.getItem("token");
+            let token = localStorage.getItem("tokenVue");
             // console.log(this.$store.state.UserToken);
             //给php发送内容
             let data = {
