@@ -30,7 +30,7 @@
     </el-table>
     <el-dialog :title="jurTitle" destroy-on-close :visible.sync="editJurDialog" z-index="1" width="50%" :before-close="handleClose">
       <template >
-        <el-transfer v-model="editJurVal" :left-default-checked="leftBind" :right-default-checked="rightBind" :titles="transferTitle" @left-check-change="leftEdit" @right-check-change="rightEdit" :data="editJurData"></el-transfer>
+        <el-transfer v-model="editJurVal" :titles="transferTitle" :data="editJurData"></el-transfer>
       </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editJurDialog = false">取 消</el-button>
@@ -45,7 +45,7 @@
     name: 'Jurisdic',
     data() {
       return {
-        url: 'http://localhost/th5/public/admin_jurisdiction/Jurisdition/',
+        url: 'http://localhost/peanut/th5/public/admin_jurisdiction/Jurisdition/',
         tableData: [], // 左侧菜单容器
         menuData: [], // 右侧权限列表容器
         allMenuArr: [], // 初始菜单
@@ -53,8 +53,8 @@
         editJurData: [], // 穿梭框左侧容器
         editJurVal: [],  // 穿梭框右侧容器
         nowRoleId: '',   // 当前选中角色id
-        leftBind:[],  //左侧绑定默认权限
-        rightBind:[], //右侧绑定默认权限
+        // leftBind:[],  //左侧绑定默认权限
+        // rightBind:[], //右侧绑定默认权限
         transferTitle:['所有权限','现有权限'],
         defaultProps: {
           children: 'children',
@@ -70,25 +70,6 @@
       that.getJurisditionList('权限列表')
     },
     methods : {
-      /**
-       * [leftBind 左侧绑定默认选中]
-       */
-      leftEdit(key){
-        this.leftBind = [];
-        if(key == 6){
-          this.leftBind.push(6,14,15);
-        }
-      },
-      /**
-       * [rightEdit 右侧绑定默认选中]
-       */
-      rightEdit(key){
-        this.rightBind = [];
-        if(key == 6){
-          this.rightBind.push(6,14,15);
-        }
-
-      },
       /**
        * [ 获取所有权限列表]
        */

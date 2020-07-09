@@ -105,7 +105,7 @@
     name: 'Order',
     data() {
       return {
-        url: 'http://localhost/th5/public/admin_order/Backorder/',
+        url: 'http://localhost/peanut/th5/public/admin_order/Backorder/',
         selectInfo: '', //搜索关键字
         orderData: [], // 所有订单显示
         nowData: [], // 当前订单显示

@@ -240,7 +240,7 @@
 				}
 			};
       return {
-				url: 'http://localhost/th5/public/admin_staff/staff/',
+				url: 'http://localhost/peanut/th5/public/admin_staff/staff/',
 				rules: {
           name: [
             { validator: checkName, trigger: 'blur' }
