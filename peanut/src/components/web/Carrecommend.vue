@@ -3,11 +3,17 @@
     <el-row style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) margin-top:20px; ">
     <el-col :sm="12" :md="24">
       <div class="recommend_box">
-
         <el-row>
-          <el-col  :md="4" :xs="24"><div class="recommend_text">
+          <el-col  :md="4" :xs="10">
+              <div class="recommend_text">
               为您推荐
-          </div></el-col>
+                </div>
+          </el-col>
+          <el-col  :md="15" :xs="14">
+              <div>
+                  <Ad/>
+                </div>
+          </el-col>
         </el-row>
 
       </div>
@@ -187,8 +193,12 @@
 
 <script>
 import { getData, sendParam} from "../../network/home";
+import Ad from "./Ad";
 export default {
     name:'Carrecommend',
+    components: {
+        Ad
+    },
     data() {
       return {
         activeName: 'first',
@@ -303,7 +313,8 @@ export default {
   font-size: 3rem;
     /* padding: 18px; */
     padding-left: 30px;
-    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
   }
 
   /* 车辆图片 */
@@ -339,7 +350,7 @@ export default {
         font-size: 2rem;
           /* padding: 18px; */
           padding-left: 10px;
-          /* padding-top: 20px; */
+          padding-top: 10px;
       }
       .recommend_img{
         padding-left: 10px;

@@ -72,7 +72,7 @@
               </el-col>
              
              <!-- 跳转登录 -->
-              <el-col :xs="8" :md="6" class="log_box" style="display:none">
+              <el-col :xs="8" :md="6" class="log_box">
                 <router-link to="/Login" class="text_a">
                     <div class="text_box">
                         登录
@@ -81,7 +81,7 @@
               </el-col>
               
               <!-- 显示头像名称 -->
-              <el-col :xs="8" :md="6" class="log_box">
+              <el-col :xs="8" :md="6" class="log_box"  style="display:none">
                 <!-- 头像 -->
                 <el-col :md="9">
                     <div class="user_head">
