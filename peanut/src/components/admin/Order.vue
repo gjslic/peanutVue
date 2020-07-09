@@ -29,7 +29,7 @@
             <p>账号: {{ scope.row.buyer }}</p>
             <p>联系方式: {{ scope.row.phone }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-image :src="scope.row.head_img" style="width:80px;height:80px;border-radius:50%"></el-image>
+              <img :src="scope.row.head_img" style="width:80px;height:80px;border-radius:50%">
             </div>
           </el-popover>
         </template>
@@ -50,7 +50,6 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="enterOption(scope.row)"></el-button>
-          <el-button icon="el-icon-loading" v-else-if="scope.row.state == '待确认'" type="warning" circle @click="enterOption(scope.row)"></el-button>
           <el-button icon="el-icon-view" type="primary" circle @click="getNowOrder(scope.row)"></el-button>
         </template>
       </el-table-column>
@@ -183,7 +182,7 @@
             row.state = '退款成功';
             msgType = 'success'
           }else{
-            row.state = '待确认';
+            row.state = '退款失败';
             msgType = 'error'
           }
           this.$message({

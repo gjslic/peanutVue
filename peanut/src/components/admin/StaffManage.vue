@@ -6,15 +6,15 @@
     </el-breadcrumb>
 		<!-- 页面头部操作框 -->
 		<el-row type="flex" push="3" class="row-bg">
-		  <el-col :span="4">
+		  <el-col :span="3">
 		  	<el-button type="primary"  @click="addDialogForm =true , dialogTitle = '添加员工信息'" >添加员工</el-button>
 		  </el-col>
-			<el-col :span="4">
+			<el-col :span="3">
 				<el-popconfirm title="是否批量操作？删除后不可恢复" @onConfirm="batchDeleteStaff">
 		  		<el-button type="danger" slot="reference"  :disabled= "delBtnDisabled">批量删除</el-button>
 				</el-popconfirm>
 		  </el-col>
-		  <el-col :span="12" :offset="9">
+		  <el-col :span="12">
 				<el-select v-model="selectVal" placeholder="请选择" style="width:100px">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
@@ -224,6 +224,7 @@
 			};
 			// 角色判断不为空
 			let checkRole = (rule , value , callback) => {
+				console.log(this.form.checkRole)
 				if(this.form.checkRole === ''){
 					callback(new Error('请选择职位'));
 				}else{
@@ -366,6 +367,8 @@
 					}).catch(err => {
 						console.log(err)
 					})
+				}else{
+					console.log(1)
 				}
 			},
 			/**

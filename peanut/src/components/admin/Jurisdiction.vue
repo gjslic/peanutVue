@@ -87,6 +87,7 @@
         if(key == 6){
           this.rightBind.push(6,14,15);
         }
+
       },
       /**
        * [ 获取所有权限列表]
