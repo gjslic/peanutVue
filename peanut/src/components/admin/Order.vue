@@ -29,7 +29,7 @@
             <p>账号: {{ scope.row.buyer }}</p>
             <p>联系方式: {{ scope.row.phone }}</p>
             <div slot="reference" class="name-wrapper">
-              <img :src="scope.row.head_img" style="width:80px;height:80px;border-radius:50%">
+              <el-image :src="scope.row.head_img" style="width:80px;height:80px;border-radius:50%"></el-image>
             </div>
           </el-popover>
         </template>
