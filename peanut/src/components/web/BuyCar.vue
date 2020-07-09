@@ -7,6 +7,8 @@
       :brand-arr="brandArr"
       :series-arr="seriesArr"
       :price-arr="priceArr"
+      :brandID="brandID"
+      :priceNum="priceNum"
       @brandFun="brandFun"
       @seriesFun="seriesFun"
       @priceFun="priceFun"
@@ -45,7 +47,10 @@ export default {
           'content':'买车页'
         }
       ],
-      search:this.$route.query,
+      search:'',
+      passCityid:'',
+      priceNum:0,
+
     };
   },
   components: {
@@ -58,23 +63,45 @@ export default {
   },
   watch:{
     '$route':(function(to,from){
-      this.search = to.query;
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
-    })
+      if(to.query.vehicleName != null){
+        this.search = to.query.vehicleName;
+           this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
+      }
+      
+    }) 
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+     
+    // if(vm.$route.query.vehicleName != null){
+       
+    //     vm.search = vm.$route.query.vehicleName;
+    //     console.log(vm.$route.query);
+    //   }
+      if(vm.$route.query.cityid != null){
+        vm.passCityid = vm.$route.query.cityid;
+      }
+      if(vm.$route.query.brandid != null){
+        vm.brandID = vm.$route.query.brandid;
+      }
+      if(vm.$route.query.price_id != null){
+        vm.priceID = vm.$route.query.price_id;
+        vm.priceNum = vm.$route.query.id;
+      }
+
+    });
+
+    },
   mounted() {
     //获取品牌/系类/价格范围数据
+    
     getData( "buyCar/Buycar/queryCar")
       .then(res => {
         this.brandArr = res.data.data[0];
         this.seriesArr = res.data.data[1];
         this.priceArr = res.data.data[2];
-        if(this.search.id){
-          this.search = this.search;
-        }else{
-          this.$set(this.search,'id','');
-        }
-        this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
+        this.reset();
+        this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
       })
       .catch(err => {
         console.log(err);
@@ -97,39 +124,46 @@ export default {
         console.log(err);
       });
       //调用子级组件的函数
-      this.$set(this.search,'id','');
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
+      this.reset();
+      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
     },
     // 品牌点击
     seriesFun: function(subscript) {
       this.seriesID = subscript;
-      this.$set(this.search,'id','');
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
-
+      this.reset();
+      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
+    },
+    reset:function(){
+      if(this.search == ''){
+          this.search = this.search;
+        }else{
+          this.search='';
+        }
     },
     //价格范围
     priceFun: function(subscript,price) {
       this.priceID = price;
-      this.$set(this.search,'id','');
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,price,this.timeBaseNum,this.priceBaseNum,this.search.id);
+      this.priceNum = subscript;
+      this.reset();
+      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,price,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
 
     },
     //排序
     timeBase:function(num){
       this.timeBaseNum = num;
       console.log(this.search);
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
+      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
 
     },
     priceBase:function(num){
       this.priceBaseNum = num;
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
+      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
     },
     //默认排序
     defaultBase:function(){
       this.priceBaseNum = '';
       this.timeBaseNum = '';
-      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search.id);
+      this.$refs.vehicleSel.vehicleSel(this.brandID,this.seriesID,this.priceID,this.timeBaseNum,this.priceBaseNum,this.search,this.passCityid);
     }
   }
 };

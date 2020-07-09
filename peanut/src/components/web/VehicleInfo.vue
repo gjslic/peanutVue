@@ -82,6 +82,7 @@ export default {
    mounted() {
     //获取车辆数据
   },
+  
   methods: {
     load() {
       this.loading = true;
@@ -95,7 +96,8 @@ export default {
         this.loading = false;
       }, 1000);
     },
-    vehicleSel(brandID,seriesID,price='',citID='',timeBaseNum='',priceBaseNum='',search){
+    vehicleSel(brandID,seriesID,price='',timeBaseNum='',priceBaseNum='',search='',citID=''){
+      
       this.count = 0;
       let url = "buyCar/Buycar/vehicle";
       let data = {"brandID":brandID,"seriesID":seriesID,"price":price,"timeBaseNum":timeBaseNum,"priceBaseNum":priceBaseNum,"search":search,"citID":citID};
