@@ -226,6 +226,24 @@
         </p>
       </div>
     </el-drawer>
+
+    <!-- 右侧固定 -->
+    <div class="chatBox" @click="isShowCaht = true">
+      <i class="el-icon-headset"></i>
+    </div>
+
+    <!-- 聊天弹框 -->
+    <el-dialog :visible.sync="isShowCaht" :before-close="handleClose" top="0">
+      <JwChat-index
+        :config="config"
+        :taleList="taleList"
+        @enter="bindEnter"
+        v-model="inputMsg"
+        :toolConfig="tool"
+        width="100%"
+        height="100%"
+      />
+    </el-dialog>
   </div>
 </template>
       
@@ -265,18 +283,36 @@ export default {
       direction: "ttb",
       active: 0,
       isClick: false,
+      isShowCaht: false,
       isCollect: true, //收藏
-      userId: "" //买家id
+      userId: "", //买家id
+      socket: "",
+      socketMsg: {},
+      userInfo:{},
+      inputMsg: "",
+      taleList: [],
+      tool: {
+        show: ["file", "history", "img"],
+        callback: this.toolEvent
+      },
+      config: {
+        img:
+          "http://b-ssl.duitang.com/uploads/item/201509/22/20150922134955_vfEWL.jpeg",
+        name: "平台客服",
+        dept: "有事就找姐，姐就是天",
+        callback: this.headerEvent
+      }
     };
   },
   mounted() {
     this.getCarInfo();
     this.isLogin();
+    
   },
   methods: {
     // ------------网络请求---------
     // 判断用户是否登录
-    isLogin(){
+    isLogin() {
       let token = localStorage.getItem("tokenVue");
       let url = "login/Login/validateToken";
       request({
@@ -289,21 +325,25 @@ export default {
         .then(res => {
           if (res.data.code == 1) {
             let uid = JSON.parse(res.data.data).id;
+            
             this.userId = uid;
+            this.userInfo = JSON.parse(res.data.data)
+            // 初始化websocket
+            this.init(); 
             // 如果买家的id和卖家的id一样就不能购买
-            if(uid == this.uid){
-              this.isClick = true
+            if (uid == this.uid) {
+              this.isClick = true;
             }
             // 果然登录判断是否已收藏
             this.isloginAnd();
-          } 
+          }
         })
         .catch(err => {
           console.log(err);
         });
     },
     // 判断是否已收藏
-    isloginAnd(){
+    isloginAnd() {
       let url = "/detail/index/isloginAnd";
       let data = {
         id: this.userId,
@@ -312,8 +352,8 @@ export default {
       sendParam(url, data)
         .then(res => {
           if (res.data.code == 1) {
-            this.isCollect = false
-          } 
+            this.isCollect = false;
+          }
         })
         .catch(err => {
           console.log(err);
@@ -413,7 +453,7 @@ export default {
           if (res.data.code == 1) {
             let uid = JSON.parse(res.data.data).id;
             this.userId = uid;
-            
+
             // 跳出弹框
             this.drawer = true;
           } else {
@@ -494,11 +534,10 @@ export default {
                 if (res.data.code == 1) {
                   this.$message.success(res.data.msg);
                   this.isCollect = false;
-                } else if(res.data.code == 2){
+                } else if (res.data.code == 2) {
                   this.$message.success(res.data.msg);
                   this.isCollect = true;
-                }
-                else {
+                } else {
                   this.$message(res.data.msg);
                 }
               })
@@ -513,6 +552,80 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    // ----------------------聊天-----------------
+    bindEnter() {
+      const msg = this.inputMsg;
+      if (!msg) return;
+      const msgObj = {
+        date: new Date().toLocaleDateString() + new Date().toLocaleTimeString(),
+        text: { text: msg },
+        mine: true,
+        name: "我",
+        img:
+          "http://b-ssl.duitang.com/uploads/item/201509/22/20150922134955_vfEWL.jpeg"
+      };
+      this.taleList.push(msgObj);
+      // 发送到nodee
+      var sendContainer = {
+        type: 'infor',
+        sender: this.userId,
+        receiver: 'adminServer',
+        container: msg,
+        name: this.userInfo.name,
+        img: this.userInfo.head_img,
+        mine: false
+      }
+      let params = JSON.stringify(sendContainer);
+      console.log(params)
+      this.socket.send(params);
+    },
+    toolEvent(type) {
+      console.log("tools", type);
+    },
+    headerEvent(type) {
+      console.log("header", type);
+    },
+    //-------websocket--
+    init() {
+      if (typeof WebSocket === "undefined") {
+        alert("您的浏览器不支持socket");
+      } else {
+        // 实例化socket
+        this.socket = new WebSocket("ws://127.0.0.1:3000");
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      }
+    },
+    open() {
+      console.log("socket连接成功");
+      this.send()
+    },
+    error() {
+      console.log("连接错误");
+    },
+    getMessage(msg) {
+      console.log(msg.data);
+    },
+    send() {
+      let showObj = {
+        type: "show",
+        account: this.userId
+      };
+      let params = JSON.stringify(showObj);
+      console.log(params)
+      this.socket.send(params);
+    },
+    close() {
+      console.log("socket已经关闭");
+    },
+    destroyed() {
+      // 销毁监听
+      this.socket.onclose = this.close;
     }
   }
 };
@@ -541,6 +654,19 @@ export default {
 .order_btn {
   float: right;
   margin: 20px 0;
+}
+.chatBox {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  cursor: pointer;
+}
+.chatBox i {
+  font-size: 30px;
+  padding: 10px;
+}
+.chatBox i:hover {
+  color: #fd7a3a;
 }
 </style>
 <style>
