@@ -36,7 +36,7 @@
       <!-- 搜索按钮 -->
       <el-col :xs="8" :md="2" class="hidden-xs-only">
         <div class="ss_button">
-            <el-button plain>搜索车辆</el-button>
+            <el-button plain @click="vehiclelFun">搜索车辆</el-button>
              <!-- @click="routerTo" -->
         </div>
       </el-col>
@@ -124,7 +124,7 @@
 
       <!-- 手机端显示 导航栏右侧 -->
       <el-col :xs="4" style="padding-top: 11px;margin-left: 10px;" class="hidden-sm-and-up"> 
-        <el-button type="primary" class="search_btn">搜索</el-button>
+        <el-button type="primary" class="search_btn" @click="vehiclelFun">搜索</el-button>
       </el-col>
 
       <!-- 用户头像 -->
@@ -149,7 +149,11 @@
                     <el-input
                       placeholder="请输入所在城市"
                       prefix-icon="el-icon-search"
+<<<<<<< HEAD
                       v-model="input">
+=======
+                      >
+>>>>>>> master
                     </el-input>
                 </el-col>
 
@@ -249,7 +253,10 @@ mounted(){
           console.log(err);
         });
       },
-
+      // 传递搜索关键字
+      vehiclelFun(){
+        this.$router.push({ name: 'BuyCar', query: { vehicleName: this.input2 }});
+      },
       //传递城市
       passCity(id){
   

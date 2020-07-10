@@ -206,6 +206,7 @@ export default {
                         // this.$store.commit('setUserToken',res.data.data.token);
                         // console.log(this.$store.state.UserToken);
                         //登录成功返回
+                        this.$router.push("/");
                         this.$message({
                             message: res.data.msg,
                             type: 'success',

@@ -101,23 +101,23 @@
         ctx.translate(-x, -y)
       },
       drawLine (ctx) {
-        // // 绘制干扰线
-        // for (let i = 0; i < 8; i++) {
-        //   ctx.strokeStyle = this.randomColor(this.lineColorMin, this.lineColorMax)
-        //   ctx.beginPath()
-        //   ctx.moveTo(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight))
-        //   ctx.lineTo(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight))
-        //   ctx.stroke()
-        // }
+        // 绘制干扰线
+        for (let i = 0; i < 8; i++) {
+          ctx.strokeStyle = this.randomColor(this.lineColorMin, this.lineColorMax)
+          ctx.beginPath()
+          ctx.moveTo(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight))
+          ctx.lineTo(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight))
+          ctx.stroke()
+        }
       },
       drawDot (ctx) {
-        // 绘制干扰点
-        for (let i = 0; i < 100; i++) {
-          ctx.fillStyle = this.randomColor(0, 255)
-          ctx.beginPath()
-          ctx.arc(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight), 1, 0, 2 * Math.PI)
-          ctx.fill()
-        }
+        // // 绘制干扰点
+        // for (let i = 0; i < 100; i++) {
+        //   ctx.fillStyle = this.randomColor(0, 255)
+        //   ctx.beginPath()
+        //   ctx.arc(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight), 1, 0, 2 * Math.PI)
+        //   ctx.fill()
+        // }
       }
     },
     watch: {

@@ -7,6 +7,8 @@
       :brand-arr="brandArr"
       :series-arr="seriesArr"
       :price-arr="priceArr"
+      :brandID="brandID"
+      :priceNum="priceNum"
       @brandFun="brandFun"
       @seriesFun="seriesFun"
       @priceFun="priceFun"
@@ -49,6 +51,7 @@ export default {
       seriesArr: [], //系列数组
       priceArr: [], //价格范围数组
       citID:1,
+      priceNum:0,
     };
   },
   components: {
@@ -111,6 +114,7 @@ export default {
     //价格范围
     priceFun: function(subscript, price) {
       this.priceID = price;
+      this.priceNum = subscript;
       this.$refs.vehicleSel.vehicleSel(
         this.brandID,
         this.seriesID,

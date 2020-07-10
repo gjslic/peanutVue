@@ -1,16 +1,15 @@
 <!-- @tlh前台公告新闻告滚动条 -->
 <template>
-<div class="marquee">
-
-      <div class="marquee_title">
-                 <span>平台公告</span>
-      </div>
-        <div class="marquee_box">
-                <ul class="marquee_list" :class="{marquee_top:animate}">
-                        <li v-for="(item,index) in marqueeList" :key="index">{{item.name}}</li>
-                </ul>
-        </div>
-</div>
+  <div class="marquee">
+    <div class="marquee_title">
+      <span>热门公告</span>
+    </div>
+    <div class="marquee_box">
+      <ul class="marquee_list" :class="{marquee_top:animate}">
+        <li v-for="(item,index) in marqueeList" :key="index">{{item.notice_cont}}</li>
+      </ul>
+    </div>
+  </div>
 </template> 
 
 
@@ -42,7 +41,7 @@ export default {
         this.marqueeList.shift();
 
         this.animate = false;
-      }, 500);
+      }, 1000);
     },
 
     getInfo() {
@@ -78,25 +77,32 @@ export default {
 }
 
 .marquee_title {
-  padding: 0 20px;
+
+  width: 120px;
 
   height: 21px;
 
-  font-size: 16px;
-
-  border-right: 1px solid #d8d8d8;
+  font-size: 18px;
 
   align-items: center;
 
-  margin-left: 70%;
+  margin-left: 8%;
+
+  padding-right: 2px;
+
+
+
 }
 
 .marquee_box {
+
+  border-left: 1px solid #d8d8d8;
+
   display: block;
 
   position: relative;
 
-  width: 20%;
+  width: 100%;
 
   height: 30px;
 
@@ -114,7 +120,7 @@ export default {
 }
 
 .marquee_top {
-  transition: all 0.5s;
+  transition: all 3s;
 
   margin-top: -30px;
 }
@@ -124,13 +130,16 @@ export default {
 
   line-height: 30px;
 
-  font-size: 16px;
+  font-size: 18px;
 
   padding-left: 20px;
+
+  color:red
 }
 
 .marquee_list li span {
   padding: 0 2px;
+  
 }
 </style>
 

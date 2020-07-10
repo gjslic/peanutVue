@@ -54,7 +54,7 @@
             </el-col>
 
              <el-col :md="8" :sm="8" v-for="(price_item,index) in priceArr" :key="index">
-                <div class="price_text"  @click="passprice(price_item.price_id)">
+                <div class="price_text"  @click="passprice(price_item.price_id,price_item.price)">
                     {{price_item.price}}万
                 </div>
             </el-col>
@@ -117,7 +117,6 @@ methods:{
     let url = '/homepage/Homepage/carbran';
     getData(url).then(res => {
       //this获取到数据
-      console.log(res);
         this.brandArr = res.data;
     }).catch(err => {
       console.log(err);
@@ -130,7 +129,6 @@ methods:{
     getData(url).then(res => {
       //this获取到数据
         this.priceArr = res.data;
-        console.log(res);
     }).catch(err => {
       console.log(err);
     });
@@ -142,7 +140,6 @@ methods:{
    getData(url).then(res => {
       //this获取到数据
         this.styleArr = res.data;
-        console.log(res);
     }).catch(err => {
       console.log(err);
     });
@@ -161,31 +158,29 @@ methods:{
       // 路由傳參到買車頁
       this.$router.push({
         name:"BuyCar",
-        params:{
-          passbrandArr:'passbrandArr',
+        query:{
+          brandid:id,
         }
       })
-
     }).catch(err => {
       console.log(err);
     });
   },
 
   //传递价格范围
-  passprice(id){
-    console.log(id);
+  passprice(id,price){
     let url = '/homepage/Homepage/passprice';
     let data ={
       price_id:id
     }
     sendParam(url ,data).then(res => {
       this.passpriceArr = res.data;
-
       // 路由傳參到買車頁
       this.$router.push({
         name:"BuyCar",
-        params:{
-          passpriceArr:'passpriceArr',
+        query:{
+          price_id:price,
+          id:id
         }
       })
     }).catch(err => {
@@ -200,15 +195,12 @@ methods:{
     let data ={
       style_id:id
     }
-    console.log(data);
+    
     sendParam(url ,data).then(res => {
       this.passstyleArr = res.data;
       // 路由傳參到買車頁
       this.$router.push({
-        name:"BuyCar",
-        params:{
-          passstyleArr:'passstyleArr',
-        }
+        name:"BuyCar"
       })
     }).catch(err => {
       console.log(err);
