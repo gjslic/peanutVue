@@ -212,7 +212,7 @@ export default {
                             type: 'success',
                             center: true
                         });
-                        this.$router.push("/")
+                        this.$router.push("/");
                     }else{
                         //登录失败返回
                         this.$message({
