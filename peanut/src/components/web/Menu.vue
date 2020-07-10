@@ -19,7 +19,7 @@
       <!-- 导航栏城市 -->
       <el-col :xs="4" :md="2" style="margin-left: 16px;padding-top: 12px;">
         <!-- 抽屉 选择城市 -->
-        <el-button @click="drawer = true " type="primary" class="city_button">
+        <el-button @click="innerDrawer = true " type="primary" class="city_button">
           厦门
         </el-button>
 
@@ -36,7 +36,7 @@
       <!-- 搜索按钮 -->
       <el-col :xs="8" :md="2" class="hidden-xs-only">
         <div class="ss_button">
-            <el-button plain>搜索车辆</el-button>
+            <el-button plain @click="vehiclelFun">搜索车辆</el-button>
              <!-- @click="routerTo" -->
         </div>
       </el-col>
@@ -46,9 +46,9 @@
         <div class="right_text">
 
                <el-col :xs="8" :md="6" >
-                  <router-link to="/" class="text_a">
+                  <router-link to="/auction" class="text_a">
                     <div class="text_box">
-                        首页
+                        拍卖
                     </div>
                   </router-link>
               </el-col>
@@ -64,15 +64,15 @@
 
 
               <el-col :xs="8" :md="6" >
-                 <router-link to="/SellingCars" class="text_a">
-                    <div class="text_box">
+                 <!-- <router-link to="/SellingCars" class="text_a"> -->
+                    <div class="text_box" @click="sellcar()">
                         卖车
                     </div>
-                  </router-link>
+                  <!-- </router-link> -->
               </el-col>
              
              <!-- 跳转登录 -->
-              <el-col :xs="8" :md="6" class="log_box" style="display:none">
+              <el-col :xs="8" :md="6" class="log_box" v-if="showRentPrise">
                 <router-link to="/Login" class="text_a">
                     <div class="text_box">
                         登录
@@ -81,16 +81,41 @@
               </el-col>
               
               <!-- 显示头像名称 -->
-              <el-col :xs="8" :md="6" class="log_box">
+              <el-col :xs="8" :md="6" class="user_box" v-if="showPrise">
                 <!-- 头像 -->
                 <el-col :md="9">
-                    <div class="user_head">
-                        <img src="https://ae01.alicdn.com/kf/H7108f159b55c4f58b096702e2b066de4Q.jpg" alt="" style="width:100% ;border-radius: 50%;">
+                  <el-popover
+                    placement="bottom-start"
+                    width="100"
+                    trigger="hover">
+                    <div class="user_router">
+                      
+                        <div class="router_text">
+                          <router-link to="/AddPersonalCenter" class="link_a">
+                            <i class="el-icon-user-solid"></i>个人中心
+                          </router-link>
+                        </div>
+
+                        <div class="router_text">
+                            <i class="el-icon-phone-outline"></i>联系客服
+                        </div>
+                        <div class="router_text">
+                          <i class="el-icon-switch-button"></i>退出登录
+                        </div>
                     </div>
+                    
+                      <div class="user_head" slot="reference">
+                        <router-link to="/AddPersonalCenter" >
+                            <img :src="userdata.head_img" alt="" style="width:100% ;border-radius: 50%;">
+                          </router-link>
+                      </div>
+                  
+                  </el-popover>
+
                 </el-col>
                 <!-- 名称 -->
                 <el-col :md="15">
-                    <p class="user_name">巴拉巴拉巴拉巴拉</p>
+                    <p class="user_name">{{userdata.name}}</p>
                 </el-col>
               </el-col>
 
@@ -99,41 +124,47 @@
 
       <!-- 手机端显示 导航栏右侧 -->
       <el-col :xs="4" style="padding-top: 11px;margin-left: 10px;" class="hidden-sm-and-up"> 
-        <el-button type="primary" class="search_btn">搜索</el-button>
+        <el-button type="primary" class="search_btn" @click="vehiclelFun">搜索</el-button>
       </el-col>
 
       <!-- 用户头像 -->
       <el-col :xs="2" style="padding-top: 9px;" class="hidden-sm-and-up">
+        
         <div class="user_img" >
-          <img src="https://ae01.alicdn.com/kf/H7108f159b55c4f58b096702e2b066de4Q.jpg" alt="" style="width:100% ;border-radius: 50%;">
+          <router-link to="/AddPersonalCenter" >
+              <img :src= "userdata.head_img" alt="" style="width:100% ;border-radius: 50%;">
+           </router-link>
         </div>
       </el-col>
     </el-row>
      <!-- 城市显示 -->
       <el-drawer
         title="请选择您的城市"
-        :visible.sync="drawer"
+        :visible.sync="innerDrawer "
         :direction="direction"
-        :before-close="handleClose" >
-        <el-row>
-          <!-- 城市输入框 -->
+        size="60%" class="drawer_box">
+        <!-- <el-row>
               <el-col :md="24" :xs="24" style="padding: 10px;">
                 <el-col :md="18" :xs="18">
                     <el-input
                       placeholder="请输入所在城市"
                       prefix-icon="el-icon-search"
-                      v-model="input2">
+<<<<<<< HEAD
+                      v-model="input">
+=======
+                      >
+>>>>>>> master
                     </el-input>
                 </el-col>
 
-              <!-- 搜索城市车辆 -->
+
                 <el-col :md="6" :xs="6">
-                  <div class="ss_button" style="padding:0px">
-                    <el-button plain>搜索车辆</el-button>
+                  <div class="ss_button" style="padding:0px" >
+                    <el-button plain @click="innerDrawer = false">搜索车辆</el-button>
                   </div>
                 </el-col>
               </el-col>
-          </el-row>
+          </el-row> -->
 
         <el-row>
           <!-- 城市数据打印 -->
@@ -143,9 +174,9 @@
                   热门城市
               </el-col>
 
-              <el-col :md="4" :xs="4"  v-for="(city_item,index) in cityArr" :key="index">
+              <el-col :md="4" :xs="8"  v-for="(city_item,index) in cityArr" :key="index">
                 <div class="hot_city_text" v-if="city_item.hot_id == 1" @click="passCity(city_item.city_id)">
-                   <span > {{city_item.city_name}}</span> 
+                   <span @click="innerDrawer = false" class="city_span"> {{city_item.city_name}}</span> 
                 </div>
               </el-col>
           </el-col>
@@ -158,26 +189,18 @@
                   其他城市
               </el-col>
 
-              <el-col :md="4" :xs="4" v-for="(city_item,index) in cityArr" :key="index+1">
+              <el-col :md="4" :xs="8" v-for="(city_item,index) in cityArr" :key="index+1">
                   <div class="hot_city_text" v-if="city_item.hot_id != 1" @click="passCity(city_item.city_id)">
-                   <span > {{city_item.city_name}}</span> 
+                   <span @click="innerDrawer = false" class="city_span"> {{city_item.city_name}}</span> 
                 </div>
               </el-col>
             </el-col>
         </el-row> 
         
-    
-
       </el-drawer>
   </el-menu>
 
-     
-
-
-
-
-
-
+    
 </template>
 
 <script>
@@ -189,32 +212,36 @@ export default {
     // 组件js
     data(){
       return{
+        userdata:'',
+        //显示隐藏
+        showPrise:false,
+        showRentPrise:true,
+
+        input:'',
         input2:'',
         activeIndex2:'',
         // 城市抽屉
         drawer: false,
+        innerDrawer:false,
         direction: 'rtl',
-        cityArr:[]
+        cityArr:[],
+        
       }
     },
 
 mounted(){
   // 获取到城市数据
   this.getCity();
+
+  this.iflogin();
 },
     methods:{
       handleSelect(e){
           console.log(e);
           
       },
-       // 关闭城市抽屉
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      },
+
+
       //获取到城市数据
       getCity(){
         let url = '/homepage/Homepage/getcity';
@@ -226,30 +253,72 @@ mounted(){
           console.log(err);
         });
       },
-
+      // 传递搜索关键字
+      vehiclelFun(){
+        this.$router.push({ name: 'BuyCar', query: { vehicleName: this.input2 }});
+      },
       //传递城市
       passCity(id){
-
-        let url = '/homepage/Homepage/passCity';
-        let data = {
-          passCityid:id
+  
+        
+      },
+      //用户头像名称
+      getuserinfo(){
+        let url = '/homepage/Homepage/getuserinfo';
+        var usertoken = localStorage.getItem('tokenVue');
+        let data ={
+          usertoken:usertoken
         }
-          console.log(data);
-        sendParam(url ,data).then(res => {
-          this.passCityArr = res.data;
-
-          // 路由傳參到買車頁
-          this.$router.push({
-            name:"BuyCar",
-            params:{
-              passCityArr:'passCityArr',
-            }
-          })
+        sendParam(url, data).then(res => {
+            this.userdata = res.data;
+        console.log(res.data);
 
         }).catch(err => {
-          console.log(err);
+            console.log(err);
         });
-      }
+      },
+      //判断登录状态
+      iflogin(){
+        var usertoken = localStorage.getItem('tokenVue');
+        if(usertoken){
+          this.showPrise = true;
+          this.showRentPrise = false;
+          //有token发送到php取出用户id，拿取头像名称
+          this.getuserinfo();
+        }else{
+          this.showPrise = false;
+          this.showRentPrise = true;
+        }
+      },
+
+      //进入卖车页判断是否登录
+      sellcar(){
+        var usertoken = localStorage.getItem('tokenVue');
+        if(usertoken){
+          this.$router.push({name:"SellingCars"})
+        }else{
+           //提示框
+            this.$confirm('您好，请先登录账号', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+              center: true
+          }).then(() => {
+          //提交成功信息
+          this.$message({
+                  type: 'success',
+                  message: '请登录您的账号',   
+              });
+              this.$router.push({name:"Login"})
+          }).catch(() => {
+
+          }); 
+        }
+      },
+
+
+
+     
     },
 }
 </script>
@@ -377,6 +446,38 @@ mounted(){
       background-color: #99CCFF;
       color: white;
     }
+
+    .user_router{
+      height: 100px;
+      width: 120px;
+      background-color: white;
+    }
+
+    .router_text{
+      text-align: center;
+      font-size: 1.5rem;
+      line-height: 35px;
+      cursor: pointer;
+    }
+    .router_text:hover{
+      /* background-color: rgba(233, 233, 233, 0.671); */
+      color: #409EFF;
+    }
+
+    .link_a{
+      text-decoration:none
+    }
+    .link_a:hover{
+      color: #409EFF;
+    }
+
+    /* .drawer_box{
+    
+    } */
+
+    .city_span{
+      display: block;
+    }
   }
 
   /* 手机端 */
@@ -423,5 +524,29 @@ mounted(){
   .ss_button {
     padding-left: 10px;
   }
+
+  /* 热门城市名称 */
+    .hot_city_text{
+      border-radius: 5px;
+      line-height: 35px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid cornflowerblue;
+      margin-left: 10px;
+      margin-top: 10px;
+    }
+    .hot_city_text:hover{
+      background-color: #99CCFF;
+      color: white;
+    }
+
+    .hot_city{
+      padding-left: 10px;
+      padding-top: 10px;
+    }
+
+    .city_span{
+      display: block;
+    }
 
 </style>

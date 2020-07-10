@@ -94,7 +94,7 @@
                                                                 <el-col :span="18" :offset="3">
                                                                     <div class="grid-content bg-purple">
                                                                         <el-form-item prop="rechargeMoney">
-                                                                            <el-input type="text" placeholder="请输您充值的金额" v-model="ruleForm.rechargeMoney" maxlength="16" show-word-limit onkeyup="this.value=this.value.replace(/\D/g,'')">
+                                                                            <el-input type="text" placeholder="请输您充值的金额" v-model="ruleForm.rechargeMoney" maxlength="10" show-word-limit onkeyup="this.value=this.value.replace(/\D/g,'')">
                                                                                 <i slot="prefix" class="el-input__icon el-icon-coin"></i>
                                                                             </el-input>
                                                                         </el-form-item>
@@ -273,7 +273,7 @@
                             <el-tab-pane v-else>
                                 <span slot="label"><i class="el-icon-star-off"></i>我的收藏</span>
                                 <el-collapse v-model="cerName" accordion v-for="(item,index) in collection" :key="index">
-                                    <el-collapse-item name="1">
+                                    <el-collapse-item :name="item.o_id">
                                         <template slot="title" >
                                             <img  class="img_20px_m10px" style="border-radius: 50px;" :src="item.head_img" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">{{item.name}}</el-link>
                                         </template>
@@ -284,7 +284,7 @@
                                                     <div class="text_f">
                                                         <el-link :underline="false">
                                                             <el-link type="info" :underline="false">
-                                                                <i class="el-icon-star-on font_size_16"></i><span class="font_size_13" @click="cancel(item.collection_id,item.vehicle_id)">取消收藏</span>
+                                                                <i class="el-icon-star-on font_size_16"></i><span class="font_size_13 cursor_pointer" @click="cancel(item.collection_id,item.vehicle_id)">取消收藏</span>
                                                             </el-link>
                                                         </el-link>
                                                     </div>
@@ -305,7 +305,7 @@
                                                     </div></el-col>
                                                     <el-col :span="12"><div class="grid-content bg-purple-light">
                                                         <el-link type="warning" :underline="false" class="font_weight">￥{{item.price}}万</el-link>
-                                                        <el-tag type="danger" class="margin_b_10px" @click="purchase(item.vehicle_id)"><i class="el-icon-bank-card font_size_16"></i> 点我立即购买</el-tag>
+                                                        <el-tag type="danger" class="margin_b_10px cursor_pointer" @click="purchase(item.vehicle_id)"><i class="el-icon-bank-card font_size_16"></i> 点我立即购买</el-tag>
                                                     </div></el-col>
                                                 </el-card>
                                             </el-col>
@@ -327,147 +327,463 @@
                             <el-tab-pane>
                                 <span slot="label"><i class="el-icon-truck"></i> 我发布的车车</span>
                                 <el-collapse v-model="cerCollection" accordion>
-                                    <el-collapse-item name="1">
-                                        <template slot="title">
-                                            <i class="el-icon-upload font_size_20"></i>
-                                            <span class="text_color_2">您发布的车车</span>
-                                        </template>
-                                        <div>
-                                            <el-col :span="24" class="margin_10px">
-                                                <el-card :body-style="{ padding: '10px'}" shadow="hover">
-                                                <div class="img_text_div">
-                                                    <div class="img_120px_f">
-                                                        <img  class="img_100" src="../../assets/images/5eda0917532ee771004_20.jpg" alt="">
-                                                    </div>
+                                    <!-- 您发布的车车 v-if-->
+                                    <div v-if="this.onTheShelf == '' && this.undercarriage == '' && this.atAuction == '' && this.auctioned == '' && this.notReviewed == '' ">
+                                        <el-collapse-item name="1">
+                                            <template slot="title">
+                                                <i class="el-icon-upload font_size_20"></i>
+                                                <span class="text_color_2">您发布的车车</span>
+                                            </template>
+                                            <div style="height: 520px;">
+                                                <p style="text-align:center;margin-top: 10px;">
+                                                    <img src="../../assets/peanutImg/release.png" alt="">
+                                                </p>
+                                                <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">未发布车车</el-link></p>
+                                            </div>
+                                        </el-collapse-item>
+                                    </div>
+                                    <div v-else>
+                                        <!-- 上架的车 -->
+                                        <div v-if="this.onTheShelf == ''">
+                                            <el-collapse-item name="1">
+                                                <template slot="title">
+                                                    <el-link type="danger" :underline="false"><i class="el-icon-lollipop font_size_20"></i><span class="text_color_2">您已上架的车车</span></el-link>
+                                                </template>
+                                                <div style="height: 285px;">
+                                                    <p style="text-align:center;margin-top: 10px;">
+                                                        <img src="../../assets/peanutImg/release.png" alt="">
+                                                    </p>
+                                                    <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">没有已上架的车车</el-link></p>
                                                 </div>
-                                                    <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
-                                                    <div class="text_w_o_t font_size_13"> 
-                                                        丰田 致炫 2018款 1.5 自动 E冠军限量版           
-                                                    </div>
-                                                    <div class="height_20px">
-                                                        <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
-                                                            1234567890123456
-                                                        </div>
-                                                        <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
-                                                            车况极佳
-                                                        </div>
-                                                        <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
-                                                            ￥7.83万
-                                                        </div>     
-                                                    </div>
-                                                    <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
-                                                        <div class="text_w_o_t font_size_11 color_b4b3af"> 
-                                                            <i class="el-icon-time font_size_13"></i> 2020-10-21  
-                                                        </div>
-                                                        <div class="text_w_o_t font_size_11"> 
-                                                            卖出中~
-                                                        </div>
-                                                        <el-tag type="info" class="margin_b_10px"><i class="el-icon-circle-close font_size_16"></i> 取消发布车车</el-tag>
-                                                    </div></el-col>
-                                                </div></el-col>
-                                                </el-card>
-                                            </el-col>
+                                            </el-collapse-item>
                                         </div>
-                                    </el-collapse-item>
+                                        <!-- 上架的车 -->
+                                        <div v-else>
+                                            <el-collapse-item name="1">
+                                                <template slot="title">
+                                                    <el-link type="danger" :underline="false"><i class="el-icon-lollipop font_size_20"></i><span class="text_color_2">您已上架的车车</span></el-link>
+                                                </template>
+                                                <div v-for="(release,releaseIndex) in onTheShelf" :key="releaseIndex">
+                                                    <el-col :span="24" class="margin_10px">
+                                                        <el-card :body-style="{ padding: '10px'}" shadow="hover">
+                                                        <div class="img_text_div">
+                                                            <div class="img_120px_f">
+                                                                <img  class="img_100" :src="release.img" alt="">
+                                                            </div>
+                                                        </div>
+                                                            <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
+                                                            <div class="text_w_o_t font_size_13"> 
+                                                                {{release.vehicle_name}}          
+                                                            </div>
+                                                            <div class="height_20px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{release.vehicle_distance}}公里
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{release.introduce}}
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
+                                                                    ￥{{release.price}}万
+                                                                </div>     
+                                                            </div>
+                                                            <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af"> 
+                                                                    <i class="el-icon-time font_size_13"></i> {{release.vehicle_time}}  
+                                                                </div>
+                                                                <div v-if="release.vehicle_state == '已上架'">
+                                                                    <el-link type="danger" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                        {{release.vehicle_state}}
+                                                                    </div></el-link>
+                                                                </div>
+                                                            </div></el-col>
+                                                        </div></el-col>
+                                                        </el-card>
+                                                    </el-col>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 下架的车 -->
+                                        <div v-if="this.undercarriage == ''">
+                                            <el-collapse-item name="2">
+                                                <template slot="title">
+                                                    <el-link type="info" :underline="false"><i class="el-icon-sugar font_size_20"></i><span class="text_color_2">您已下架的车车</span></el-link>
+                                                </template>
+                                                <div style="height: 285px;">
+                                                    <p style="text-align:center;margin-top: 10px;">
+                                                        <img src="../../assets/peanutImg/release.png" alt="">
+                                                    </p>
+                                                    <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">没有已下架的车车</el-link></p>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 下架的车 -->
+                                        <div v-else>
+                                            <el-collapse-item name="2">
+                                                <template slot="title">
+                                                    <el-link type="info" :underline="false"><i class="el-icon-sugar font_size_20"></i><span class="text_color_2">您已下架的车车</span></el-link>
+                                                </template>
+                                                        <div v-for="(undercarriage,undercarriageIndex) in undercarriage" :key="undercarriageIndex">
+                                                    <el-col :span="24" class="margin_10px">
+                                                        <el-card :body-style="{ padding: '10px'}" shadow="hover">
+                                                        <div class="img_text_div">
+                                                            <div class="img_120px_f">
+                                                                <img  class="img_100" :src="undercarriage.img" alt="">
+                                                            </div>
+                                                        </div>
+                                                            <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
+                                                            <div class="text_w_o_t font_size_13"> 
+                                                                {{undercarriage.vehicle_name}}          
+                                                            </div>
+                                                            <div class="height_20px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{undercarriage.vehicle_distance}}公里
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{undercarriage.introduce}}
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
+                                                                    ￥{{undercarriage.price}}万
+                                                                </div>     
+                                                            </div>
+                                                            <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af"> 
+                                                                    <i class="el-icon-time font_size_13"></i> {{undercarriage.vehicle_time}}  
+                                                                </div>
+                                                                <div v-if="undercarriage.vehicle_state == '已下架'">
+                                                                    <el-link type="info" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                        {{undercarriage.vehicle_state}}
+                                                                    </div></el-link>
+                                                                </div>
+                                                            </div></el-col>
+                                                        </div></el-col>
+                                                        </el-card>
+                                                    </el-col>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 拍卖中的车 -->
+                                        <div v-if="this.atAuction == ''">
+                                            <el-collapse-item name="3">
+                                                <template slot="title">
+                                                    <el-link type="warning" :underline="false"><i class="el-icon-ice-cream-round font_size_20"></i><span class="text_color_2">您拍卖中的车车</span></el-link>
+                                                </template>
+                                                <div style="height: 285px;">
+                                                    <p style="text-align:center;margin-top: 10px;">
+                                                        <img src="../../assets/peanutImg/release.png" alt="">
+                                                    </p>
+                                                    <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">没有拍卖中的车车</el-link></p>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 拍卖中的车 -->
+                                        <div v-else>
+                                            <el-collapse-item name="3">
+                                                <template slot="title">
+                                                    <el-link type="warning" :underline="false"><i class="el-icon-ice-cream-round font_size_20"></i><span class="text_color_2">您拍卖中的车车</span></el-link>
+                                                </template>
+                                                <div v-for="(atAuction,atAuctionIndex) in atAuction" :key="atAuctionIndex">
+                                                    <el-col :span="24" class="margin_10px">
+                                                        <el-card :body-style="{ padding: '10px'}" shadow="hover">
+                                                        <div class="img_text_div">
+                                                            <div class="img_120px_f">
+                                                                <img  class="img_100" :src="atAuction.img" alt="">
+                                                            </div>
+                                                        </div>
+                                                            <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
+                                                            <div class="text_w_o_t font_size_13"> 
+                                                                {{atAuction.vehicle_name}}          
+                                                            </div>
+                                                            <div class="height_20px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{atAuction.vehicle_distance}}公里
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{atAuction.introduce}}
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
+                                                                    ￥{{atAuction.price}}万
+                                                                </div>     
+                                                            </div>
+                                                            <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af"> 
+                                                                    <i class="el-icon-time font_size_13"></i> {{atAuction.vehicle_time}}  
+                                                                </div>
+                                                                <div v-if="atAuction.vehicle_state == '拍卖中'">
+                                                                    <el-link type="warning" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                        {{atAuction.vehicle_state}}
+                                                                    </div></el-link>
+                                                                </div>
+                                                            </div></el-col>
+                                                        </div></el-col>
+                                                        </el-card>
+                                                    </el-col>
+                                                </div>                                    
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 已拍卖的车 -->
+                                        <div v-if="this.auctioned == ''">
+                                            <el-collapse-item name="4">
+                                                <template slot="title">
+                                                    <el-link type="success" :underline="false"><i class="el-icon-ice-drink font_size_20"></i><span class="text_color_2">您已拍卖的车车</span></el-link>
+                                                </template>
+                                                <div style="height: 285px;">
+                                                    <p style="text-align:center;margin-top: 10px;">
+                                                        <img src="../../assets/peanutImg/release.png" alt="">
+                                                    </p>
+                                                    <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">没有已拍卖的车车</el-link></p>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 已拍卖的车 -->
+                                        <div v-else>
+                                            <el-collapse-item name="4">
+                                                <template slot="title">
+                                                    <el-link type="success" :underline="false"><i class="el-icon-ice-drink font_size_20"></i><span class="text_color_2">您已拍卖的车车</span></el-link>
+                                                </template>
+                                                <div v-for="(auctioned,auctionedIndex) in auctioned" :key="auctionedIndex">
+                                                    <el-col :span="24" class="margin_10px">
+                                                        <el-card :body-style="{ padding: '10px'}" shadow="hover">
+                                                        <div class="img_text_div">
+                                                            <div class="img_120px_f">
+                                                                <img  class="img_100" :src="auctioned.img" alt="">
+                                                            </div>
+                                                        </div>
+                                                            <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
+                                                            <div class="text_w_o_t font_size_13"> 
+                                                                {{auctioned.vehicle_name}}          
+                                                            </div>
+                                                            <div class="height_20px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{auctioned.vehicle_distance}}公里
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{auctioned.introduce}}
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
+                                                                    ￥{{auctioned.price}}万
+                                                                </div>     
+                                                            </div>
+                                                            <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af"> 
+                                                                    <i class="el-icon-time font_size_13"></i> {{auctioned.vehicle_time}}  
+                                                                </div>
+                                                                <div v-if="auctioned.vehicle_state == '已拍卖'">
+                                                                    <el-link type="success" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                        {{auctioned.vehicle_state}}
+                                                                    </div></el-link>
+                                                                </div>
+                                                            </div></el-col>
+                                                        </div></el-col>
+                                                        </el-card>
+                                                    </el-col>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 未审核的车 -->
+                                        <div v-if="this.notReviewed == ''">
+                                            <el-collapse-item name="5">
+                                                <template slot="title">
+                                                    <el-link type="primary" :underline="false"><i class="el-icon-milk-tea font_size_20"></i><span class="text_color_2">您未审核的车车</span></el-link>
+                                                </template>
+                                                <div style="height: 285px;">
+                                                    <p style="text-align:center;margin-top: 10px;">
+                                                        <img src="../../assets/peanutImg/release.png" alt="">
+                                                    </p>
+                                                    <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">没有未审核的车车</el-link></p>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                        <!-- 未审核的车 -->
+                                        <div v-else>
+                                            <el-collapse-item name="5">
+                                                <template slot="title">
+                                                    <el-link type="primary" :underline="false"><i class="el-icon-milk-tea font_size_20"></i><span class="text_color_2">您未审核的车车</span></el-link>
+                                                </template>
+                                                <div v-for="(notReviewed,notReviewedIndex) in notReviewed" :key="notReviewedIndex">
+                                                    <el-col :span="24" class="margin_10px">
+                                                        <el-card :body-style="{ padding: '10px'}" shadow="hover">
+                                                        <div class="img_text_div">
+                                                            <div class="img_120px_f">
+                                                                <img  class="img_100" :src="notReviewed.img" alt="">
+                                                            </div>
+                                                        </div>
+                                                            <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
+                                                            <div class="text_w_o_t font_size_13"> 
+                                                                {{notReviewed.vehicle_name}}          
+                                                            </div>
+                                                            <div class="height_20px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{notReviewed.vehicle_distance}}公里
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
+                                                                    {{notReviewed.introduce}}
+                                                                </div>
+                                                                <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
+                                                                    ￥{{notReviewed.price}}万
+                                                                </div>     
+                                                            </div>
+                                                            <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
+                                                                <div class="text_w_o_t font_size_11 color_b4b3af"> 
+                                                                    <i class="el-icon-time font_size_13"></i> {{notReviewed.vehicle_time}}  
+                                                                </div>
+                                                                <div v-if="notReviewed.vehicle_state == '未审核'">
+                                                                    <el-link type="primary" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                        {{notReviewed.vehicle_state}}
+                                                                    </div></el-link>
+                                                                </div>
+                                                            </div></el-col>
+                                                        </div></el-col>
+                                                        </el-card>
+                                                    </el-col>
+                                                </div>
+                                            </el-collapse-item>
+                                        </div>
+                                    </div>
                                 </el-collapse>
                             </el-tab-pane>
                             <!-- 买卖记录 -->
                             <el-tab-pane>
                                 <span slot="label"><i class="el-icon-notebook-2"></i> 买卖记录</span>
                                 <el-collapse v-model="cerBusiness" accordion>
-                                    <!-- 购买车辆 -->
-                                    <el-collapse-item name="1">
+                                    <!-- 购买车辆 v-if-->
+                                    <el-collapse-item name="1" v-if="this.peanutOrderAdd == ''">
                                         <template slot="title" >
                                             <img  class="img_20px_m10px" src="../../assets/peanutImg/gm.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">购买车辆</el-link>
                                         </template>
-                                        <div>
+                                        <div style="height: 472px;">
+                                            <p style="text-align:center;margin-top: 10px;">
+                                                <img src="../../assets/peanutImg/vehicle.png" alt="">
+                                            </p>
+                                            <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">暂无购买车辆</el-link></p>
+                                        </div>
+                                    </el-collapse-item>
+                                    <!-- 购买车辆 v-else-->
+                                    <el-collapse-item name="1" v-else>
+                                        <template slot="title" >
+                                            <img  class="img_20px_m10px" src="../../assets/peanutImg/gm.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2" @click="buyACarclick">购买车辆</el-link>
+                                        </template>
+                                        <div v-for="(order,orderIndex) in peanutOrderAdd" :key="orderIndex">
                                             <el-col :span="24" class="margin_10px">
                                                 <el-card :body-style="{ padding: '10px'}" shadow="hover">
                                                 <div class="img_text_div">
                                                     <div class="img_120px_f">
-                                                        <img  class="img_100" src="../../assets/peanutImg/5eda0917532ee771004_20.jpg" alt="">
+                                                        <img  class="img_100" :src="order.img" alt="">
                                                     </div>
                                                 </div>
                                                 <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
                                                     <div class="text_w_o_t font_size_13"> 
-                                                        丰田 致炫 2018款 1.5 自动 E冠军限量版           
+                                                        {{order.vehicle_name}}        
                                                     </div>
                                                     <div class="height_20px">
                                                         <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
-                                                            1234567890123456
+                                                            {{order.order_num}}
                                                         </div>
-                                                        <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
-                                                            车况极佳
+                                                        <div class="text_w_o_t font_size_11 color_b4b3af float_f"> 
+                                                            {{order.introduce}}
                                                         </div>
                                                         <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
-                                                            ￥7.83万
+                                                            ￥{{order.price}}万
                                                         </div>     
                                                     </div>
                                                     <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
                                                         <div class="text_w_o_t font_size_11 color_b4b3af"> 
-                                                            <i class="el-icon-time font_size_13"></i> 2020-10-21  
+                                                            <i class="el-icon-time font_size_13"></i> {{order.transaction_time}}
                                                         </div>
-                                                        <div class="text_w_o_t font_size_11"> 
-                                                            购买中...
+                                                        <!-- 待验收 -->
+                                                        <div v-if="order.o_state == '待验收'">
+                                                            <el-link type="primary" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                {{order.o_state}}
+                                                            </div></el-link>
+                                                                <!-- 订单号,卖家id,买家id,车辆id -->
+                                                                <el-tag type="primary" class="cursor_pointer" @click="primary(order.order_num,order.sell_id,order.buy_id,order.vehicle_id)">点我验收</el-tag>
+                                                                <!-- 订单号,卖家id,买家id,车辆id -->
+                                                                <el-tag type="danger" class="button_mt10px cursor_pointer" @click="danger(order.order_num,order.sell_id,order.buy_id,order.vehicle_id)">点我退货</el-tag>
                                                         </div>
-                                                        <el-tag type="primary">点我付款</el-tag>
+                                                        <!-- 退款审核中 -->
+                                                        <div v-if="order.o_state == '退款审核中'">
+                                                            <el-link type="info" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                {{order.o_state}}
+                                                            </div></el-link>
+                                                                <!-- 订单号,卖家id,买家id,车辆id -->
+                                                                <!-- <el-tag type="info" class="cursor_pointer" @click="info()">正在进行审核</el-tag> -->
+                                                        </div>
+                                                        <!-- 退款成功 -->
+                                                        <div v-if="order.o_state == '退款完成'">
+                                                            <el-link type="info" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                {{order.o_state}}
+                                                            </div></el-link>
+                                                        </div>
+                                                        <!-- 待评价 -->
+                                                        <div v-if="order.o_state == '待评价'">
+                                                            <el-link type="warning" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                {{order.o_state}}
+                                                            </div></el-link>
+                                                                <!-- 订单号,卖家id,买家id,车辆id -->
+                                                                <el-tag type="success" class="cursor_pointer" @click="successClick(order.order_num,order.sell_id,order.buy_id,order.vehicle_id)">完成购买</el-tag>
+                                                                <!-- 订单号,卖家id,买家id,车辆id -->
+                                                                <el-tag type="warning" class="button_mt10px cursor_pointer" @click="warning(order.order_num,order.sell_id,order.buy_id,order.vehicle_id)">点我评价</el-tag>
+                                                        </div>
+                                                        <!-- 交易完成 -->
+                                                        <div v-if="order.o_state == '交易完成'">
+                                                            <el-link type="success" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                                {{order.o_state}}
+                                                            </div></el-link>
+                                                        </div>
                                                     </div></el-col>
                                                 </div></el-col>
-                                                <!-- <el-col :span="24"><div class="grid-content bg-purple-light margin_b_10px">
-                                                    <el-steps :space="200" :active="1" finish-status="success">
-                                                        <el-step title="车辆下单"></el-step>
-                                                        <el-step title="车辆付款"></el-step>
-                                                        <el-step title="收到车辆"></el-step>
-                                                    </el-steps>
-                                                </div></el-col> -->
                                                 </el-card>
                                             </el-col>
                                         </div>
                                     </el-collapse-item>
-                                    <!-- 卖出车辆 -->
-                                    <el-collapse-item name="2">
+                                    <!-- 卖出车辆 v-if-->
+                                    <el-collapse-item name="2" v-if="this.sellvehicleAdd == ''">
                                         <template slot="title" >
                                             <img  class="img_20px_m10px" src="../../assets/peanutImg/mc.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">卖出车辆</el-link>
                                         </template>
-                                        <div>
+                                        <div style="height: 472px;">
+                                            <p style="text-align:center;margin-top: 10px;">
+                                                <img src="../../assets/peanutImg/sellingCars.png" alt="">
+                                            </p>
+                                            <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">暂无卖出车辆</el-link></p>
+                                        </div>
+                                    </el-collapse-item>
+                                    <!-- 卖出车辆 v-else-->
+                                    <el-collapse-item name="2" v-else>
+                                        <template slot="title">
+                                            <img  class="img_20px_m10px" src="../../assets/peanutImg/mc.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2" @click="sellvehicleclick">卖出车辆</el-link>
+                                        </template>
+                                        <div v-for="(sellvehicle,sellIndex) in sellvehicleAdd" :key="sellIndex">
                                             <el-col :span="24" class="margin_10px">
                                                 <el-card :body-style="{ padding: '10px'}" shadow="hover">
                                                 <div class="img_text_div">
                                                     <div class="img_120px_f">
-                                                        <img  class="img_100" src="../../assets/peanutImg/5eda0917532ee771004_20.jpg" alt="">
+                                                        <img  class="img_100" :src="sellvehicle.img" alt="">
                                                     </div>
                                                 </div>
                                                 <el-col :span="12"><div class="grid-content bg-purple-light margin_b_10px">
                                                     <div class="text_w_o_t font_size_13"> 
-                                                        丰田 致炫 2018款 1.5 自动 E冠军限量版           
+                                                        {{sellvehicle.vehicle_name}}         
                                                     </div>
                                                     <div class="height_20px">
                                                         <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
-                                                            1234567890123456
+                                                            <el-link type="success" :underline="false" class="font_size_11">买家: {{sellvehicle.name}}</el-link>
                                                         </div>
                                                         <div class="text_w_o_t font_size_11 color_b4b3af float_f margin_right_10px"> 
-                                                            车况极佳
+                                                            {{sellvehicle.introduce}}
                                                         </div>
                                                         <div class="text_w_o_t font_size_11 color_ffb800 float_f"> 
-                                                            ￥7.83万
+                                                            ￥{{sellvehicle.price}}万
                                                         </div>
                                                     </div>
                                                     <el-col :span="24" class="padding-left-0"><div class="grid-content bg-purple-light margin_b_10px">
                                                         <div class="text_w_o_t font_size_11 color_b4b3af"> 
-                                                            <i class="el-icon-time font_size_13"></i> 2020-10-21  
+                                                            <i class="el-icon-time font_size_13"></i> {{sellvehicle.transaction_time}}  
                                                         </div>
-                                                        <div class="text_w_o_t font_size_11"> 
-                                                            卖出中...
-                                                        </div>
+                                                        <el-link type="success" :underline="false"><div class="text_w_o_t font_size_11"> 
+                                                            {{sellvehicle.o_state}}
+                                                        </div></el-link>
                                                     </div></el-col>
                                                 </div></el-col>
-                                                <!-- <el-col :span="24"><div class="grid-content bg-purple-light margin_b_10px">
-                                                    <el-steps :space="200" :active="1" finish-status="success">
-                                                        <el-step title="对方下单"></el-step>
-                                                        <el-step title="对方付款"></el-step>
-                                                        <el-step title="卖出车辆"></el-step>
-                                                    </el-steps>
-                                                </div></el-col> -->
                                                 </el-card>
                                             </el-col>
                                         </div>
@@ -492,7 +808,7 @@
                                     </el-input>
                                 </el-form-item>
                             </div>
-                            <div class="demo-drawer__footer">
+                            <div class="demo-drawer__footer button_mb10px">
                                 <el-button type="primary" @click="onSubmitClick()" :loading="loading">{{ loading ? '正在充值 ...' : '确 定' }}</el-button>
                             </div>
                         </el-col>
@@ -526,8 +842,33 @@
                     </el-row>
                     <el-row :gutter="20">
                         <el-col :span="18" :offset="3">
-                            <div class="demo-drawer__footer">
+                            <div class="demo-drawer__footer button_mb10px">
                                 <el-button type="primary" @click="rechargeClick()" :rechargeing="rechargeing">{{ rechargeing ? '正在修改充值密碼 ...' : '确 定' }}</el-button>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+        </el-drawer>
+        <!-- 输入评价信息 -->
+        <el-drawer :visible.sync="evaluate" :direction="evaluatedirection" :before-close="handleClose">
+            <div class="demo-drawer__content">
+                <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
+                    <el-row :gutter="20">
+                        <el-col :span="18" :offset="3">
+                            <el-rate
+                                v-model="value3"
+                                :colors="colors">
+                            </el-rate>
+                            <div class="grid-content bg-purple button_mt10px2">
+                                <el-form-item prop="evaluateContent">
+                                    <el-input type="text" placeholder="请输入您的评价内容" v-model="ruleForm.evaluateContent" maxlength="60" show-word-limit onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')">
+                                        <i slot="prefix" class="el-input__icon el-icon-message"></i>
+                                    </el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="demo-drawer__footer button_mb10px">
+                                <el-button type="warning" @click="evaluateClick()" :loading="evaluateloading">{{ evaluateloading ? '正在发布评价 ...' : '确定发布' }}</el-button>
                             </div>
                         </el-col>
                     </el-row>
@@ -610,22 +951,57 @@ export default {
                 callback(new Error('请输入您要修改的地址'));
             }
         };
+        //输入评价内容
+        var validaterEva = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入您宝贵的评价'));
+            }
+        };
         return {
+            //已上架
+            onTheShelf: '',
+            //已下架
+            undercarriage: '',
+            //拍卖中
+            atAuction: '',
+            //已拍卖
+            auctioned: '',
+            //未审核
+            notReviewed: '',
+            //卖出车
+            sellvehicleAdd: '',
+            value3: null,
+            colors: ['#99A9BF', '#F7BA2A', '#FF9900'],  // 等同于 { 2: '#99A9BF', 4: { value: '#F7BA2A', excluded: true }, 5: '#FF9900' }
+            //订单号,卖家id,买家id,车辆id
+            order_num: '',
+            sell_id: '',
+            buy_id: '',
+            vehicle_id: '',
+            //
             lastImgUrl: '',
             dialogImageUrl: '',
             dialogVisible: false,
+
             onSubmit: false,
             direction: 'btt',
             loading: false,
+
+            evaluate: false,
+            evaluatedirection: 'ttb',
+            evaluateloading: false,
+
             rechargeButton: false,
             directionttb: 'ttb',
             rechargeing: false,
+
             userMessage:[],
             active: 0,
             value1: '',
             value: '',
             //收藏
             collection: [],
+            //买车
+            peanutOrderAdd:[],
             activeName: ['1'],
             cerName:['1'],
             cerCollection:['1'],
@@ -662,7 +1038,9 @@ export default {
                 //充值金额
                 rechargeMoney: '',
                 //修改地址
-                address: ''
+                address: '',
+                //输入评价内容
+                evaluateContent: ''
             },
             rules: {
                 //修改密码的三个内容
@@ -698,6 +1076,10 @@ export default {
                 //修改地址
                 address: [
                     { validator: validaterAdd, trigger: 'blur' }
+                ],
+                //输入评价内容
+                evaluateContent: [
+                    { validator: validaterEva, trigger: 'blur' }
                 ]
             }
         }
@@ -708,13 +1090,27 @@ export default {
         this.userAdd();
         //用户收藏
         this.userCollection();
+        //已上架
+        this.userOnTheShelf();
+        //已下架
+        this.userUndercarriage();
+        //拍卖中
+        this.userAtAuction();
+        //已拍卖
+        this.userAuctioned();
+        //未审核
+        this.userNotReviewed();
+        //用户买车
+        this.peanutOrder();
+        //用户卖车
+        this.sellingCars();
     },
     methods: {
         //打印用户信息
         userAdd(){
             //开局验证
             let url = '/personal/Personal/personal';
-            let token = localStorage.getItem("token");
+            let token = localStorage.getItem("tokenVue");
             // console.log(this.$store.state.UserToken);
             //给php发送内容
             let data = {
@@ -729,7 +1125,13 @@ export default {
                     this.userMessage = userContent;
                     console.log(this.userMessage);
                 }else{
-                    
+                    //无账号失败返回
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning',
+                        center: true
+                    });
+                    this.$router.push("/");
                 }
             }).catch(err => {
                 //异常返回
@@ -752,6 +1154,349 @@ export default {
                     console.log(this.collection);
                 }else{
                     
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印已上架车辆
+        userOnTheShelf(){
+            //开局验证
+            let url = '/personal/Personal/userOnTheShelf';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.onTheShelf = res.data.data;
+                    console.log(this.onTheShelf);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印已下架车辆
+        userUndercarriage(){
+            //开局验证
+            let url = '/personal/Personal/userUndercarriage';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.undercarriage = res.data.data;
+                    console.log(this.undercarriage);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印拍卖中车辆
+        userAtAuction(){
+            //开局验证
+            let url = '/personal/Personal/userAtAuction';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.atAuction = res.data.data;
+                    console.log(this.atAuction);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印已拍卖车辆
+        userAuctioned(){
+            //开局验证
+            let url = '/personal/Personal/userAuctioned';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.auctioned = res.data.data;
+                    console.log(this.auctioned);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印未审核车辆
+        userNotReviewed(){
+            //开局验证
+            let url = '/personal/Personal/userNotReviewed';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.notReviewed = res.data.data;
+                    console.log(this.notReviewed);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印用户买的车
+        peanutOrder(){
+            //开局验证
+            let url = '/personal/Personal/peanutOrder';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.peanutOrderAdd = res.data.data;
+                    console.log(this.peanutOrderAdd);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //打印用户卖的车
+        sellingCars(){
+            //开局验证
+            let url = '/personal/Personal/sellingCars';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.sellvehicleAdd = res.data.data;
+                    console.log(this.sellvehicleAdd);
+                }else{
+                    
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //刷新用户买车
+        buyACarclick(){
+            //用户买车
+            this.peanutOrder();
+        },
+        //刷新用户卖车
+        sellvehicleclick(){
+            //用户卖车
+            this.sellingCars();
+        },
+        //待验收(订单号,卖家id,买家id,车辆id)
+        primary(order_num,sell_id,buy_id,vehicle_id){
+            //开局验证
+            let url = '/personal/Personal/primary';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token,
+                order_num:order_num,
+                sell_id:sell_id,
+                buy_id:buy_id,
+                vehicle_id:vehicle_id
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.peanutOrderAdd = res.data.data;
+                    //修改成功返回
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success',
+                        center: true
+                    });
+                }else{
+                    //修改失败返回
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning',
+                        center: true
+                    });
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //退货(订单号,卖家id,买家id,车辆id)
+        danger(order_num,sell_id,buy_id,vehicle_id){
+            //退货
+            let url = '/personal/Personal/danger';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token,
+                order_num:order_num,
+                sell_id:sell_id,
+                buy_id:buy_id,
+                vehicle_id:vehicle_id
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.peanutOrderAdd = res.data.data;
+                    //退货成功返回
+                    this.$message({
+                        message: res.data.msg,
+                        center: true
+                    });
+                }else{
+                    //退货失败返回
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning',
+                        center: true
+                    });
+                }
+            }).catch(err => {
+                //异常返回
+                console.log(err);
+            })
+        },
+        //待评价(订单号,卖家id,买家id,车辆id)
+        warning(order_num,sell_id,buy_id,vehicle_id){
+            this.order_num = order_num;
+            this.sell_id = sell_id;
+            this.buy_id = buy_id;
+            this.vehicle_id = vehicle_id;
+            //显示评价框
+            this.evaluate = true;
+        },
+        //发布评价
+        evaluateClick(){
+            console.log(this.value3);
+            //(订单号,卖家id,买家id,车辆id);
+            console.log(this.order_num,this.sell_id,this.buy_id,this.vehicle_id);
+            //评价
+            let url = '/personal/Personal/evaluateClick';
+            let token = localStorage.getItem("tokenVue");
+            if(this.value3 == ''){
+                this.$message.error({
+                    message: '未选择评价等级',
+                    center: true
+                });
+            }else if(this.ruleForm.evaluateContent == ''){
+                this.$message.error({
+                    message: '请输入评价内容',
+                    center: true
+                });
+            }else{
+                //给php发送内容
+                let data = {
+                    token:token,
+                    order_num:this.order_num,
+                    sell_id:this.sell_id,
+                    buy_id:this.buy_id,
+                    vehicle_id:this.vehicle_id,
+                    content:this.ruleForm.evaluateContent,
+                    comment_num:this.value3
+                };
+                sendParam(url, data).then(res => {
+                    //显示正在发布评价中
+                    this.evaluateloading = true;
+                    this.timer = setTimeout(() => {
+                        // 动画关闭需要一定的时间
+                        setTimeout(() => {
+                            //关闭正在发布评价中，按钮字变成回原来字迹
+                            this.evaluateloading = false;                           
+                        }, 400);
+                        //自动关闭评价框
+                        this.evaluate = false;
+                    }, 2000);
+                    if(res.data.code==1){
+                        this.peanutOrderAdd = res.data.data;
+                        //发布评价返回
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success',
+                            center: true
+                        });
+                    }else{
+                        //发布评价返回
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning',
+                            center: true
+                        });
+                    }
+                }).catch(err => {
+                    //异常返回
+                    console.log(err);
+                })
+            }
+        },
+        //完成交易(订单号,卖家id,买家id,车辆id)
+        successClick(order_num,sell_id,buy_id,vehicle_id){
+            //完成
+            let url = '/personal/Personal/successClick';
+            let token = localStorage.getItem("tokenVue");
+            // console.log(this.$store.state.UserToken);
+            //给php发送内容
+            let data = {
+                token:token,
+                order_num:order_num,
+                sell_id:sell_id,
+                buy_id:buy_id,
+                vehicle_id:vehicle_id
+            };
+            sendParam(url, data).then(res => {
+                if(res.data.code==1){
+                    this.peanutOrderAdd = res.data.data;
+                    //完成成功返回
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success',
+                        center: true
+                    });
+                }else{
+                    //完成失败返回
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'warning',
+                        center: true
+                    });
                 }
             }).catch(err => {
                 //异常返回
@@ -799,7 +1544,7 @@ export default {
                 }, 2000);
                 //充值
                 let url = '/personal/Personal/onSubmitClick';
-                let token = localStorage.getItem("token");
+                let token = localStorage.getItem("tokenVue");
                 //给php发送内容
                 let data = {
                     recharge:this.ruleForm.rechargePassword,
@@ -837,6 +1582,7 @@ export default {
         //点击收藏跳转
         purchase(vehicleId){
             console.log(vehicleId);
+            this.$router.push({ name: "Detail", query: { vehicleID: vehicleId } });
         },
         //点击取消收藏
         cancel(collectionId,vehicleId){
@@ -844,7 +1590,7 @@ export default {
             console.log(vehicleId);
             //取消收藏
             let url = '/personal/Personal/cancel';
-            let token = localStorage.getItem("token");
+            let token = localStorage.getItem("tokenVue");
             //给php发送内容
             let data = {
                 collection_id:collectionId,
@@ -853,6 +1599,7 @@ export default {
             };
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
+                    this.collection = res.data.data;
                     //取消成功返回
                     this.$message({
                         message: res.data.msg,
@@ -915,7 +1662,7 @@ export default {
                 }, 2000);
                 //修改支付密码
                 let url = '/personal/Personal/rechargeClick';
-                let token = localStorage.getItem("token");
+                let token = localStorage.getItem("tokenVue");
                 //给php发送内容
                 let data = {
                     acc:this.ruleForm.rechargeLoginAccount,
@@ -963,7 +1710,7 @@ export default {
             }else {
                 //修改密码
                 let url = '/personal/Personal/change';
-                let token = localStorage.getItem("token");
+                let token = localStorage.getItem("tokenVue");
                 //给php发送内容
                 let data = {
                     acc:this.ruleForm.LoginAccount,
@@ -1003,7 +1750,7 @@ export default {
             }else{
                 //修改性别
                 let url = '/personal/Personal/gender';
-                let token = localStorage.getItem("token");
+                let token = localStorage.getItem("tokenVue");
                 //给php发送内容
                 let data = {
                     sex:this.value,
@@ -1042,7 +1789,7 @@ export default {
             }else{
                 //修改地址
                 let url = '/personal/Personal/address';
-                let token = localStorage.getItem("token");
+                let token = localStorage.getItem("tokenVue");
                 //给php发送内容
                 let data = {
                     add:this.ruleForm.address,
@@ -1075,7 +1822,8 @@ export default {
         avatarClick() {
             //修改地址
             let url = '/personal/Personal/avatarClick';
-            let token = localStorage.getItem("token");
+            let token = localStorage.getItem("tokenVue");
+            console.log(this.lastImgUrl);
             //给php发送内容
             let data = {
                 head_img:this.lastImgUrl,
@@ -1083,7 +1831,7 @@ export default {
             };
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
-                    this.userMessage.head_img = res.data.data
+                    this.userMessage.head_img = res.data.data;
                     //修改成功返回
                     this.$message({
                         message: res.data.msg,
@@ -1107,7 +1855,7 @@ export default {
             console.log(val);
         },
         format(percentage) {
-            return percentage === 100 ? '满信誉' : `${percentage}%`;
+            return percentage === 100 ? '满信誉' : `${percentage}分`;
         },
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -1131,7 +1879,7 @@ export default {
         },
         // 图片上传成功后取到地址
         uploadSuccess(response, file, fileList) {
-        this.lastImgUrl = response;
+            this.lastImgUrl = response;
         },
         next() {
             if (this.active++ > 2) this.active = 0;
@@ -1141,6 +1889,9 @@ export default {
 </script>
 
 <style scoped>
+.cursor_pointer{
+    cursor: pointer !important;
+}
 .float_f{
     float: left;
 }
@@ -1152,6 +1903,12 @@ export default {
 }
 .button_mt10px{
     margin: 10px 0 0 0;
+}
+.button_mt10px2{
+    margin-top: 10px !important;
+}
+.button_mb10px{
+    margin-bottom: 10px !important;  
 }
 .text_f{
     margin: 0 0 5px 0;
@@ -1303,5 +2060,8 @@ export default {
 }
 #PersonalContent .el-drawer__header{
     margin-bottom: 0px;
+}
+#PersonalContent .el-drawer{
+  height: auto !important;
 }
 </style>
