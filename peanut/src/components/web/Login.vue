@@ -202,7 +202,7 @@ export default {
                 };
                 sendParam(url, data).then(res => {
                     if(res.data.code==1){
-                        localStorage.setItem('token',res.data.data.token);
+                        localStorage.setItem('tokenVue',res.data.data.token);
                         // this.$store.commit('setUserToken',res.data.data.token);
                         // console.log(this.$store.state.UserToken);
                         //登录成功返回
@@ -211,6 +211,7 @@ export default {
                             type: 'success',
                             center: true
                         });
+                        this.$router.push("/");
                     }else{
                         //登录失败返回
                         this.$message({

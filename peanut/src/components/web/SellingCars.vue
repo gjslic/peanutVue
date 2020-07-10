@@ -26,42 +26,49 @@
                     <el-row :gutter="24">
                         
                          <el-form-item label="选择城市" prop="name">
-                             
-                            <el-input v-model="ruleForm.name" class="form_input" placeholder="请输入所在城市" 
-                            onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" 
-                            >
-                            </el-input>
+                            
+                             <el-select v-model="ruleForm.name" clearable placeholder="请选择">
+                                <el-option
+                                v-for="item in cityArr"
+                                :key="item.city_id"
+                                :label="item.city_name"
+                                :value="item.city_id">
+                                </el-option>
+                            </el-select>
                           
                          </el-form-item>
 
                     </el-row>
                     <!-- 选择品牌 -->
-                    <el-form-item label="车辆品牌" prop="brand">
-
-                        <!-- <div class="block float_left margin_bottom_10 margin_right_4">
-                        </div> -->
-
-                            <!-- 只能输入中英文以及数字 -->
-                             <el-input v-model="ruleForm.brand" class="form_input" maxlength="4" placeholder="请输入车辆品牌" 
-
-                            @input="brandLimit">
-                            </el-input>
-                        
+                    <el-form-item label="车牌系列" prop="brand">
+                        <el-cascader
+                            v-model="ruleForm.brand"
+                            :options="brandS"
+                            :props="{ expandTrigger: 'hover' }"
+                        ></el-cascader>
                     </el-form-item>
 
-                    <!-- 选择车系 -->
-                     <el-form-item label="车辆车系" prop="date1">
-
-                        <div class="block float_left margin_bottom_10 margin_right_4">
-
-                             <el-input v-model="ruleForm.date1" class="form_input" maxlength="10" placeholder="请输入该品牌下的车系" 
-                             @input="styleLimit"
-                             >
-
-                            </el-input>
-                        </div>
-
+                
+                    <el-form-item label="车辆信息" prop="carname" style="width: 300px;">
+                       <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入年份款式，排气等信息"
+                        v-model="ruleForm.carname">
+                        </el-input>
                     </el-form-item>
+
+                      <el-form-item label="车辆标签" prop="tab">
+                         <el-select v-model="ruleForm.tab" clearable placeholder="请选择车辆标签">
+                                <el-option
+                                v-for="item in tabArr"
+                                :key="item.tab_id"
+                                :label="item.tab_name"
+                                :value="item.tab_id">
+                                </el-option>
+                            </el-select>
+                    </el-form-item>
+
 
 
                     <!-- 上牌时间 -->
@@ -72,9 +79,13 @@
 
 
                     <el-form-item label="行驶里程" prop="num">
-                        <el-input type="text" v-model="ruleForm.num" placeholder="已万公里记录" maxlength="4" class="width_150" show-word-limit  onkeyup="value=value.replace(/[^\0-9\.]/g,'')" onpaste="value=value.replace(/[^\0-9\.]/g,'')" oncontextmenu = "value=value.replace(/[^\0-9\.]/g,'')"></el-input>
+                        <el-input type="text" v-model="ruleForm.num" placeholder="已万公里记录" maxlength="4" class="width_150" show-word-limit onkeyup="value=value.replace(/[^\d.]/g,'')" onpaste="value=value.replace(/[^\0-9\.]/g,'')" oncontextmenu = "value=value.replace(/[^\0-9\.]/g,'')"></el-input>
                     </el-form-item>
 
+                    <el-form-item label="期望价格" prop="salePrice" style="width:300px;">
+                        <el-input v-model="ruleForm.salePrice" placeholder="请输入价格（万）" maxlength="4"
+                        onkeyup="value=value.replace(/[^\d.]/g,'')"></el-input>
+                    </el-form-item>
 
                     <el-form-item label="车况标签" prop="resource">
                         <el-radio-group v-model="ruleForm.resource">
@@ -92,18 +103,27 @@
                     </el-form-item>
                     
                     <el-form-item label="车辆图片">
-                        <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" list-type="picture">
+                        <el-upload class="upload-demo" action="http://127.0.0.1/nodejs/peanut/th5/public/sellcar/Sellcar/uploadimg" 
+                        :limit="1"
+                        name="image"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove"
+                        :on-success="uploadSuccess" 
+                        :file-list="fileList" 
+                        list-type="picture-card">
                             <el-button size="small" type="primary" >点击上传车辆信息</el-button>
                             <div slot="tip" class="el-upload__tip ">只能上传jpg/png文件只取第一张</div>
                         </el-upload>
                     </el-form-item>
+
+
                     <el-form-item class="margin_left_20">
                         <div class="margin_bottom_10 margin_l_10">
                             <el-checkbox v-model="checked"><el-link type="info" :underline="false">我已阅读同意</el-link><el-link type="primary" :underline="false">《个人信息使用告知书》</el-link></el-checkbox>
                         </div>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="submitForm('ruleForm')" class="margin_l_10">提交信息</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm')"  class="margin_l_10">提交信息</el-button>
                          <el-button @click="resetForm('ruleForm')">重置</el-button>
                     </el-form-item>
                 </el-col>
@@ -111,7 +131,6 @@
 
 
         </el-form> 
-
 
         <Bottom />
     </div>
@@ -131,12 +150,24 @@ export default {
 
     data(){
         return {
+            fileList:[{name:'',url:''}],
+            brandS: [],
+            series:[],
+            cityArr:[],
+            brandArr:[],
+            tabArr:[],
+            cityid: '',
+            brandid:'',
+            // 图片
+            lastImgUrl:'',
+
             checked1: true,
             // 时间选择器
             cityArr:[],
             checked: true,
             input: '',
             input1: '',
+            textarea: '',
             input2: '',
             fits: ['fill'],
             url: '//s5.xinstatic.com/static/newcar-www/widget/c2b_sale_new/c2b_car_sale_top/imgs/salecar-banner_bc02644.jpg',
@@ -154,25 +185,22 @@ export default {
             ruleForm: {
                 name: '',
                 brand: '',
-                date1: '',
                 date: '',
                 num:'',
                 delivery: false,
                 type: [],
                 resource: '',
-                desc: '',
+                salePrice:'',
+                carname:'',
+                tab:''
             },
 
             rules:{
                 name: [
-                    { required: true, message: '请输入城市名称(只允许输入中文)', trigger: 'blur' },
-                    { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+                    { required: true, message: '请输入城市名称', trigger: 'blur' },
                 ],
                  brand: [
                     { required: true, message: '请输入车辆品牌', trigger: 'blur' },
-                ],
-                date1:[
-                    { required: true, message: '请输入品牌系列', trigger: 'blur' },
                 ],
                 date:[
                      { required: true, message: '请输入上牌时间', trigger: 'blur' },
@@ -183,50 +211,125 @@ export default {
                 resource:[
                     { required: true, message: '请选择一个车辆信息', trigger: 'change' }
                 ],  
+                 salePrice:[
+                    { required: true, message: '请输入期望价格', trigger: 'change' }
+                ], 
+                 carname:[
+                    { required: true, message: '请输入车辆信息', trigger: 'change' }
+                ],
+                 tab:[
+                    { required: true, message: '请选择车辆标签', trigger: 'change' }
+                ],
             }
           
         }
     },
 
 
+    mounted(){
+        // 获取到城市
+        this.getsellcity();
+        //获取到品牌
+        this.getSeriesData();
+
+        this.getcartab();
+    },
+
+
     methods: {
-        //防止输入特殊符号
-         brandLimit:function(){
-             this.ruleForm.brand = this.ruleForm.brand.replace(/[ `~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '');
+        //获取到城市数据
+        getsellcity(){
+            let url = '/sellcar/Sellcar/getsellcity';
+              getData(url).then(res => {
+                //this获取到数据
+                console.log(res);
+                    this.cityArr = res.data;
+                }).catch(err => {
+                console.log(err);
+            });
         },
-        styleLimit:function(){
-             this.ruleForm.date1 = this.ruleForm.date1.replace(/[ `~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, '');
+    
+        // 获取品牌车系
+        getSeriesData() {
+        let url = "/sellcar/Sellcar/getSeries";
+        getData(url)
+            .then(res => {
+            console.log(res);
+            //需要渲染的数据
+            var renderData = [];
+            let series = res.data.series;
+            let brand = res.data.brand;
+            for (let item of brand) {
+                item.children = [];
+                renderData.push(item);
+                for (let val of series) {
+                if (val.brand_id == item.value) {
+                    item.children.push(val);
+                }
+                }
+            }
+            this.brandS = renderData;
+            })
+            .catch(err => {
+            console.log(err);
+            });
         },
+
+        //获取到车辆标签信息
+        getcartab(){
+             let url = '/sellcar/Sellcar/getcartab';
+              getData(url).then(res => {
+                //this获取到数据
+                console.log(res);
+                    this.tabArr = res.data;
+                }).catch(err => {
+                console.log(err);
+            });
+        },
+        
         
         //判断是否填写输入框
        submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-                var cityname = this.ruleForm.name; //城市名称
-                var brandname = this.ruleForm.brand; //品牌名称
-                var stylename = this.ruleForm.date1; //系列名称
-                var starttime = this.ruleForm.date; //上牌时间
-                var usetime = this.ruleForm.num; //行驶里程
-                var howcar = this.ruleForm.resource; //车辆状况
-              let data ={
-                    cityname:cityname,
-                    brandname:brandname,
-                    stylename:stylename,
-                    starttime:starttime,
-                    usetime:usetime,
-                    howcar:howcar,
-              }
-                console.log(data);
-                
+              let url = "/sellcar/Sellcar/sellcardata";
+              var usetoken = localStorage.getItem('tokenVue');
+                let data = {
+                    imgUrl: this.lastImgUrl,
+                    ruleForm: this.ruleForm,
+                    usetoken:usetoken
+                };
+          
+            console.log(data);
             //判断是否阅读个人信息告知书
             if(this.checked == true){
-                alert(1);
-                // 判断该车是否拍卖
-                if(this.checked1 == true){
-                    console.log(111111);
-                }else{
-                    alert(0);
-                }
+
+                //提示框
+                 this.$confirm('请确保信息的真实性，如需拍卖您的爱车请联系客服。点击确认提交信息', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true
+                }).then(() => {
+                    //提交成功信息
+                    this.$message({
+                            type: 'success',
+                            message: '提交成功！请敬候佳音~',   
+                        });
+                        sendParam(url, data).then(res => {
+                            this.$router.push('/AddPersonalCenter');
+                        console.log(res);
+
+                        }).catch(err => {
+                            console.log(err);
+                        });
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消提交'
+                        });
+                    }); 
+               
             }else{
                  this.$message({
                     message: '请勾选个人信息告知书',
@@ -251,12 +354,16 @@ export default {
       },
         
 
-
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
-        handlePreview(file) {
-            console.log(file);
+        handlePictureCardPreview(file) {
+            this.dialogImageUrl = file.url;
+            this.dialogVisible = true;
+        },
+        // 图片上传成功后取到地址
+        uploadSuccess(response, file, fileList) {
+            this.lastImgUrl = response;
         },
     }
     
