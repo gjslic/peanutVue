@@ -147,35 +147,18 @@ methods:{
 
   //传递车标参数
   passbrand(id){
-    console.log(id);
-    let url = '/homepage/Homepage/passbrand';
-    let data ={
-      brandid:id
-    }
-    sendParam(url ,data).then(res => {
-      this.passbrandArr = res.data;
-
-      // 路由傳參到買車頁
+    // 路由傳參到買車頁
       this.$router.push({
         name:"BuyCar",
         query:{
           brandid:id,
         }
       })
-    }).catch(err => {
-      console.log(err);
-    });
   },
 
   //传递价格范围
   passprice(id,price){
-    let url = '/homepage/Homepage/passprice';
-    let data ={
-      price_id:id
-    }
-    sendParam(url ,data).then(res => {
-      this.passpriceArr = res.data;
-      // 路由傳參到買車頁
+   // 路由傳參到買車頁
       this.$router.push({
         name:"BuyCar",
         query:{
@@ -183,9 +166,6 @@ methods:{
           id:id
         }
       })
-    }).catch(err => {
-      console.log(err);
-    });
   },
 
   //传递车辆类型

@@ -234,7 +234,8 @@
       </div>
     </el-drawer>
     <!-- 聊天 -->
-    <el-dialog :visible.sync="chatShow">
+    <div class="dc_box">
+      <el-dialog :visible.sync="chatShow">
       <JwChat-index
         :config="config"
         :taleList="taleList"
@@ -243,6 +244,7 @@
         :toolConfig="tool"
       />
     </el-dialog>
+    </div>
   </div>
 </template>
       
@@ -775,7 +777,7 @@ export default {
 .chatBox{
   width:100%;
 }
-.chatPage{
+.dc_box .chatPage{
   width:100% !important;
 }
 .wrapper{
