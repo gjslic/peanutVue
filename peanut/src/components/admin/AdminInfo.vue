@@ -2,14 +2,18 @@
 <template>
   <div class="info_box">
     <div class="demo-fit">
-      <div class="block">
+      <div class="block" @click="imgShow = true">
         <el-avatar shape="square" :size="100" :src="adminInfo.head_img"></el-avatar>
       </div>
-      <el-button style="margin: 0 auto;display: block;" type="warning" size="mini" @click="passShow = true">修改密码</el-button>
+      <el-button
+        style="margin: 0 auto;display: block;"
+        type="warning"
+        size="mini"
+        @click="passShow = true"
+      >修改密码</el-button>
     </div>
-    
-  <div>
-      
+
+    <div>
       <el-divider></el-divider>
       <span>角色 ：{{adminInfo.role_name}}</span>
       <el-divider></el-divider>
@@ -17,7 +21,7 @@
       <el-button type="primary" size="mini" class="info_btn" @click="dialogVisible = true">修改</el-button>
       <el-divider></el-divider>
       <span>账号：{{adminInfo.account}}</span>
-      
+
       <el-divider></el-divider>
       <span>手机号：{{adminInfo.phone}}</span>
       <el-button type="primary" size="mini" class="info_btn" @click="phoneShow = true">修改</el-button>
@@ -104,6 +108,24 @@
         <el-button type="primary" @click="handleSexEdit('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 修改头像 -->
+    <el-dialog title="修改头像" :visible.sync="imgShow" width="30%" :before-close="handleClose">
+      <el-upload
+        class="avatar-uploader"
+        action="http://127.0.0.1/peanut/th5/public/goods/index/upload"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
+        name="image"
+      >
+        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="imgShow = false">取 消</el-button>
+        <el-button type="primary" @click="upAvatar">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <style  scoped>
@@ -116,6 +138,7 @@
 }
 .block {
   text-align: center;
+  cursor: pointer;
 }
 </style>
 <style>
@@ -125,7 +148,35 @@
 .newName .el-form-item__content {
   margin-left: 55px !important;
 }
+</style>
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 
+}
+.el-upload__input{
+  display: none !important;
+}
 </style>
 <script>
 // 引入网络请求模块
@@ -138,7 +189,7 @@ export default {
     // 密码正则：pswReg => 6-16位英文+数字,必须包含大小写字母和数字
     let nickNameReg = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,6}$/;
     let pswReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,16}$/;
-		let telReg = /^1[3578]\d{9}$/;
+    let telReg = /^1[3578]\d{9}$/;
     var validateName = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入新姓名"));
@@ -148,7 +199,6 @@ export default {
         }
         callback();
       }
-      
     };
     var validatePhone = (rule, value, callback) => {
       if (value === "") {
@@ -165,7 +215,9 @@ export default {
         callback(new Error("请输入新密码"));
       } else {
         if (value.match(pswReg) == null) {
-          callback(new Error("密码规则：8-10位英文+数字,必须包含大小写字母和数字"));
+          callback(
+            new Error("密码规则：8-10位英文+数字,必须包含大小写字母和数字")
+          );
         }
         callback();
       }
@@ -176,17 +228,20 @@ export default {
       phoneShow: false,
       passShow: false,
       sexShow: false,
+      imgShow: false,
+      imageUrl: "",
+      lastUrl: '',
       ruleForm: {
         name: "",
         phone: "",
-        pass: '',
-        sex: ''
+        pass: "",
+        sex: ""
       },
       rules: {
         name: [{ validator: validateName, trigger: "blur" }],
         phone: [{ validator: validatePhone, trigger: "blur" }],
         pass: [{ validator: validatePass, trigger: "blur" }],
-        sex: [{ required: true, message: '请选性别', trigger: 'change' }],
+        sex: [{ required: true, message: "请选性别", trigger: "change" }]
       }
     };
   },
@@ -203,7 +258,7 @@ export default {
       };
       sendParam(url, data)
         .then(res => {
-          console.log(res.data.data);
+          // console.log(res.data.data);
           if (res.data.code == 1) {
             let admin = res.data.data;
             this.adminInfo = admin[0];
@@ -310,7 +365,7 @@ export default {
       });
     },
     // 修改性别
-    handleSexEdit(formName){
+    handleSexEdit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let url = "/info/Center/editSex";
@@ -337,6 +392,59 @@ export default {
           return false;
         }
       });
+    },
+    // 修改头像
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+      this.lastUrl = file.response
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG && !isPNG) {
+        this.$message.error("上传头像图片只能是 JPG 和 PNG格式!");
+      }else if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return (isJPG || isPNG) && isLt2M;
+    },
+    // 确定修改头像
+    upAvatar(){
+      this.$confirm('您确定要修改头像吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let url = "/info/Center/editAvatar";
+          let data = {
+            id: this.adminInfo.id,
+            imgUrl: this.lastUrl
+          };
+          sendParam(url, data)
+            .then(res => {
+              if (res.data.code == 1) {
+                this.$message.success(res.data.msg);
+                this.imgShow = false;
+                this.adminInfo.head_img = this.lastUrl;
+              } else {
+                this.$message.error(res.data.msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+
+          
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消修改'
+          }); 
+          
+        }) 
+
     }
   }
 };

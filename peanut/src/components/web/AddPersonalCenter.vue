@@ -1,6 +1,8 @@
 <template>
     <div>
+          <Menu />
         <PersonalContent/>
+          <Bottom />
     </div>
 </template>
 
@@ -8,7 +10,8 @@
 
 
 import PersonalContent from './PersonalContent'
-
+import Menu from "./Menu";
+import Bottom from "./Bottom";
 
 
 export default {

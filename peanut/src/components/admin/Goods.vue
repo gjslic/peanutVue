@@ -61,6 +61,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="车牌系列" prop="value">
           <el-cascader
             v-model="ruleForm.value"
@@ -68,6 +69,7 @@
             :props="{ expandTrigger: 'hover' }"
           ></el-cascader>
         </el-form-item>
+        
         <el-form-item label="车辆标签" prop="resource">
           <el-radio-group v-model="ruleForm.resource">
             <el-radio
@@ -83,7 +85,7 @@
         <el-form-item label="车辆图片" prop="imageUrl" class="img_box">
           <el-input v-model="ruleForm.imageUrl" v-if="false"></el-input>
           <el-upload
-            action="http://127.0.0.1/peanut/th5/public/goods/index/upload"
+            action="http://127.0.0.1/th5/public/goods/index/upload"
             list-type="picture-card"
             :limit="1"
             :on-preview="handlePictureCardPreview"
@@ -352,7 +354,7 @@ export default {
       let url = "/goods/index/getSeries";
       getData(url)
         .then(res => {
-          // console.log(res);
+          console.log(res);
           //需要渲染的数据
           var renderData = [];
           let series = res.data.series;
