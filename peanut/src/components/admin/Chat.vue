@@ -25,23 +25,26 @@ export default {
       taleList: [],
       socket: "",
       socketMsg: {},
+      uid: '',
       tool: {
         show: ["file", "history", "img"],
         callback: this.toolEvent
       },
       config: {
-        img: "http://b-ssl.duitang.com/uploads/item/201509/22/20150922134955_vfEWL.jpeg",
-        name: "JwChat",
-        dept: "最简单、最便捷",
+        img: '',
+        name: '',
+        dept: "聊天记录",
         callback: this.headerEvent
       }
     };
   },
   mounted() {
     this.getInfoData()
-    // 初始化websocket
-    this.init(); 
-    this.getChat()
+    this.getchat()
+  },
+  created() {
+     // 初始化websocket
+    this.init();
   },
   methods: {
      // 获取员工信息
@@ -69,13 +72,26 @@ export default {
       const msg = this.inputMsg;
       if (!msg) return;
       const msgObj = {
-        date: "2020/05/20 23:19:07",
+        date: new Date().toLocaleDateString() + new Date().toLocaleTimeString(),
         text: { text: msg },
         mine: true,
         name: "客服1号",
-        img: "http://b-ssl.duitang.com/uploads/item/201509/22/20150922134955_vfEWL.jpeg"
+        img: "https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1091405991,859863778&fm=26&gp=0.jpg"
       };
       this.taleList.push(msgObj);
+      // 发送到nodee
+      var sendContainer = {
+        type: 'infor',
+        sender: 'adminServer',
+        receiver: this.uid,
+        container: msg,
+        name: "客服1号",
+        img: "https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1091405991,859863778&fm=26&gp=0.jpg",
+        mine: false
+      }
+      let params = JSON.stringify(sendContainer);
+      console.log(params)
+      this.socket.send(params);
     },
     toolEvent(type) {
       console.log("tools", type);
@@ -106,10 +122,13 @@ export default {
       console.log("连接错误");
     },
     getMessage(msg) {
-      console.log(msg.data);
       let msgChat = JSON.parse(msg.data);
-      console.log(msgChat.container)
+      // console.log(msgChat.container)
       this.taleList.push(msgChat.container)
+      this.config.img = msgChat.container.img
+      this.config.name = msgChat.container.name
+      this.uid = msgChat.id
+      console.log(msgChat.id)
     },
     send() {
       let showObj = {
@@ -127,12 +146,36 @@ export default {
       // 销毁监听
       this.socket.onclose = this.close;
     },
-    // 打印聊天记录
-    getChat(){
+    getchat(){
       let url = "/info/Center/chat";
       getData(url)
         .then(res => {
-          console.log(res.data.data)
+          if (res.data.code == 1) {
+            console.log(res.data.data)
+            for( let item of res.data.data){
+              if(item.sender == 'adminServer'){
+                const msgObj = {
+                  date: item.chat_time,
+                  text: { text: item.content },
+                  mine: true,
+                  name: "客服1号",
+                  img: "https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=1091405991,859863778&fm=26&gp=0.jpg"
+                };
+                this.taleList.push(msgObj);
+              }else{
+                const msgObj = {
+                  date: item.chat_time,
+                  text: { text: item.content },
+                  mine: false,
+                  name: item.name,
+                  img: item.head_img
+                };
+                this.taleList.push(msgObj);
+              }
+            }
+            
+          
+          }
         })
         .catch(err => {
           console.log(err);

@@ -1,5 +1,5 @@
 <template>
-    <div id="PersonalContent" class="PersonalContent">
+  <div id="PersonalContent" class="PersonalContent">
         <el-row :gutter="22">
             <el-col :span="22" :offset="1">
                 <div class="grid-content bg-purple">
@@ -316,12 +316,22 @@
                             <!-- 我的消息 -->
                             <el-tab-pane>
                                 <span slot="label"><el-badge value="new" class="item"><i class="el-icon-chat-dot-round"></i>我的消息</el-badge></span>
-                                <div style="height: 576px;">
-                                    <p style="text-align:center;margin-top: 10px;">
-                                        <img src="../../assets/peanutImg/noMessage.png" alt="">
-                                    </p>
-                                    <p style="text-align:center;margin-top: 10px;"><el-link type="info" style="font-size: 30px;">暂无信息</el-link></p>
-                                </div>       
+                                <div style="height: 595px;" v-if=" list.length == 0">
+                                  <p style="text-align:center;margin-top: 10px;">
+                                    <img src="../../assets/peanutImg/noMessage.png" alt />
+                                  </p>
+                                  <p style="text-align:center;margin-top: 10px;">
+                                    <el-link type="info" style="font-size: 30px;">暂无信息</el-link>
+                                  </p>
+                                </div>
+                                <JwChat-index
+                                    v-else 
+                                    :taleList="list"
+                                    @enter="bindEnter" 
+                                    v-model="inputMsg" 
+                                    :toolConfig="tool"
+                                    :config="config" 
+                                  />       
                             </el-tab-pane>
                             <!-- 我发布的车车 -->
                             <el-tab-pane>
@@ -1125,7 +1135,22 @@ export default {
                 evaluateContent: [
                     { validator: validaterEva, trigger: 'blur' }
                 ]
-            }
+            },
+            // -------------聊天--------------------------------------
+            inputMsg: '',
+            list: [],
+            tool: {
+              show: ['file', 'history', 'img'],
+              callback: this.toolEvent,
+              showEmoji: true,
+            },
+            receiveId: '',
+            config: {
+              img: '',
+              name: '',
+              dept: '当前 聊天记录',
+              callback: this.headerEvent
+            },
         }
     },
     //开局
@@ -1150,6 +1175,121 @@ export default {
         this.sellingCars();
     },
     methods: {
+        // ------------------------聊天------------------------------
+    getchat(){
+      let url = "/info/Center/userChat";
+      let data = {
+        id: this.userMessage.id,
+      }
+      console.log(data)
+      sendParam(url,data)
+        .then(res => {
+          if (res.data.code == 1) {
+            console.log(res.data.data)
+            for( let item of res.data.data){
+              if(item.sender == this.userMessage.id){
+                const msgObj = {
+                  date: item.chat_time,
+                  text: { text: item.content },
+                  mine: true,
+                  name: this.userMessage.name,
+                  img: this.userMessage.head_img
+                };
+                this.list.push(msgObj);
+              }else{
+                const msgObj = {
+                  date: item.chat_time,
+                  text: { text: item.content },
+                  mine: false,
+                  name: item.name,
+                  img: item.head_img
+                };
+                this.list.push(msgObj);
+              }
+            }
+            
+          
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    bindEnter () {
+      const msg = this.inputMsg
+      if (!msg) return;
+      const msgObj = {
+        "date": new Date().toLocaleDateString() + new Date().toLocaleTimeString(),
+        "text": { "text": msg },
+        "mine": true,
+        "name": this.userMessage.name,
+        "img": this.userMessage.head_img,
+      }
+      this.list.push(msgObj)
+      // 发送到nodee
+      var sendContainer = {
+        type: 'infor',
+        sender: this.userMessage.id,
+        receiver: this.receiveId,
+        container: msg,
+        name: this.userMessage.name,
+        img: this.userMessage.head_img,
+        mine: false
+      }
+      let params = JSON.stringify(sendContainer);
+      console.log(params)
+      this.socket.send(params);
+    },
+    toolEvent (type) {
+      console.log('tools', type)
+    },
+    //-------websocket--
+    init() {
+      if (typeof WebSocket === "undefined") {
+        alert("您的浏览器不支持socket");
+      } else {
+        // 实例化socket
+        this.socket = new WebSocket("ws://127.0.0.1:3000");
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      }
+    },
+    open() {
+      console.log("socket连接成功");
+      this.send()
+    },
+    error() {
+      console.log("连接错误");
+    },
+    getMessage(msg) {
+      let msgChat = JSON.parse(msg.data);
+      console.log(msgChat)
+      this.list.push(msgChat.container)
+      this.config.img = msgChat.container.img
+      this.config.name = msgChat.container.name
+      this.receiveId = msgChat.id
+      console.log(msgChat.id)
+    },
+    send() {
+      console.log(this.userMessage)
+      let showObj = {
+        type: "show",
+        account: this.userMessage.id,
+      };
+      let params = JSON.stringify(showObj);
+      this.socket.send(params);
+    },
+    close() {
+      console.log("socket已经关闭");
+    },
+    destroyed() {
+      // 销毁监听
+      this.socket.onclose = this.close;
+    },
         //打印用户信息
         userAdd(){
             //开局验证
@@ -1167,6 +1307,10 @@ export default {
                 if(res.data.code==1){
                     let userContent = res.data.data;
                     this.userMessage = userContent;
+                    // 初始化websocket
+              this.init();
+              // 获取聊天记录
+              this.getchat();
                 }else{
                     //无账号失败返回
                     this.$message({
@@ -2205,5 +2349,25 @@ export default {
 }
 #PersonalContent .el-collapse{
     border-top: 0px solid #EBEEF5;
+}
+.rightBox{
+  display: none !important;
+}
+.chatBox{
+  width:100%;
+}
+.chatPage{
+  width:100% !important;
+}
+.wrapper{
+  width: auto !important;
+}
+.web__tools dl{
+  margin-top: 20px;
+}
+@media screen and (max-width:992px){
+.ChatPage {
+    width:100% !important;
+  }
 }
 </style>
