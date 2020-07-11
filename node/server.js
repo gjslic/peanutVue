@@ -18,28 +18,6 @@ wss.on("connection", function (socket) {
     var type = obj.type;
     var reObj;
     switch (type) {
-      //后台登录保存socket
-      case 'clikShow':
-        var infoObj = {
-          id: obj.account,
-          sockets: socket
-        }
-        socketArr.push(infoObj);
-        var sql = "select * from peanut_chat where receiver = ? or sender =?";
-        var SqlParams = [obj.account, obj.account];
-        //查
-        db(sql, SqlParams, function (err, result) {
-          if (err) {
-            console.log('[SELECT ERROR] - ', err.message);
-            return;
-          }
-          reObj = {
-            type: 'clikShow',
-            container: result
-          }
-          socket.send(JSON.stringify(reObj));
-        });
-        break;
         //前台页面加载保存socket
       case 'show':
         var flag = 0;
@@ -92,6 +70,7 @@ wss.on("connection", function (socket) {
           console.log("添加聊天信息成功");
           reObj = {
             type: 'infor',
+            id: obj.sender,
             container: {
               date: nowT,
               text: {
@@ -111,24 +90,7 @@ wss.on("connection", function (socket) {
           }
         });
         break;
-        //打印与平台的聊天记录
-      case 'ptinfor':
-        var sql = "select * from video_chat where (receiver='adminServer' and sender=?) or (receiver=? and  sender='adminServer')";
-        var SqlParams = [obj.account, obj.account];
-        //查
-        db(sql, SqlParams, function (err, result) {
-          if (err) {
-            console.log('[SELECT ERROR] - ', err.message);
-            return;
-          }
-          reObj = {
-            type: 'ptinfor',
-            container: result
-          }
-          socket.send(JSON.stringify(reObj));
-        });
-
-        break;
+        
     }
   })
 

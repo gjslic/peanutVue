@@ -530,6 +530,7 @@ export default {
     },
     // 搜索
     handleSearch() {
+      this.currentPage = 1;
       let url = "/goods/index/searchSale";
       let data = {
         keyword: this.input3,

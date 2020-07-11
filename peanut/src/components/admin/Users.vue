@@ -239,6 +239,7 @@ export default {
     },
     // 搜索
     handleSearch() {
+      this.currentPage = 1;
       let url = "/user/index/search";
       let data = {
         keyword: this.seachVal,
