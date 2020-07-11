@@ -134,7 +134,7 @@ export default {
 
   padding-left: 20px;
 
-  color:red
+  color:#E6A23C
 }
 
 .marquee_list li span {

@@ -1,6 +1,12 @@
-<!-- @tlh举报管理 -->
+<!-- @tlh评价管理 -->
 <template>
   <div>
+    <el-card class="box-card">
+      信用分：
+      1、商家信用分满100分暂时不可加分，后续被扣可审核回补。
+      2、买家评分高于3分不可减分，低于3分不可加分。
+      3、一单一审，低于80账户锁定。
+    </el-card>
     <!-- 公告数据渲染 -->
     <el-table
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -9,12 +15,22 @@
       <el-table-column prop="id" label="ID" width="50"></el-table-column>
       <el-table-column prop="uName" label="买家" width="80"></el-table-column>
       <el-table-column prop="comment_num" label="评分" width="80"></el-table-column>
-      <el-table-column prop="content" label="内容" width="300"></el-table-column>
+      <el-table-column prop="content" label="内容" width="200"></el-table-column>
       <el-table-column prop="comment_time" label="时间" width="100"></el-table-column>
-      <el-table-column prop="dName" label="卖家" width="80"></el-table-column>
-      <el-table-column prop="dCredit" label="信用值" width="80"></el-table-column>
-      <el-table-column prop="comment_state" label="状态" width="80"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="dName" label="商家" width="80"></el-table-column>
+      <el-table-column prop="dCredit" label="信用分" width="80"></el-table-column>
+      <el-table-column
+        label="状态"
+        :filters="[{ text: '未审核', value: '未审核' }, { text: '已审', value: '已审' }]"
+        prop="comment_state"
+        align="center"
+        column-key="comment_state"
+        :filter-method="filterTag"
+        filter-placement="bottom-end"
+        :filter-multiple="false"
+      ></el-table-column>
+      <!-- <el-table-column prop="comment_state" label="状态" width="80"></el-table-column> -->
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">信用+1</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">信用-2</el-button>
@@ -51,43 +67,45 @@ export default {
     this.getInfo();
   },
   methods: {
+    // 状态打印
+    filterTag(value, row) {
+      return row.comment_state === value;
+    },
+
     //获取公告
     getInfo() {
       sendParam("acomplain/index/index", "")
         .then(res => {
-           console.log(res)
+          //    console.log(res)
           this.tableData = res.data.data;
         })
         .catch(err => {});
     },
-
 
     // 初始页currentPage、初始每页数据数pagesize和数据data
     handleSizeChange: function(size) {
       this.pagesize = size; //每页下拉显示数据
     },
 
-
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage; //点击第几页
     },
 
-
     //加分
     handleEdit(index, row) {
-    if (row.comment_state == '已审') {
+      if (row.comment_state == "已审") {
         this.$message.error("该评价已处理完毕，请勿重复提交");
         return;
-    }
-    if (row.dCredit == 100) {
+      }
+      if (row.dCredit == 100) {
         this.$message.error("该商家信用已经是满分，暂时无需处理");
         return;
-    }
-    if (row.comment_num < 3) {
+      }
+      if (row.comment_num < 3) {
         this.$message.error("用户评分小于3分，不可以进行加分");
         return;
-    }
-   
+      }
+
       this.$confirm("此操作将为商家信用值加1分, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -104,40 +122,39 @@ export default {
         });
     },
 
-
     //减分
     handleDelete(index, row) {
-    if (row.comment_state == '已审') {
+      if (row.comment_state == "已审") {
         this.$message.error("该评价已处理完毕，请勿重复提交");
         return;
-    }
-    if (row.comment_num >= 3) {
+      }
+      if (row.comment_num >= 3) {
         this.$message.error("用户评分大于3分，不可以进行扣分");
         return;
-    }
-    this.$confirm("此操作将扣除商家信用值2分, 是否继续?", "提示", {
+      }
+      this.$confirm("此操作将扣除商家信用值2分, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-    })
-    .then(() => {
-        this.deleteScore(row);
-    })
-    .catch(() => {
-        this.$message({
-        type: "info",
+      })
+        .then(() => {
+          this.deleteScore(row);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
             message: "已取消扣除"
+          });
         });
-    });
     },
-
 
     //封装加分
     addscore(row) {
       let url = "acomplain/index/update";
       let data = {
-        id: row.sell_id,//此处获取要加分的商家id
-        credit: row.dCredit+=1//加分
+        id: row.id,
+        sellId: row.sell_id, //此处获取要加分的商家id
+        credit: (row.dCredit += 1) //加分
       };
       sendParam(url, data)
         .then(res => {
@@ -151,26 +168,24 @@ export default {
         .catch(err => {});
     },
 
-
     //封装减分
     deleteScore(row) {
       let url = "acomplain/index/update";
       let data = {
-        id: row.sell_id,//此处获取要加分的商家id
-        credit: row.dCredit-=2//减分
+        id: row.id,
+        sellId: row.sell_id, //此处获取要加分的商家id
+        credit: (row.dCredit -= 2) //减分
       };
       sendParam(url, data)
         .then(res => {
           if (res.data.code == 1) {
             this.$message.success(res.data.msg);
-                this.getInfo();
+            this.getInfo();
           } else {
             this.$message.error(res.data.msg);
           }
         })
-        .catch(err => {
-
-        });
+        .catch(err => {});
     }
   }
 };
