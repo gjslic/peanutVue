@@ -25,7 +25,7 @@
           <el-col :md="4" :xs="8"  v-for="(item,index) in brandArr" :key="index">
             <div class="img_item"  @click="passbrand(item.brand_id)">
               <!-- 4,vue图片渲染需要require文件路径+数据库字段名 -->
-              <img :src="require('../../assets/carlogo/'+item.brand_img)" alt class="a_img" />
+              <img :src="item.brand_img" alt class="a_img" />
               <span  class="brand_img_text">{{item.brand_name}}</span>
               
             </div>
@@ -54,7 +54,7 @@
             </el-col>
 
              <el-col :md="8" :sm="8" v-for="(price_item,index) in priceArr" :key="index">
-                <div class="price_text"  @click="passprice(price_item.price_id)">
+                <div class="price_text"  @click="passprice(price_item.price_id,price_item.price)">
                     {{price_item.price}}万
                 </div>
             </el-col>
@@ -70,7 +70,7 @@
           <el-row>
             <el-col :md="8" :sm="8" v-for="(style_item,index) in styleArr" :key="index">
                  <div class="style_item" @click="passstyle(style_item.style_id)">
-                    <img :src="require('../../assets/carstyle/'+style_item.style_img)"  alt class="style_img" />
+                    <img :src="style_item.style_img"  alt class="style_img" />
                     {{style_item.style_name}}
                   </div>
             </el-col>
@@ -117,7 +117,6 @@ methods:{
     let url = '/homepage/Homepage/carbran';
     getData(url).then(res => {
       //this获取到数据
-      console.log(res);
         this.brandArr = res.data;
     }).catch(err => {
       console.log(err);
@@ -130,7 +129,6 @@ methods:{
     getData(url).then(res => {
       //this获取到数据
         this.priceArr = res.data;
-        console.log(res);
     }).catch(err => {
       console.log(err);
     });
@@ -142,7 +140,6 @@ methods:{
    getData(url).then(res => {
       //this获取到数据
         this.styleArr = res.data;
-        console.log(res);
     }).catch(err => {
       console.log(err);
     });
@@ -150,47 +147,25 @@ methods:{
 
   //传递车标参数
   passbrand(id){
-    console.log(id);
-    let url = '/homepage/Homepage/passbrand';
-    let data ={
-      brandid:id
-    }
-    sendParam(url ,data).then(res => {
-      this.passbrandArr = res.data;
-
-      // 路由傳參到買車頁
+    // 路由傳參到買車頁
       this.$router.push({
         name:"BuyCar",
-        params:{
-          passbrandArr:'passbrandArr',
+        query:{
+          brandid:id,
         }
       })
-
-    }).catch(err => {
-      console.log(err);
-    });
   },
 
   //传递价格范围
-  passprice(id){
-    console.log(id);
-    let url = '/homepage/Homepage/passprice';
-    let data ={
-      price_id:id
-    }
-    sendParam(url ,data).then(res => {
-      this.passpriceArr = res.data;
-
-      // 路由傳參到買車頁
+  passprice(id,price){
+   // 路由傳參到買車頁
       this.$router.push({
         name:"BuyCar",
-        params:{
-          passpriceArr:'passpriceArr',
+        query:{
+          price_id:price,
+          id:id
         }
       })
-    }).catch(err => {
-      console.log(err);
-    });
   },
 
   //传递车辆类型
@@ -200,15 +175,12 @@ methods:{
     let data ={
       style_id:id
     }
-    console.log(data);
+    
     sendParam(url ,data).then(res => {
       this.passstyleArr = res.data;
       // 路由傳參到買車頁
       this.$router.push({
-        name:"BuyCar",
-        params:{
-          passstyleArr:'passstyleArr',
-        }
+        name:"BuyCar"
       })
     }).catch(err => {
       console.log(err);

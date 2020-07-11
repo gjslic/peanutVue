@@ -19,13 +19,11 @@
                                                     </div>
                                                     <!-- 如果数据库等于男的就是蓝色性别 -->
                                                     <div class="grid-content bg-purple width_70 text_color" v-if="userMessage.sex == '男'">
-                                                        <el-link type="primary" :underline="false"><i class="el-icon-male font_size_20"></i></el-link>
                                                         {{userMessage.name}}
                                                         <el-link type="primary" :underline="false" @click="changeName"><i class="el-icon-edit font_size_20"></i></el-link>
                                                     </div>
                                                     <!-- else 就是红色性别 -->
                                                     <div class="grid-content bg-purple width_70 text_color" v-else>
-                                                        <el-link type="danger" :underline="false"><i class="el-icon-female font_size_20"></i></el-link>
                                                         {{userMessage.name}}
                                                         <el-link type="danger" :underline="false" @click="changeName"><i class="el-icon-edit font_size_20"></i></el-link>
                                                     </div>
@@ -160,7 +158,7 @@
                                                         <el-row :gutter="20">
                                                             <el-col :span="16" :offset="5" class="padding-left-0">
                                                                 <el-upload 
-                                                                action="http://127.0.0.1/node_yzlll/peanut/th5/public/personal/Personal/avatar"
+                                                                action="http://127.0.0.1/node_yzlll/peanut/th5/public/personal/Personal/avatar" 
                                                                 list-type="picture-card" 
                                                                 :limit="1"
                                                                 name="image"

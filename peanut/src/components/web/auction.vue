@@ -7,6 +7,8 @@
       :brand-arr="brandArr"
       :series-arr="seriesArr"
       :price-arr="priceArr"
+      :brandID="brandID"
+      :priceNum="priceNum"
       @brandFun="brandFun"
       @seriesFun="seriesFun"
       @priceFun="priceFun"
@@ -47,7 +49,9 @@ export default {
       priceID: "",
       brandArr: [], //品牌数组
       seriesArr: [], //系列数组
-      priceArr: [] //价格范围数组
+      priceArr: [], //价格范围数组
+      citID:1,
+      priceNum:0,
     };
   },
   components: {
@@ -76,7 +80,7 @@ export default {
       this.brandID = subscript;
       this.seriesID = 0;
       //获取品牌下的系类
-      let url = "buyCar/Buycar/seriesSel";
+      let url = "buycar/Buycar/seriesSel";
       let data = { brandID: this.brandID };
       sendParam(url, data)
         .then(res => {
@@ -90,6 +94,7 @@ export default {
         this.brandID,
         this.seriesID,
         this.priceID,
+        this.citID,
         this.timeBaseNum,
         this.priceBaseNum
       );
@@ -101,6 +106,7 @@ export default {
         this.brandID,
         this.seriesID,
         this.priceID,
+        this.citID,
         this.timeBaseNum,
         this.priceBaseNum
       );
@@ -108,10 +114,12 @@ export default {
     //价格范围
     priceFun: function(subscript, price) {
       this.priceID = price;
+      this.priceNum = subscript;
       this.$refs.vehicleSel.vehicleSel(
         this.brandID,
         this.seriesID,
         price,
+        this.citID,
         this.timeBaseNum,
         this.priceBaseNum
       );
@@ -123,6 +131,7 @@ export default {
         this.brandID,
         this.seriesID,
         this.priceID,
+        this.citID,
         this.timeBaseNum
       );
     },
@@ -132,6 +141,7 @@ export default {
         this.brandID,
         this.seriesID,
         this.priceID,
+        this.citID,
         "",
         this.priceBaseNum
       );
@@ -143,7 +153,8 @@ export default {
       this.$refs.vehicleSel.vehicleSel(
         this.brandID,
         this.seriesID,
-        this.priceID
+        this.priceID,
+        this.citID,
       );
     }
   }

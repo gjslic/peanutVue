@@ -1,6 +1,6 @@
 <!-- 拍卖车辆信息 -->
 <template>
-  <div style="margin-bottom:50px">
+  <div style="margin-bottom:50px" id="auctionBox">
     <el-row class="breadcrumb hidden-xs-only">
       <el-col :md="18" :offset="3" class="hidden-xs-only auctionTitle">
         <el-col :sm="3" class="largeTitle">
@@ -41,24 +41,23 @@
                     {{vehicleArr[index].vehicle_name}}
                   </P>
                   <div class="minVehicleBox">
-                    <span class="vehicleTime">2020年 | 车况极佳</span>
-                    <span class="priceDistance">8.98万公里</span>
-                    <span class="priceFirst">竞拍金额{{vehicleArr[index].price}}万</span>
+                    <span class="vehicleTime">{{vehicleArr[index].vehicle_time}} | {{vehicleArr[index].introduce}}</span>
+                    <span class="priceDistance">{{vehicleArr[index].vehicle_distance}}万公里</span>
+                    <p class="priceFirst">竞拍金额{{vehicleArr[index].price}}万</p>
                     <p
                       class="vehiclePrice"
-                      @click="collection(vehicleArr[index].vehicle_id,0,vehicleArr[index].sell_id,index)"
+                      
                       v-if="vehicleArr[index][0].collection==0"
                     >
-                      <i class="el-icon-star-off"></i>
-                      <span style="font-size: 14px;">收藏</span>
+                      <i class="el-icon-star-off" @click="collection(vehicleArr[index].vehicle_id,0,vehicleArr[index].sell_id,index)"></i>
+                      <span style="font-size: 14px;" @click="collection(vehicleArr[index].vehicle_id,0,vehicleArr[index].sell_id,index)">收藏</span>
                     </p>
                     <p
                       class="vehiclePrice"
-                      @click="collection(vehicleArr[index].vehicle_id,1,vehicleArr[index].sell_id,index)"
                       v-else
                     >
-                      <i class="el-icon-star-on"></i>
-                      <span style="font-size: 14px;">已收藏</span>
+                      <i class="el-icon-star-on" @click="collection(vehicleArr[index].vehicle_id,1,vehicleArr[index].sell_id,index)"></i>
+                      <span style="font-size: 14px;" @click="collection(vehicleArr[index].vehicle_id,1,vehicleArr[index].sell_id,index)">已收藏</span>
                     </p>
                   </div>
                   <div class="vehicleBtn">
@@ -70,10 +69,10 @@
                       type="warning"
                       plain
                       class="auctionBtn"
-                      @click="open(vehicleArr[index].vehicle_id,vehicleArr[index].price)"
-                      :loading="btnFlag"
+                      @click="open(vehicleArr[index].vehicle_id,vehicleArr[index].price,index,vehicleArr[index].sell_id)"
+                      :loading="vehicleArr[index][0].flag"
                       id="offer"
-                    >出价</el-button>
+                    >购买</el-button>
                   </div>
                 </el-card>
               </el-col>
@@ -118,12 +117,19 @@ export default {
   },
   mounted() {
     //获取车辆数据
-    getData("auction/Auction/vehicle")
+    let data = {
+        brandID: "",
+        seriesID: "",
+        price : "",
+        timeBaseNum : "",
+        priceBaseNum : "",
+        token:localStorage.getItem('token')
+      };
+    sendParam("auction/Auction/vehicle",data)
       .then(res => {
         this.vehicleArr = res.data.data;
         //判断该时间是否有车辆
         if (this.vehicleArr.length > 0) {
-          console.log(res.data.surplusTime);
           this.timeFun(res.data.surplusTime);
         }
         this.frequency = parseInt(this.vehicleArr.length / 4);
@@ -166,7 +172,8 @@ export default {
         seriesID: seriesID,
         price: price,
         timeBaseNum: timeBaseNum,
-        priceBaseNum: priceBaseNum
+        priceBaseNum: priceBaseNum,
+        token:localStorage.getItem('token')
       };
       sendParam(url, data)
         .then(res => {
@@ -240,84 +247,96 @@ export default {
             sec: "00"
           };
           clearInterval(interval);
-          this.$parent.priceBase();
+          this.$parent.defaultBase();
         }
         this.countDownList = obj.hou + "时" + obj.min + "分" + obj.sec + "秒";
       }, 1000);
     },
     //出价框
-    open(id, price) {
-      this.$prompt("单位：万", "请输入金额", {
+    open(id, price,index,sellID) {
+      if(localStorage.getItem('tokenVue')==null){
+        this.$message({
+              type: "warning",
+              message: '请先登录'
+            });
+        return;
+      }
+      this.$confirm("确认好车辆", "确认出价", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        inputPattern: /^\d+(\.\d+)?$/,
-        inputErrorMessage: "金额格式不正确",
-        type: "warning"
+        type: "warning",
       })
-        .then(({ value }) => {
-          if (value > price) {
+        .then(() => {
+          
             this.$message({
               type: "success",
-              message: "感谢您的出价,出价中请稍后"
+              message: "感谢您的出价,订单生成中请稍后"
             });
-            offer.innerHTML = "出价中";
-            this.btnFlag = true;
-            this.hairPrice(id, value);
-          } else {
-            this.$message({
-              type: "info",
-              message: "您输入的价格未大于拍卖价"
-            });
-          }
+            offer.innerHTML = "订单生成中";
+            this.$set(this.vehicleArr[index][0],'flag',true);
+            this.hairPrice(id, price,index,sellID);
+          
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "取消输入"
+            message: "已取消"
           });
         });
     },
     //发送价格
-    hairPrice(id, price) {
+    hairPrice(id, price,index,sellID) {
       let url = "auction/Auction/Price";
       let data = {
         id: id,
-        price: price
+        price: price,
+        token:localStorage.getItem('tokenVue'),
+        sellID:sellID
       };
       sendParam(url, data)
         .then(res => {
           if (res.data.code == 1) {
             var resDate = {
-              msg: "出价成功",
+              msg: res.data.msg,
               type: "success"
             };
+            setTimeout(() => {
+            this.$router.push({ name: 'AddPersonalCenter'});
+          }, 1000);
           } else {
             var resDate = {
-              msg: "出价失败！请稍后再试",
+              msg: res.data.msg,
               type: "warning"
             };
+            offer.innerHTML = "购买";
+            this.$set(this.vehicleArr[index][0],'flag',false);
           }
-          setTimeout(() => {
-            this.$message({
+          this.$message({
               type: resDate.type,
               message: resDate.msg
-            });
-            offer.innerHTML = "出价";
-            this.btnFlag = false;
-            this.$parent.priceBase();
-          }, 2000);
+          });
+          
         })
         .catch(err => {
           console.log(err);
         });
     },
+    
     //收藏
     collection(vehicleID, flag, sellID,index ) {
+      if(localStorage.getItem('tokenVue')==null){
+        this.$message({
+              type: "warning",
+              message: '请先登录'
+            });
+        return;
+      }
       let url = "auction/Auction/collection";
       let data = {
         vehicleID: vehicleID,
         flag: flag,
-        sellID: sellID
+        sellID: sellID,
+        token:localStorage.getItem('tokenVue')
       };
       if (flag == 0) {
         this.$message({
@@ -341,7 +360,7 @@ export default {
               this.$set(this.vehicleArr[index][0],'collection',1);
             } else {
               var resDate = {
-                msg: "收藏失败！请稍后再试",
+                msg: res.data.msg,
                 type: "warning"
               };
             }
@@ -469,6 +488,9 @@ export default {
     font-size: 16px;
     color: #f85d00;
     float: left;
+    position: absolute;
+    top: 9px;
+    left: 18px;
   }
   .priceFirst {
     font-size: 12px;
@@ -481,11 +503,14 @@ export default {
     margin: 0px 0 0 17px;
     font-size: 13px;
     float: left;
+    position: absolute;
+    bottom: 31px;
+    right: 98px;
   }
   .auctionBtn {
     position: absolute;
     bottom: 19px;
-    right: 35px;
+    right: 20px;
   }
   .tiShi {
     position: absolute;
@@ -569,4 +594,13 @@ export default {
     left: 45%;
   }
 }
+</style>
+<style>
+@media (max-width: 768px) {
+  .el-message-box{
+    width: 250px;
+    
+  }
+}
+
 </style>

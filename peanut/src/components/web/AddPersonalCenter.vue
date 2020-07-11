@@ -1,16 +1,16 @@
 <template>
     <div>
-        <Menu />
+          <Menu />
         <PersonalContent/>
-        <Bottom />
+          <Bottom />
     </div>
 </template>
 
 <script>
 
-import Menu from '../web/Menu'
 import PersonalContent from './PersonalContent'
-import Bottom from '../web/Bottom'
+import Menu from "./Menu";
+import Bottom from "./Bottom";
 
 
 export default {

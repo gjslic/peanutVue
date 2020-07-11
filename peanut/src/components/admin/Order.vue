@@ -1,6 +1,9 @@
 <template>
   <div class="contanir">
-    <h1>订单管理</h1>
+    <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size:20px">
+      <el-breadcrumb-item>Peanut后台</el-breadcrumb-item>
+      <el-breadcrumb-item>订单管理</el-breadcrumb-item>
+    </el-breadcrumb>
     <!-- 头部菜单区 -->
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-menu-item index="全部订单">全部订单</el-menu-item>
@@ -8,18 +11,16 @@
       <el-menu-item index="待审核">待审核</el-menu-item>
       <el-menu-item index="已完成">已完成</el-menu-item>
       <!-- 搜索框 -->
-      <div style="float:right">
-        <el-select v-model="setInfo.value" placeholder="请选择" style="width:100px;float:left">
-          <el-option v-for="item in setInfo" :key="item.name" :label="item.name" :value="item.name"></el-option>
-        </el-select>
-        <el-input placeholder="请输入内容" v-model="selectInfo" style="width:150px;float:left" class="input-with-select"></el-input>
-        <el-button icon="el-icon-search"></el-button>
+      <div class="searchBox">
+        <el-input placeholder="请输入订单号进行搜索" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="selectInfo" class="input-with-select">
+          <el-button slot="append" icon="el-icon-search" @click="getOrderList(activeIndex,nowPage,selectInfo)"></el-button>
+        </el-input>
       </div>
     </el-menu>
     <!-- 订单展示区 -->
-    <el-table :data="orderData" border :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" style="width: 100%;text-align:center" :default-sort = "{prop: 'order_num', order: 'descending'}">
+    <el-table :data="orderData.slice((nowPage - 1) * pageSize,nowPage*pageSize)" v-if="orderData == undefined || orderData == null || orderData.length <= 0 ? ''  : orderData"  border :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" style="width: 100%;text-align:center;border-radius:10px" :default-sort = "{prop: 'order_num', order: 'descending'}">
       <el-table-column align="center" prop="id" label="ID" width="80px" sortable></el-table-column>
-      <el-table-column align="center" prop="orderNum" label="订单号" sortable>
+      <el-table-column align="center" prop="orderNum" width="150px" label="订单号" sortable>
       </el-table-column>
       <el-table-column align="center" label="下单账号">
         <template slot-scope="scope">
@@ -28,7 +29,7 @@
             <p>账号: {{ scope.row.buyer }}</p>
             <p>联系方式: {{ scope.row.phone }}</p>
             <div slot="reference" class="name-wrapper">
-              <img :src="scope.row.head_img" style="width:80px;height:80px">
+              <img :src="scope.row.head_img" style="width:80px;height:80px;border-radius:50%">
             </div>
           </el-popover>
         </template>
@@ -55,14 +56,13 @@
     </el-table>
     <el-dialog title="当前订单展示" :visible.sync="dialogFormVisible">
       <el-form :model="nowData">
-          <!-- <el-image :src="nowData.carImg" width="200px"></el-image> -->
+          <el-image :src="nowData.carImg" ></el-image>
         <el-form-item label="下单用户：" :label-width="formLabelWidth">
           <span>{{nowData.uName}}</span>
         </el-form-item>
         <el-form-item label="联系方式：" :label-width="formLabelWidth">
           <span>{{nowData.phone}}</span>
         </el-form-item>
-        
         <el-form-item label="卖家信息：" :label-width="formLabelWidth"  v-model="sellerInfo">
           <template>
             <el-popover trigger="hover" placement="top" >
@@ -70,7 +70,6 @@
               <p>联系方式: {{ sellerInfo.sellerTel }}</p>
               <div slot="reference" style="width:120px" class="name-wrapper">
                 <span>{{sellerInfo.sName}}</span>
-                <!-- <el-tag size="medium">{{sellerInfo.sName}}</el-tag> -->
               </div>
             </el-popover>
           </template>
@@ -87,7 +86,17 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
-	  <el-pagination background style="text-align:center" :page-size='12' layout="prev, pager, next" :total="100"></el-pagination>
+    <el-pagination
+      background
+			style="text-align:center"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="nowPage"
+      :page-sizes="[5, 10, 15, 100]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="orderData.length">
+    </el-pagination>
   </div>
 </template>
 
@@ -101,41 +110,46 @@
         orderData: [], // 所有订单显示
         nowData: [], // 当前订单显示
         sellerInfo: {},
-        // menuDisabled: false,
         dialogFormVisible: false, //显示框
         activeIndex: '全部订单', //默认显示订单列表
         formLabelWidth: '120px',
-        setInfo: [{
-          value: '1',
-          name: '买家账号'
-        },
-        {
-          value: '2',
-          name: '订单号'
-        }],
-        
+        searchArr: [],
+        nowPage: 1,
+        pageSize: 5,
       }
     },
     mounted() {
-      this.getOrderList('全部订单');
+      this.getOrderList('全部订单',this.nowPage,'');
     },
     methods: {
-      getOrderList(type){
-        console.log(type);
+      /**
+       * [getOrderList 获取当前类别订单列表]
+       */
+      getOrderList(type,num,searchInfo){
         let that = this;
+        that.loadBack();
+        let pageSize = that.pageSize;
+        that.orderData = [];
         that.$post(that.url+'getOrderArr', {
-          'showType': type
+          'showType': type,
+          'searchInfo': searchInfo,
+          'page': that.nowPage,
+          'pageSize': that.pageSize
         }).then(function (res) {
+          if(res.code == 1){
             that.orderData = res.data;
+          }else{
+            that.orderData = [];
+          }
         }).catch(function (error) {
             console.log(error)
         })
       },
-      
       /**
        * [getNowOrder 获取当前订单信息]
        */
       getNowOrder(row){
+        this.loadBack();
         this.nowData = row;
         this.$post(this.url+'getNowOrder',{nowId:row.id})
         .then(res => {
@@ -157,7 +171,7 @@
        * [enterOption 审核操作]
        */
       enterOption(row){
-        console.log(row)
+        this.loadBack();
         this.$post(this.url+'editState',{
           'nowId': row.id,
           'buyId': row.buyer,
@@ -181,11 +195,30 @@
         })
       },
       /**
+			 * [loadBack 事件触发延时]
+			 */
+			loadBack() {
+        const loading = this.$loading({
+          lock: true,
+					text: '客官稍等，马上就好',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+          loading.close();
+        }, 2000);
+      },
+      /**
        * [handleSelect 选择]
        */
       handleSelect(key, keyPath) {
-        console.log(key);
         this.getOrderList(key);
+      },
+      handleSizeChange(page_size) {
+        this.pageSize = page_size;
+      },
+      handleCurrentChange(currentPage) {
+        this.nowPage = currentPage;
       }
     }
   }
@@ -197,8 +230,13 @@
   .el-col {
     border-radius: 4px;
   }
-.name-wrapper:hover{
-  color:red;
-  cursor:pointer;
-}
+  .name-wrapper:hover{
+    color:red;
+    cursor:pointer;
+  }
+  .searchBox{
+    width: 400px;
+    float: right;
+    margin-right: 100px;
+  }
 </style>
