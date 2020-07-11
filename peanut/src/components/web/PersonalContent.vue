@@ -21,11 +21,13 @@
                                                     <div class="grid-content bg-purple width_70 text_color" v-if="userMessage.sex == '男'">
                                                         <el-link type="primary" :underline="false"><i class="el-icon-male font_size_20"></i></el-link>
                                                         {{userMessage.name}}
+                                                        <el-link type="primary" :underline="false" @click="changeName"><i class="el-icon-edit font_size_20"></i></el-link>
                                                     </div>
                                                     <!-- else 就是红色性别 -->
                                                     <div class="grid-content bg-purple width_70 text_color" v-else>
                                                         <el-link type="danger" :underline="false"><i class="el-icon-female font_size_20"></i></el-link>
                                                         {{userMessage.name}}
+                                                        <el-link type="danger" :underline="false" @click="changeName"><i class="el-icon-edit font_size_20"></i></el-link>
                                                     </div>
                                                     <div class="grid-content bg-purple width_70">
                                                         <el-progress :percentage="userMessage.credit" :format="format" :color="customColor"></el-progress>
@@ -158,7 +160,7 @@
                                                         <el-row :gutter="20">
                                                             <el-col :span="16" :offset="5" class="padding-left-0">
                                                                 <el-upload 
-                                                                action="http://127.0.0.1/node_yzlll/peanut/th5/public/personal/Personal/avatar" 
+                                                                action="http://127.0.0.1/node_yzlll/peanut/th5/public/personal/Personal/avatar"
                                                                 list-type="picture-card" 
                                                                 :limit="1"
                                                                 name="image"
@@ -240,7 +242,7 @@
                                                             <el-row :gutter="20">
                                                                 <el-col :span="18" :offset="3">
                                                                     <el-form-item prop="NewRechargePassword">
-                                                                        <el-input type="password" placeholder="请输入新的充值密码" v-model="ruleForm.NewRechargePassword" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
+                                                                        <el-input type="password" placeholder="充值密码6~9位" v-model="ruleForm.NewRechargePassword" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
                                                                             <i slot="prefix" class="el-input__icon el-icon-unlock"></i>
                                                                         </el-input>
                                                                     </el-form-item>
@@ -262,7 +264,7 @@
                             <!-- 我的收藏 v-if-->
                             <el-tab-pane v-if="this.collection == ''">
                                 <span slot="label"><i class="el-icon-star-off"></i>我的收藏</span>
-                                <div style="height: 595px;">
+                                <div style="height: 576px;">
                                     <p style="text-align:center;margin-top: 10px;">
                                         <img src="../../assets/peanutImg/noContent.png" alt="">
                                     </p>
@@ -316,7 +318,7 @@
                             <!-- 我的消息 -->
                             <el-tab-pane>
                                 <span slot="label"><el-badge value="new" class="item"><i class="el-icon-chat-dot-round"></i>我的消息</el-badge></span>
-                                <div style="height: 595px;">
+                                <div style="height: 576px;">
                                     <p style="text-align:center;margin-top: 10px;">
                                         <img src="../../assets/peanutImg/noMessage.png" alt="">
                                     </p>
@@ -334,7 +336,7 @@
                                                 <i class="el-icon-upload font_size_20"></i>
                                                 <span class="text_color_2">您发布的车车</span>
                                             </template>
-                                            <div style="height: 520px;">
+                                            <div style="height: 501px;">
                                                 <p style="text-align:center;margin-top: 10px;">
                                                     <img src="../../assets/peanutImg/release.png" alt="">
                                                 </p>
@@ -650,7 +652,7 @@
                                         <template slot="title" >
                                             <img  class="img_20px_m10px" src="../../assets/peanutImg/gm.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">购买车辆</el-link>
                                         </template>
-                                        <div style="height: 472px;">
+                                        <div style="height: 453px;">
                                             <p style="text-align:center;margin-top: 10px;">
                                                 <img src="../../assets/peanutImg/vehicle.png" alt="">
                                             </p>
@@ -660,7 +662,7 @@
                                     <!-- 购买车辆 v-else-->
                                     <el-collapse-item name="1" v-else>
                                         <template slot="title" >
-                                            <img  class="img_20px_m10px" src="../../assets/peanutImg/gm.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2" @click="buyACarclick">购买车辆</el-link>
+                                            <img  class="img_20px_m10px" src="../../assets/peanutImg/gm.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">购买车辆</el-link>
                                         </template>
                                         <div v-for="(order,orderIndex) in peanutOrderAdd" :key="orderIndex">
                                             <el-col :span="24" class="margin_10px">
@@ -707,7 +709,7 @@
                                                                 <!-- 订单号,卖家id,买家id,车辆id -->
                                                                 <!-- <el-tag type="info" class="cursor_pointer" @click="info()">正在进行审核</el-tag> -->
                                                         </div>
-                                                        <!-- 退款成功 -->
+                                                        <!-- 退款完成 -->
                                                         <div v-if="order.o_state == '退款完成'">
                                                             <el-link type="info" :underline="false"><div class="text_w_o_t font_size_11"> 
                                                                 {{order.o_state}}
@@ -740,7 +742,7 @@
                                         <template slot="title" >
                                             <img  class="img_20px_m10px" src="../../assets/peanutImg/mc.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">卖出车辆</el-link>
                                         </template>
-                                        <div style="height: 472px;">
+                                        <div style="height: 453px;">
                                             <p style="text-align:center;margin-top: 10px;">
                                                 <img src="../../assets/peanutImg/sellingCars.png" alt="">
                                             </p>
@@ -750,7 +752,7 @@
                                     <!-- 卖出车辆 v-else-->
                                     <el-collapse-item name="2" v-else>
                                         <template slot="title">
-                                            <img  class="img_20px_m10px" src="../../assets/peanutImg/mc.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2" @click="sellvehicleclick">卖出车辆</el-link>
+                                            <img  class="img_20px_m10px" src="../../assets/peanutImg/mc.png" alt=""><el-link type="_blank" :underline="false" class=" text_color_2">卖出车辆</el-link>
                                         </template>
                                         <div v-for="(sellvehicle,sellIndex) in sellvehicleAdd" :key="sellIndex">
                                             <el-col :span="24" class="margin_10px">
@@ -795,21 +797,49 @@
                 </div>
             </el-col>
         </el-row>
+        <!-- 修改名字-->
+        <el-drawer :visible.sync="modifyName" :direction="directionName" :before-close="handleClose">
+            <div class="demo-drawer__content">
+                <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
+                    <el-row :gutter="20">
+                        <el-col :span="18" :offset="3">
+                            <div class="grid-content bg-purple">
+                                <el-form-item label="请输入新的名字" prop="name">
+                                    <el-form-item prop="name">
+                                        <el-input type="text" placeholder="请输入名称5位中英数字都可以" v-model="ruleForm.name" maxlength="5" show-word-limit onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')">
+                                        <i slot="prefix" class="el-input__icon el-icon-user"></i>
+                                        </el-input>
+                                    </el-form-item>
+                                </el-form-item>
+                            </div>
+                            <div class="demo-drawer__footer button_mb10px">
+                                <el-button type="primary" @click="modifyNameClick()" :loading="loadingName">{{ loadingName ? '正在修改 ...' : '确定修改' }}</el-button>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+        </el-drawer>
         <!-- 输入充值密码 -->
         <el-drawer :visible.sync="onSubmit" :direction="direction" :before-close="handleClose">
             <div class="demo-drawer__content">
                 <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
                     <el-row :gutter="20">
                         <el-col :span="18" :offset="3">
-                            <div class="grid-content bg-purple">
-                                <el-form-item label="请输入充值密码" prop="rechargePassword">
-                                    <el-input type="password" placeholder="充值密码" v-model="ruleForm.rechargePassword" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
-                                    <i slot="prefix" class="el-input__icon el-icon-unlock"></i>
-                                    </el-input>
-                                </el-form-item>
+                            <div v-if="userMessage.recharge == ''">
+                                <el-tag type="danger" class="textCentered">请先设置充值密码</el-tag>
                             </div>
-                            <div class="demo-drawer__footer button_mb10px">
-                                <el-button type="primary" @click="onSubmitClick()" :loading="loading">{{ loading ? '正在充值 ...' : '确 定' }}</el-button>
+                            <div v-else>
+                                <div class="grid-content bg-purple">
+                                    <el-form-item label="请输入充值密码" prop="rechargePassword">
+                                        <el-input type="password" placeholder="充值密码" v-model="ruleForm.rechargePassword" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
+                                        <i slot="prefix" class="el-input__icon el-icon-unlock"></i>
+                                        </el-input>
+                                    </el-form-item>
+                                </div>
+                                <div class="demo-drawer__footer button_mb10px">
+                                    <el-button type="primary" @click="onSubmitClick()" :loading="loading">{{ loading ? '正在充值 ...' : '确 定' }}</el-button>
+                                </div>
                             </div>
                         </el-col>
                     </el-row>
@@ -862,7 +892,7 @@
                             </el-rate>
                             <div class="grid-content bg-purple button_mt10px2">
                                 <el-form-item prop="evaluateContent">
-                                    <el-input type="text" placeholder="请输入您的评价内容" v-model="ruleForm.evaluateContent" maxlength="60" show-word-limit onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')">
+                                    <el-input type="text" placeholder="请输入您的评价内容" v-model="ruleForm.evaluateContent" maxlength="60" show-word-limit onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5，。：！？,.:!?~·_+=/、@‘’“”'';；]/g, '')">
                                         <i slot="prefix" class="el-input__icon el-icon-message"></i>
                                     </el-input>
                                 </el-form-item>
@@ -891,6 +921,12 @@ var money = /^\d{1,100}$/; //充值
 export default {
     name: 'PersonalContent',
     data() {
+        //修改名字
+        var validateName = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请输入新的名称'));
+            }
+        };
         //修改
         var validateAcco = (rule, value, callback) => {
             if (value === '') {
@@ -981,20 +1017,25 @@ export default {
             lastImgUrl: '',
             dialogImageUrl: '',
             dialogVisible: false,
-
+            //修改名字
+            modifyName: false,
+            directionName: 'ttb',
+            loadingName: false,
+            //输入充值密码
             onSubmit: false,
-            direction: 'btt',
+            direction: 'ttb',
             loading: false,
-
+            //输入评价信息
             evaluate: false,
             evaluatedirection: 'ttb',
             evaluateloading: false,
-
+            //修改新的充值密码
             rechargeButton: false,
             directionttb: 'ttb',
             rechargeing: false,
-
+            //用户的信息
             userMessage:[],
+
             active: 0,
             value1: '',
             value: '',
@@ -1023,6 +1064,8 @@ export default {
                 desc: ''
             },
             ruleForm: {
+                //修改名字
+                name: '',
                 //修改密码的三个内容
                 LoginAccount: '',
                 LoginPassword: '',
@@ -1043,6 +1086,9 @@ export default {
                 evaluateContent: ''
             },
             rules: {
+                name: [
+                    { validator: validateName, trigger: 'blur' }
+                ],
                 //修改密码的三个内容
                 LoginAccount: [
                     { validator: validateAcco, trigger: 'blur' }
@@ -1123,7 +1169,6 @@ export default {
                 if(res.data.code==1){
                     let userContent = res.data.data;
                     this.userMessage = userContent;
-                    console.log(this.userMessage);
                 }else{
                     //无账号失败返回
                     this.$message({
@@ -1151,7 +1196,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.collection = res.data.data;
-                    console.log(this.collection);
                 }else{
                     
                 }
@@ -1173,7 +1217,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.onTheShelf = res.data.data;
-                    console.log(this.onTheShelf);
                 }else{
                     
                 }
@@ -1195,7 +1238,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.undercarriage = res.data.data;
-                    console.log(this.undercarriage);
                 }else{
                     
                 }
@@ -1217,7 +1259,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.atAuction = res.data.data;
-                    console.log(this.atAuction);
                 }else{
                     
                 }
@@ -1239,7 +1280,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.auctioned = res.data.data;
-                    console.log(this.auctioned);
                 }else{
                     
                 }
@@ -1261,7 +1301,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.notReviewed = res.data.data;
-                    console.log(this.notReviewed);
                 }else{
                     
                 }
@@ -1283,7 +1322,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.peanutOrderAdd = res.data.data;
-                    console.log(this.peanutOrderAdd);
                 }else{
                     
                 }
@@ -1305,7 +1343,6 @@ export default {
             sendParam(url, data).then(res => {
                 if(res.data.code==1){
                     this.sellvehicleAdd = res.data.data;
-                    console.log(this.sellvehicleAdd);
                 }else{
                     
                 }
@@ -1314,15 +1351,70 @@ export default {
                 console.log(err);
             })
         },
-        //刷新用户买车
-        buyACarclick(){
-            //用户买车
-            this.peanutOrder();
+        //修改名字
+        changeName(){
+            this.modifyName = true;
         },
-        //刷新用户卖车
-        sellvehicleclick(){
-            //用户卖车
-            this.sellingCars();
+        //真.修改名字
+        modifyNameClick(){
+            if(this.ruleForm.name == ''){
+                this.$message.error({
+                    message: '未输入新的名字',
+                    center: true
+                });
+            }else if(this.userMessage.name == this.ruleForm.name){
+                this.$message.error({
+                    message: '与旧名字相同,无法修改',
+                    center: true
+                });
+            }else{
+                //显示正在发布评价中
+                this.loadingName = true;
+                //真.修改名字
+                let url = '/personal/Personal/modifyNameClick';
+                // console.log(this.$store.state.UserToken);
+                //给php发送内容
+                let data = {
+                    id:this.userMessage.id,
+                    name:this.ruleForm.name
+                };
+                sendParam(url, data).then(res => {
+                    if(res.data.code==1){
+                        this.userMessage.name = res.data.data;
+                        this.timer = setTimeout(() => {
+                            // 动画关闭需要一定的时间
+                            setTimeout(() => {
+                                //关闭正在发布评价中，按钮字变成回原来字迹
+                                this.loadingName = false;                           
+                            }, 400);
+                            //自动关闭修改名字框
+                            this.modifyName = false;
+                        }, 2000);
+                        //修改成功返回
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success',
+                            center: true
+                        });
+                    }else{
+                        this.timer = setTimeout(() => {
+                        // 动画关闭需要一定的时间
+                            setTimeout(() => {
+                                this.loadingName = false;
+                            }, 400);
+                        }, 2000);
+                        //修改失败返回
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'warning',
+                            center: true
+                        });
+                    }
+                }).catch(err => {
+                    //异常返回
+                    console.log(err);
+                })
+            }
         },
         //待验收(订单号,卖家id,买家id,车辆id)
         primary(order_num,sell_id,buy_id,vehicle_id){
@@ -1517,6 +1609,8 @@ export default {
                     center: true
                 });
             }else{
+                //用户信息
+                this.userAdd();
                 //显示输入充值密码框
                 this.onSubmit = true;
             }
@@ -1535,13 +1629,6 @@ export default {
                     center: true
                 });
             }else{
-                this.loading = true;
-                this.timer = setTimeout(() => {
-                    // 动画关闭需要一定的时间
-                    setTimeout(() => {
-                        this.loading = false;
-                    }, 400);
-                }, 2000);
                 //充值
                 let url = '/personal/Personal/onSubmitClick';
                 let token = localStorage.getItem("tokenVue");
@@ -1553,8 +1640,16 @@ export default {
                 };
                 sendParam(url, data).then(res => {
                     if(res.data.code==1){
-                        console.log(res.data.data);
                         this.userMessage.money = res.data.data;
+                        this.loading = true;
+                        this.timer = setTimeout(() => {
+                            // 动画关闭需要一定的时间
+                            setTimeout(() => {
+                                this.loading = false;
+                            }, 400);
+                            //自动关闭
+                            this.onSubmit = false;
+                        }, 2000);
                         //充值成功返回
                         this.$message({
                             message: res.data.msg,
@@ -1562,6 +1657,13 @@ export default {
                             center: true
                         });
                     }else{
+                        this.loading = true;
+                        this.timer = setTimeout(() => {
+                            // 动画关闭需要一定的时间
+                            setTimeout(() => {
+                                this.loading = false;
+                            }, 400);
+                        }, 2000);
                         //充值失败返回
                         this.$message({
                             message: res.data.msg,
@@ -1653,13 +1755,7 @@ export default {
                     type: 'warning',
                     center: true
                 });
-            }else{
-                this.timer = setTimeout(() => {
-                    // 动画关闭需要一定的时间
-                    setTimeout(() => {
-                        this.rechargeing = false;
-                    }, 400);
-                }, 2000);
+            }else{              
                 //修改支付密码
                 let url = '/personal/Personal/rechargeClick';
                 let token = localStorage.getItem("tokenVue");
@@ -1671,7 +1767,16 @@ export default {
                     token:token
                 };
                 sendParam(url, data).then(res => {
+                    
                     if(res.data.code==1){
+                        this.timer = setTimeout(() => {
+                        // 动画关闭需要一定的时间
+                            setTimeout(() => {
+                                this.rechargeing = false;
+                            }, 400);
+                            //自动关闭
+                            this.rechargeButton = false;
+                        }, 2000);
                         //修改成功返回
                         this.$message({
                             message: res.data.msg,
@@ -1679,6 +1784,12 @@ export default {
                             center: true
                         });
                     }else{
+                        this.timer = setTimeout(() => {
+                        // 动画关闭需要一定的时间
+                            setTimeout(() => {
+                                this.rechargeing = false;
+                            }, 400);
+                        }, 2000);
                         //修改失败返回
                         this.$message({
                             message: res.data.msg,
@@ -1823,7 +1934,6 @@ export default {
             //修改地址
             let url = '/personal/Personal/avatarClick';
             let token = localStorage.getItem("tokenVue");
-            console.log(this.lastImgUrl);
             //给php发送内容
             let data = {
                 head_img:this.lastImgUrl,
@@ -1889,6 +1999,11 @@ export default {
 </script>
 
 <style scoped>
+.textCentered{
+    text-align:center !important; 
+    width: 100% !important;
+    margin-bottom: 25px !important;
+}
 .cursor_pointer{
     cursor: pointer !important;
 }
@@ -2063,5 +2178,34 @@ export default {
 }
 #PersonalContent .el-drawer{
   height: auto !important;
+}
+#PersonalContent .el-tabs__content{
+    height: 667px;
+    overflow-y: auto;
+}
+#PersonalContent .el-tabs__content::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 4px;
+    scrollbar-arrow-color:red;
+}
+#PersonalContent .el-tabs__content::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.2);
+    scrollbar-arrow-color:red;
+}
+#PersonalContent .el-tabs__content::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 0;
+    background: rgba(0,0,0,0.1);
+}
+#PersonalContent .el-collapse-item__header{
+    border-bottom: 0px solid #EBEEF5;
+}
+#PersonalContent .el-collapse-item__wrap{
+    border-bottom: 0px solid #EBEEF5;
+}
+#PersonalContent .el-collapse{
+    border-top: 0px solid #EBEEF5;
 }
 </style>

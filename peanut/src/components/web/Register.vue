@@ -23,7 +23,7 @@
         <el-col :span="18" :offset="3">
           <div class="grid-content bg-purple">
             <el-form-item prop="name">
-              <el-input type="text" placeholder="请输入名称" v-model="ruleForm.name" maxlength="5" show-word-limit onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')">
+              <el-input type="text" placeholder="请输入名称5位中英数字都可以" v-model="ruleForm.name" maxlength="5" show-word-limit onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')">
                 <i slot="prefix" class="el-input__icon el-icon-user"></i>
               </el-input>
             </el-form-item>
@@ -45,7 +45,7 @@
         <el-col :span="18" :offset="3">
           <div class="grid-content bg-purple">
             <el-form-item prop="account">
-              <el-input type="text" placeholder="请输入账号" v-model="ruleForm.account" maxlength="11" show-word-limit onkeyup="this.value=this.value.replace(/\D/g,'')">
+              <el-input type="text" placeholder="请输入账号11位数字" v-model="ruleForm.account" maxlength="11" show-word-limit onkeyup="this.value=this.value.replace(/\D/g,'')">
                 <i slot="prefix" class="el-input__icon el-icon-key"></i>
               </el-input>
             </el-form-item>
@@ -56,7 +56,7 @@
         <el-col :span="18" :offset="3">
           <div class="grid-content bg-purple">
             <el-form-item prop="password">
-              <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
+              <el-input type="password" placeholder="请输入密码10~18位字母数字" v-model="ruleForm.password" autocomplete="off" show-password onKeyUp="value=value.replace(/[\W]/g,'')">
                 <i slot="prefix" class="el-input__icon el-icon-lock"></i>
               </el-input>
             </el-form-item>
@@ -312,6 +312,8 @@ export default {
             sendParam(url, data).then(res => {
               if(res.data.code==1){
                 //注册成功返回
+                this.$router.push("/Login");
+                //注册成功返回
                 this.$message({
                   message: res.data.msg,
                   type: 'success',
@@ -357,7 +359,6 @@ export default {
                 this.randomNum(0, this.identifyCodes.length)
                 ];
             }
-            console.log(this.identifyCode);
         }
     }
 }

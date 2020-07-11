@@ -105,6 +105,10 @@ export default {
         var validatePhone = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('请输入手机号'));
+            }else{
+                if(value.match(phone)==null){
+                    callback(new Error('请输入正确的手机号'));
+                }
             }
         };
         var validateAcco = (rule, value, callback) => {
@@ -252,7 +256,6 @@ export default {
                 this.randomNum(0, this.identifyCodes.length)
                 ];
             }
-            console.log(this.identifyCode);
         }
     }
 }
