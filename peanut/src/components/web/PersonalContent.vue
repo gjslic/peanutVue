@@ -158,7 +158,7 @@
                                                         <el-row :gutter="20">
                                                             <el-col :span="16" :offset="5" class="padding-left-0">
                                                                 <el-upload 
-                                                                action="http://127.0.0.1/node_yzlll/peanut/th5/public/personal/Personal/avatar" 
+                                                                action="http://127.0.0.1/th5/public/personal/Personal/avatar" 
                                                                 list-type="picture-card" 
                                                                 :limit="1"
                                                                 name="image"
