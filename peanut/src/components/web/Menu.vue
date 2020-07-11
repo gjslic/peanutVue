@@ -149,11 +149,7 @@
                     <el-input
                       placeholder="请输入所在城市"
                       prefix-icon="el-icon-search"
-<<<<<<< HEAD
                       v-model="input">
-=======
-                      >
->>>>>>> master
                     </el-input>
                 </el-col>
 
@@ -259,8 +255,13 @@ mounted(){
       },
       //传递城市
       passCity(id){
-  
-        
+        this.$router.push({
+            name:"BuyCar",
+            query:{
+              cityid:id,
+            }
+          });
+          location.reload();
       },
       //用户头像名称
       getuserinfo(){
@@ -271,7 +272,6 @@ mounted(){
         }
         sendParam(url, data).then(res => {
             this.userdata = res.data;
-        console.log(res.data);
 
         }).catch(err => {
             console.log(err);

@@ -243,23 +243,13 @@ export default {
 
         // 传递推荐车辆
         passReccar(id){
-          let url = '/homepage/Homepage/passReccar';
-          let data = {
-            reccarid :id
-          }
-          console.log(data);
-          sendParam(url ,data).then(res => {
-            this.passbrandArr = res.data;
-             // 路由傳參到買車頁
+           // 路由傳參到買車頁
             this.$router.push({
-              name:"BuyCar",
-              params:{
-                passstyleArr:'passstyleArr',
+              name:"Detail",
+              query:{
+                vehicleID: id
               }
             })
-          }).catch(err => {
-            console.log(err);
-          });
         }
     
     }
