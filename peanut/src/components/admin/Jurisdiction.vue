@@ -36,9 +36,8 @@
           :to_data='editJurVal'
           :defaultProps="{label:'label'}" 
           :mode='mode'
-          @right-check-change="rightCheck"
-          @addBtn='addJur' 
-          @removeBtn='removeJur'
+          @addBtn='editHaveJur' 
+          @removeBtn='editHaveJur'
           :button_text="btnText"
           filter
           openAll>
@@ -174,11 +173,11 @@
        */
       getNowJurisdition (row) {
           this.loadBack();
-          this.editJurDialog = true;
           let menuArr = this.allMenuArr[0];
           this.nowRoleId = row.id;
           this.$fetch(this.url+'getJurisditionList',{nowId:row.id})
           .then(res => {
+             this.editJurDialog = true;
             if(res.data){
               let nowJurArr = res.data[0].menu_id;
               let newArr = nowJurArr.split(',');
@@ -236,16 +235,9 @@
         }
       },
       /**
-       * [rightCheck 右侧选中]
-       */
-      rightCheck(nodeObj,treeObj){
-        console.log(nodeObj)
-        console.log(treeObj)
-      },
-      /**
        * [addJur 穿梭框添加]
        */
-      addJur(fromData,toData,obj){
+      editHaveJur(fromData,toData,obj){
         let nowJur = [];
         this.haveJur = [];
         for(let x of toData){
@@ -259,25 +251,14 @@
         }
         this.haveJur.push(...nowJur);
       },
-      removeJur(fromData,toData,obj){
-          for(let x of obj.keys){
-            if(x == 1){
-              this.$message({
-                showClose: true,
-                message: '默认选项不可移除',
-                type: 'error'
-              });
-            }
-          }
-      },
       /**
        * [handleClose 修改弹框关闭事件]
        */
       handleClose(done) {
         this.$confirm('是否保留更改？')
         .then(_ => {
-          done();
           this.editJurisdition()
+          done();
         })
         .catch(_ => {
           done();
@@ -296,12 +277,12 @@
           }else{
             msgType = 'error'
           }
+          this.editJurDialog = false;
           this.$message({
             showClose: true,
             message: res.msg,
             type: msgType
           });
-          this.editJurDialog = false;
         }).catch(err => {
           console.log(err)
         })
