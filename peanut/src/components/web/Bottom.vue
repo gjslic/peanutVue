@@ -1,5 +1,6 @@
 <template>
-<el-row >
+<div>
+    <el-row >
   <el-col :xs="24" :md="24" class="hidden-xs-only">
       <div class="bottom_box">
 
@@ -250,35 +251,47 @@
       </div>
 
     </el-col>
-
+</el-row>
 
 <!-- 手机端 -->
-
-<el-col :xs="24" class="hidden-sm-and-up">
-    <div class="phone_bottom">
-        <el-dropdown trigger="click">
-            <span class="el-dropdown-link">
-                底部菜单<i class="el-icon-caret-top el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown" class="dropdown_box">
-
-                <router-link to="/" class="text_a">
-                    <el-dropdown-item icon="el-icon-s-promotion" class="dropdown_text">前往首页</el-dropdown-item>
-                </router-link>
+<el-row>
+       <el-col :xs="2" class="hidden-sm-and-up" style="position:fixed; bottom: 4rem;right: 30px;">
+        <div class="phone_bottom">
+            <el-dropdown trigger="click">
                 
-                <router-link to="/BuyCar" class="text_a">
-                    <el-dropdown-item icon="el-icon-s-finance" class="dropdown_text">我要买车</el-dropdown-item>
-                </router-link> 
+                <el-button type="primary" class="el-icon-s-promotion" circle></el-button>
 
-                <router-link to="/SellingCars" class="text_a">
-                    <el-dropdown-item icon="el-icon-goods" class="dropdown_text">我要卖车</el-dropdown-item>
-                </router-link> 
-            </el-dropdown-menu>
-        </el-dropdown>
-    </div>
-</el-col>
 
+                <!-- <span class="el-dropdown-link">
+                    <i class="el-icon-caret-right"></i>
+                </span> -->
+
+                <el-dropdown-menu slot="dropdown" class="dropdown_box">
+
+                    <router-link to="/" class="text_a">
+                        <el-dropdown-item icon="el-icon-monitor" class="dropdown_text">前往首页</el-dropdown-item>
+                    </router-link>
+                    
+                    <router-link to="/BuyCar" class="text_a">
+                        <el-dropdown-item icon="el-icon-s-finance" class="dropdown_text">我要买车</el-dropdown-item>
+                    </router-link> 
+
+                    <router-link to="/SellingCars" class="text_a">
+                        <el-dropdown-item icon="el-icon-goods" class="dropdown_text">我要卖车</el-dropdown-item>
+                    </router-link> 
+                    
+                    <el-dropdown-item icon="el-icon-switch-button" class="dropdown_text" v-if="showPrise">退出登录</el-dropdown-item>
+                   
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </el-col>
 </el-row>
+</div>
+
+ 
+
+
 
 </template>
 
@@ -286,7 +299,27 @@
 
 export default {
     name:'Bottom',
+    data(){
+        return{
+            showPrise:false
+        }
+    },
 
+mounted(){
+  // 登录判断
+  this.iflogin();
+},
+    methods:{
+        //登录判断
+        iflogin(){
+            var utoken = localStorage.getItem('tokenVue');
+            if(utoken){
+                this.showPrise = true;
+            }else{
+                this.showPrise = false;
+            }
+        }
+    }
 
 }
 </script>
@@ -390,9 +423,10 @@ export default {
     /* 手机端 */
   @media (max-width: 768px){
     .phone_bottom{
-        height: 50px;
-        padding-left: 145px;
-        padding-top: 10px;
+        /* height: 50px; */
+        padding-left: 15px;
+        /* padding-top: 10px; */
+        /* background-color: white; */
     }
 
     .dropdown_box{
@@ -403,6 +437,14 @@ export default {
         font-size: 2rem;
         padding-left: 40px;
         padding-bottom: 20px;
+    }
+
+    .text_a{
+        text-decoration: none;
+    }
+
+    .el-icon-caret-right{
+        color: white;
     }
   }
 </style>

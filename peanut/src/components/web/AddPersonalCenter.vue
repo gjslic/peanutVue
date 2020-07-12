@@ -17,7 +17,9 @@ import Bottom from "./Bottom";
 export default {
     name: 'AddPersonalCenter',
     components: {
-        PersonalContent
+        Menu,
+        PersonalContent,
+        Bottom
     }
 }
 </script>

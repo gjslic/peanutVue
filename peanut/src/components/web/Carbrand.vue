@@ -3,20 +3,7 @@
     <el-col :md="10" :xs="24">
       <div class="car_barnd">
         <div class="brand_text">
-          <!-- 品牌下拉框 -->
-          <el-dropdown>
-            <span class="el-dropdown-link">
-              品牌
-              <i class="el-icon-arrow-down el-icon--right"></i>
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>黄金糕</el-dropdown-item>
-              <el-dropdown-item>狮子头</el-dropdown-item>
-              <el-dropdown-item>螺蛳粉</el-dropdown-item>
-              <el-dropdown-item disabled>双皮奶</el-dropdown-item>
-              <el-dropdown-item divided>蚵仔煎</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+          热门品牌
         </div>
 
         <!-- 品牌图标 -->
@@ -169,48 +156,19 @@ methods:{
 
   //传递价格范围
   passprice(id,price){
-    let url = '/homepage/Homepage/passprice';
-    let data ={
-      price_id:id
-    }
-    sendParam(url ,data).then(res => {
-      this.passpriceArr = res.data;
-      // 路由傳參到買車頁
-      this.$router.push({
+   
+    this.$router.push({
         name:"BuyCar",
         query:{
           price_id:price,
           id:id
         }
       })
-    }).catch(err => {
-      console.log(err);
-    });
+ 
   },
 
-  //传递车辆类型
-    passstyle(id){
-    
-    let url = '/homepage/Homepage/passstyle';
-    let data ={
-      style_id:id
-    }
-    
-    sendParam(url ,data).then(res => {
-      this.passstyleArr = res.data;
-      // 路由傳參到買車頁
-      this.$router.push({
-        name:"BuyCar"
-      })
-    }).catch(err => {
-      console.log(err);
-    });
-  }
+
 }
-
-
-      
-
 
 };
 

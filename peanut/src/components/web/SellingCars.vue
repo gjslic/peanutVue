@@ -51,10 +51,14 @@
                 
                     <el-form-item label="车辆信息" prop="carname" style="width: 300px;">
                        <el-input
-                        type="textarea"
-                        :rows="2"
+                       
                         placeholder="请输入年份款式，排气等信息"
-                        v-model="ruleForm.carname">
+                        v-model="ruleForm.carname"
+                         type="text"
+                        maxlength="25"
+                        show-word-limit
+                        class="carinfo"
+                        >
                         </el-input>
                     </el-form-item>
 
@@ -96,11 +100,23 @@
                         </el-radio-group>
                     </el-form-item>
 
-                    <el-form-item label="卖车拍卖">
-                        <el-radio-group v-model="radio">
-                            <el-checkbox v-model="checked1" label="我要拍卖" border></el-checkbox>
-                        </el-radio-group>
+                    <el-form-item label="拍卖场次">
+                        <el-tooltip class="item" effect="dark" content="在需要拍卖时选择" placement="right">
+
+                            <el-select v-model="ruleForm.auction" clearable placeholder="请选择拍卖场次">
+                                <el-option
+                                v-for="item in auctiontimeArr"
+                                :key="item.id"
+                                :label="item.start_time+'~'+item.end_time"
+                                :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-tooltip>
                     </el-form-item>
+
+
+                   
+
                     
                     <el-form-item label="车辆图片">
                         <el-upload class="upload-demo" action="http://127.0.0.1/nodejs/peanut/th5/public/sellcar/Sellcar/uploadimg" 
@@ -122,9 +138,9 @@
                             <el-checkbox v-model="checked"><el-link type="info" :underline="false">我已阅读同意</el-link><el-link type="primary" :underline="false">《个人信息使用告知书》</el-link></el-checkbox>
                         </div>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item class="form_button">
                         <el-button type="primary" @click="submitForm('ruleForm')"  class="margin_l_10">提交信息</el-button>
-                         <el-button @click="resetForm('ruleForm')">重置</el-button>
+                         <el-button @click="resetForm('ruleForm')" style="margin-left: 30px;margin-top: 10px;">重置</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -156,12 +172,14 @@ export default {
             cityArr:[],
             brandArr:[],
             tabArr:[],
+            auctiontimeArr:[],
             cityid: '',
             brandid:'',
             // 图片
             lastImgUrl:'',
-
-            checked1: true,
+            //拍卖场次时间显示
+            showPrise:false,
+            checked1: false,
             // 时间选择器
             cityArr:[],
             checked: true,
@@ -231,12 +249,30 @@ export default {
         this.getsellcity();
         //获取到品牌
         this.getSeriesData();
-
+        //获取到车辆标签
         this.getcartab();
+        //获取拍卖场次时间
+        this.showaction();
+        //登录状态判断
+        this.iftoken();
+
+        
     },
 
 
     methods: {
+
+        //判断登录状态
+        iftoken(){
+            var usertoken = localStorage.getItem('tokenVue');
+            if(usertoken == '' || usertoken==null){
+                this.$message({
+                    type:'warning',
+                    message:'请先登录'    
+                })
+                 this.$router.push({name:'Login'})
+            }
+        },
         //获取到城市数据
         getsellcity(){
             let url = '/sellcar/Sellcar/getsellcity';
@@ -286,6 +322,18 @@ export default {
                 console.log(err);
             });
         },
+
+        //获取拍卖场次时间
+        showaction(){
+            let url = '/sellcar/Sellcar/showaction'; 
+              getData(url).then(res => {
+                //this获取到数据
+                console.log(res);
+                    this.auctiontimeArr = res.data;
+                }).catch(err => {
+                console.log(err);
+            });
+        },
         
         
         //判断是否填写输入框
@@ -294,16 +342,22 @@ export default {
           if (valid) {
               let url = "/sellcar/Sellcar/sellcardata";
               var usetoken = localStorage.getItem('tokenVue');
+              var allinfo = this.ruleForm;
+              var auctiontime = allinfo.auction;
+              if(auctiontime == null){
+                  auctiontime=0;
+              }
+              console.log(auctiontime);
                 let data = {
                     imgUrl: this.lastImgUrl,
                     ruleForm: this.ruleForm,
+                    auctiontime:auctiontime,
                     usetoken:usetoken
                 };
           
             console.log(data);
             //判断是否阅读个人信息告知书
             if(this.checked == true){
-
                 //提示框
                  this.$confirm('请确保信息的真实性，如需拍卖您的爱车请联系客服。点击确认提交信息', '提示', {
                     confirmButtonText: '确定',
@@ -317,7 +371,7 @@ export default {
                             message: '提交成功！请敬候佳音~',   
                         });
                         sendParam(url, data).then(res => {
-                            this.$router.push('/AddPersonalCenter');
+                            // this.$router.push('/AddPersonalCenter');
                         console.log(res);
 
                         }).catch(err => {
@@ -377,6 +431,7 @@ export default {
 }
 
 
+
 .margin_left_20{
     margin-left: -70px !important;
 }
@@ -413,6 +468,13 @@ export default {
     .margin_l_10{
         margin: 0 0 0 10%;
     }
+    /* .form_button{
+        margin-left: 10px;
+    } */
+
+    /* .carinfo{
+       width: 300px;
+    } */
 }
 </style>
 
