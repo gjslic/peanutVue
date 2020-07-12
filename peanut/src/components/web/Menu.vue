@@ -99,7 +99,7 @@
                         <div class="router_text">
                             <i class="el-icon-phone-outline"></i>联系客服
                         </div>
-                        <div class="router_text">
+                        <div class="router_text" @click="outlodin()">
                           <i class="el-icon-switch-button"></i>退出登录
                         </div>
                     </div>
@@ -128,43 +128,33 @@
       </el-col>
 
       <!-- 用户头像 -->
-      <el-col :xs="2" style="padding-top: 9px;" class="hidden-sm-and-up">
+      <el-col :xs="2" style="padding-top: 11px;" class="hidden-sm-and-up">
         
-        <div class="user_img" >
-          <router-link to="/AddPersonalCenter" >
-              <img :src= "userdata.head_img" alt="" style="width:100% ;border-radius: 50%;">
-           </router-link>
+        <!-- 点击判断token是否存在进入个人中心 -->
+        <div class="user_img" @click="gettoken()">
+        
+            <img :src= "userdata.head_img" alt="" style="width:100% ;border-radius: 50%;">
+         
         </div>
       </el-col>
     </el-row>
      <!-- 城市显示 -->
+             <!-- title="请选择您的城市" -->
       <el-drawer
-        title="请选择您的城市"
+
         :visible.sync="innerDrawer "
         :direction="direction"
-        size="60%" class="drawer_box">
-        <!-- <el-row>
-              <el-col :md="24" :xs="24" style="padding: 10px;">
-                <el-col :md="18" :xs="18">
-                    <el-input
-                      placeholder="请输入所在城市"
-                      prefix-icon="el-icon-search"
-                      v-model="input">
-                    </el-input>
-                </el-col>
-
-
-                <el-col :md="6" :xs="6">
-                  <div class="ss_button" style="padding:0px" >
-                    <el-button plain @click="innerDrawer = false">搜索车辆</el-button>
-                  </div>
-                </el-col>
-              </el-col>
-          </el-row> -->
+        :with-header="false"
+        size="50%" class="drawer_box">
+  
 
         <el-row>
           <!-- 城市数据打印 -->
           <el-col :md="24" :xs="24">
+             <el-col :md="24" :xs="24" class="choose_city">
+                请选择城市
+              </el-col>
+
               <!-- 热门城市显示 -->
               <el-col :md="24" :xs="24" class="hot_city">
                   热门城市
@@ -252,6 +242,8 @@ mounted(){
       // 传递搜索关键字
       vehiclelFun(){
         this.$router.push({ name: 'BuyCar', query: { vehicleName: this.input2 }});
+
+
       },
       //传递城市
       passCity(id){
@@ -289,6 +281,33 @@ mounted(){
           this.showPrise = false;
           this.showRentPrise = true;
         }
+      },
+
+      //手机端获取到token
+      gettoken(){
+        var usertoken = localStorage.getItem('tokenVue');
+        if(usertoken){
+            this.$router.push({name:'AddPersonalCenter'})
+        }else{
+            this.$message({
+              type:'warning',
+              message:'请先登录'
+            })
+            this.$router.push({name:'Login'})
+        }
+      },
+
+      //退出登录
+      outlodin(){
+        //移除本地所存储的token
+        // var utoken = localStorage.getItem('tokenVue');
+        localStorage.removeItem('tokenVue');
+        this.$message({
+            type: 'success',
+            message: '退出成功', 
+        })
+        this.showPrise = false;
+        this.showRentPrise = true;
       },
 
       //进入卖车页判断是否登录
@@ -406,7 +425,7 @@ mounted(){
 
     /* 用户头像 */
     .user_head{
-      background-color:crimson;
+      /* background-color:crimson; */
       height: 40px;
       border-radius: 50%;
       cursor: pointer;
@@ -430,6 +449,7 @@ mounted(){
       font-weight: 600;
       padding: 15px;
       border-bottom: 1px solid #ccc;
+      /* color: #409eff; */
     }
 
     /* 热门城市名称 */
@@ -478,10 +498,26 @@ mounted(){
     .city_span{
       display: block;
     }
+
+    .choose_city{
+      font-size: 20px;
+      font-weight: 600;
+      color: #409eff;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
   }
 
   /* 手机端 */
   @media (max-width: 768px){
+
+    .choose_city{
+      font-size: 20px;
+      font-weight: 600;
+      color: #409eff;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
     /* .nav_tit{
       font-weight: 600;
       font-size: 2.5rem;
@@ -510,9 +546,12 @@ mounted(){
     }
 
     .user_img{
-      background-color: #409EFF;
+      /* background-color: #409EFF; */
       border-radius: 50%;
       border: 1px solid white;
+      height: 31px;
+      background-image: url('https://ae01.alicdn.com/kf/Hb4ae7e9644cf43cc95b822ecc14ef84dC.jpg');
+      background-repeat: no-repeat;
     }
     .el-menu-demo{
       height:65px;
@@ -547,6 +586,14 @@ mounted(){
 
     .city_span{
       display: block;
+    }
+
+    .choose_city{
+      font-size: 20px;
+      font-weight: 600;
+      color: #409eff;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
     }
 
 </style>

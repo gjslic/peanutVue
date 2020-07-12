@@ -269,6 +269,7 @@ export default {
 
   .box-card{
     cursor: pointer;
+    margin-top: 18px;
   }
 
 
@@ -310,7 +311,7 @@ export default {
   /* 车辆图片 */
   .recommend_img{
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    height: 370px;
+    height: 730px;
     padding-top: 20px;
     padding-left: 30px;
   }
