@@ -119,6 +119,7 @@ export default {
           if (res.data.code == 1) {
             this.$message.success(res.data.msg);
             this.tableData = res.data.data;
+            this.addDialogForm = false
           } else {
             this.$message.error(res.data.msg);
           }
@@ -153,6 +154,7 @@ export default {
           if (res.data.code == 1) {
             this.$message.success(res.data.msg);
             this.tableData = res.data.data;
+            this.updateDialogForm = false
           } else {
             this.$message.error(res.data.msg);
           }

@@ -84,7 +84,15 @@
   color: #666;
 }
 .input_info{
-  height: 74px;
+  height: 100px;
+}
+.text_info{
+  width: 98%;
+  height: 64px;
+  resize:none;
+  border: 0;
+  padding: 5px 10px 5px 10px;
+  outline:none;
 }
 .input_button{
   position: relative;

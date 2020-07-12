@@ -6,7 +6,10 @@
                 <div class="grid-content bg-purple">
                     <el-container>
                         <el-header>
+                            
                         <div class="block">
+                            <!-- <el-button type="primary">成功按钮</el-button>
+                            <el-button type="primary">成功按钮</el-button> -->
                         <!-- <span class="demonstration">月份搜索</span> -->
                         <el-date-picker
                             v-model="value2"
@@ -76,8 +79,6 @@
       }
     },
     mounted() {
-      
-
       this.getInfo()
     },
     methods: {
@@ -96,7 +97,7 @@
             let this_ = this;
             let myChart = echarts.init(document.getElementById('chart_demo'));
             let option = {
-                color: ['#409EFF'],
+                color: ['#67C23A'],
                 title: {
                     text: '销量表'
                 },
@@ -118,13 +119,13 @@
                 ],
                 yAxis : [
                 {
-                    name : '订单数',
+                    name : '订单交易成功数',
                     type : 'value'
                 }
                 ],
                 series : [
                 {
-                    name:'每月订单数',
+                    name:'本月订单完成数',
                     type:'bar',
                     barWidth: '60%',
                     data:this.order

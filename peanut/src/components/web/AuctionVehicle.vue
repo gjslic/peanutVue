@@ -43,7 +43,7 @@
                   <div class="minVehicleBox">
                     <span class="vehicleTime">{{vehicleArr[index].vehicle_time}} | {{vehicleArr[index].introduce}}</span>
                     <span class="priceDistance">{{vehicleArr[index].vehicle_distance}}万公里</span>
-                    <span class="priceFirst">竞拍金额{{vehicleArr[index].price}}万</span>
+                    <p class="priceFirst">竞拍金额{{vehicleArr[index].price}}万</p>
                     <p
                       class="vehiclePrice"
                       
@@ -254,7 +254,7 @@ export default {
     },
     //出价框
     open(id, price,index,sellID) {
-      if(localStorage.getItem('token')==null){
+      if(localStorage.getItem('tokenVue')==null){
         this.$message({
               type: "warning",
               message: '请先登录'
@@ -290,7 +290,7 @@ export default {
       let data = {
         id: id,
         price: price,
-        token:localStorage.getItem('token'),
+        token:localStorage.getItem('tokenVue'),
         sellID:sellID
       };
       sendParam(url, data)
@@ -300,19 +300,22 @@ export default {
               msg: res.data.msg,
               type: "success"
             };
+            setTimeout(() => {
+            this.$router.push({ name: 'AddPersonalCenter'});
+          }, 1000);
           } else {
             var resDate = {
               msg: res.data.msg,
               type: "warning"
             };
+            offer.innerHTML = "购买";
+            this.$set(this.vehicleArr[index][0],'flag',false);
           }
           this.$message({
               type: resDate.type,
               message: resDate.msg
           });
-          setTimeout(() => {
-            this.$router.push({ name: 'AddPersonalCenter'});
-          }, 1000);
+          
         })
         .catch(err => {
           console.log(err);
@@ -321,12 +324,19 @@ export default {
     
     //收藏
     collection(vehicleID, flag, sellID,index ) {
+      if(localStorage.getItem('tokenVue')==null){
+        this.$message({
+              type: "warning",
+              message: '请先登录'
+            });
+        return;
+      }
       let url = "auction/Auction/collection";
       let data = {
         vehicleID: vehicleID,
         flag: flag,
         sellID: sellID,
-        token:localStorage.getItem('token')
+        token:localStorage.getItem('tokenVue')
       };
       if (flag == 0) {
         this.$message({
@@ -478,6 +488,9 @@ export default {
     font-size: 16px;
     color: #f85d00;
     float: left;
+    position: absolute;
+    top: 9px;
+    left: 18px;
   }
   .priceFirst {
     font-size: 12px;
@@ -490,11 +503,14 @@ export default {
     margin: 0px 0 0 17px;
     font-size: 13px;
     float: left;
+    position: absolute;
+    bottom: 31px;
+    right: 98px;
   }
   .auctionBtn {
     position: absolute;
     bottom: 19px;
-    right: 35px;
+    right: 20px;
   }
   .tiShi {
     position: absolute;
@@ -581,10 +597,10 @@ export default {
 </style>
 <style>
 @media (max-width: 768px) {
-  #auctionBox .el-message-box{
-  width: 250px;
-  
-}
+  .el-message-box{
+    width: 250px;
+    
+  }
 }
 
 </style>

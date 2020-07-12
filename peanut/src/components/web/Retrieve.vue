@@ -236,6 +236,8 @@ export default {
                 sendParam(url, data).then(res => {
                     if(res.data.code==1){
                         //修改成功返回
+                        this.$router.push("/Login");
+                        //修改成功返回
                         this.$message({
                             message: res.data.msg,
                             type: 'success',
@@ -281,7 +283,6 @@ export default {
                 this.randomNum(0, this.identifyCodes.length)
                 ];
             }
-            console.log(this.identifyCode);
         }
     }
 }

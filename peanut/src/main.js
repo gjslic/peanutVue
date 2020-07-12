@@ -9,8 +9,10 @@ import router from './router/index'
 import store from './store'
 import axios from 'axios'
 import {post,fetch,patch,put} from './network/request'
+import Chat from 'jwchat'
 Vue.prototype.axios = axios
 Vue.use(ElementUI)
+Vue.use(Chat)
 Vue.config.productionTip = false
 
 Vue.prototype.$post=post;

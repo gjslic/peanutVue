@@ -105,6 +105,10 @@ export default {
         var validatePhone = (rule, value, callback) => {
             if (value === '') {
                 callback(new Error('请输入手机号'));
+            }else{
+                if(value.match(phone)==null){
+                    callback(new Error('请输入正确的手机号'));
+                }
             }
         };
         var validateAcco = (rule, value, callback) => {
@@ -202,16 +206,17 @@ export default {
                 };
                 sendParam(url, data).then(res => {
                     if(res.data.code==1){
-                        localStorage.setItem('token',res.data.data.token);
+                        localStorage.setItem('tokenVue',res.data.data.token);
                         // this.$store.commit('setUserToken',res.data.data.token);
                         // console.log(this.$store.state.UserToken);
                         //登录成功返回
+                        this.$router.push("/");
                         this.$message({
                             message: res.data.msg,
                             type: 'success',
                             center: true
                         });
-                        this.$router.push("/")
+                        this.$router.push("/");
                     }else{
                         //登录失败返回
                         this.$message({
@@ -252,7 +257,6 @@ export default {
                 this.randomNum(0, this.identifyCodes.length)
                 ];
             }
-            console.log(this.identifyCode);
         }
     }
 }
