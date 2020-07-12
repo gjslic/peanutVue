@@ -30,39 +30,57 @@
     </el-table>
     <el-dialog :title="jurTitle" destroy-on-close :visible.sync="editJurDialog" z-index="1" width="50%" :before-close="handleClose">
       <template >
-        <el-transfer v-model="editJurVal" :left-default-checked="leftBind" :right-default-checked="rightBind" :titles="transferTitle" @left-check-change="leftEdit" @right-check-change="rightEdit" :data="editJurData"></el-transfer>
+        <tree-transfer 
+          :title="transferTitle"
+          :from_data='editJurData'
+          :to_data='editJurVal'
+          :defaultProps="{label:'label'}" 
+          :mode='mode'
+          @addBtn='editHaveJur' 
+          @removeBtn='editHaveJur'
+          :button_text="btnText"
+          filter
+          openAll>
+        </tree-transfer>
       </template>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editJurDialog = false">取 消</el-button>
         <el-button type="primary" @click="editJurisdition">确 定</el-button>
       </span>
+
     </el-dialog>
     <el-tree :data="menuData" :props="defaultProps"></el-tree>
+    
   </div>
 </template>
 <script>
+  import treeTransfer from 'el-tree-transfer'
   export default {
-    name: 'Jurisdic',
+    name: 'Jurisdiction',
+    components:{ 
+      treeTransfer,
+    },
     data() {
       return {
-        url: 'http://localhost/th5/public/admin_jurisdiction/Jurisdition/',
+        url: 'http://localhost/peanut/th5/public/admin_jurisdiction/Jurisdition/',
         tableData: [], // 左侧菜单容器
         menuData: [], // 右侧权限列表容器
         allMenuArr: [], // 初始菜单
         editJurDialog: false,
+        haveJur: [],
         editJurData: [], // 穿梭框左侧容器
         editJurVal: [],  // 穿梭框右侧容器
         nowRoleId: '',   // 当前选中角色id
-        leftBind:[],  //左侧绑定默认权限
-        rightBind:[], //右侧绑定默认权限
         transferTitle:['所有权限','现有权限'],
         defaultProps: {
           children: 'children',
           label: 'label'
         },
+        btnText:['配置','移除'],
         jurTitle: '', // 权限列表标题
         currentRow:'', //当前选中行
-        selectIndex: '' // 当前选中行下标
+        selectIndex: '', // 当前选中行下标
+        mode: "transfer", // transfer addressList
       }
     },
     mounted () {
@@ -70,25 +88,6 @@
       that.getJurisditionList('权限列表')
     },
     methods : {
-      /**
-       * [leftBind 左侧绑定默认选中]
-       */
-      leftEdit(key){
-        this.leftBind = [];
-        if(key == 6){
-          this.leftBind.push(6,14,15);
-        }
-      },
-      /**
-       * [rightEdit 右侧绑定默认选中]
-       */
-      rightEdit(key){
-        this.rightBind = [];
-        if(key == 6){
-          this.rightBind.push(6,14,15);
-        }
-
-      },
       /**
        * [ 获取所有权限列表]
        */
@@ -174,53 +173,83 @@
        */
       getNowJurisdition (row) {
           this.loadBack();
-          this.editJurDialog = true;
           let menuArr = this.allMenuArr[0];
-          const leftData = []; // 定义穿梭框左侧容器
           this.nowRoleId = row.id;
           this.$fetch(this.url+'getJurisditionList',{nowId:row.id})
           .then(res => {
+             this.editJurDialog = true;
             if(res.data){
               let nowJurArr = res.data[0].menu_id;
               let newArr = nowJurArr.split(',');
               let jurArr = newArr.map(Number);
-              const leftData = []; // 定义穿梭框左侧容器
-              let rightData = [];
-              for(let x in menuArr){
-                // 定义穿梭狂左侧数据格式，插入数据
-                leftData.push({
-                  key: menuArr[x].id,
-                  label: menuArr[x].label
-                })
-              }
-              // 循环菜单数组和拥有权限，填充进右侧容器
-              for(let i = 0; i < menuArr.length; i++){
-                for(let j = 0; j < jurArr.length; j++){
-                  if(menuArr[i].id == jurArr[j]){
-                    rightData.push(jurArr[j])
+              this.editJurVal = [];
+              this.editJurData = [];
+              
+              let primaryArr  = {};
+              // 左侧未配置权限列表渲染
+              for(let item in menuArr){
+                if(menuArr[item].fid == 0){
+                  primaryArr = {
+                    'id': menuArr[item].id,
+                    'label': menuArr[item].label,
+                    'disabled': menuArr[item].id == 1,
+                    'pid': menuArr[item].fid,
+                    children:[]
+                  };
+                  let flag = 0;
+                  for(let i = 0;i < jurArr.length;i++){
+                    if(jurArr[i]== menuArr[item].id){
+                      flag = 1;
+                    }
+                  }
+                  if(flag==1){
+                    this.editJurVal.push(primaryArr);
+                  }else{
+                    this.editJurData.push(primaryArr);
+                  }
+                  for (let x in menuArr){
+                    if(menuArr[item].id == menuArr[x].fid){
+                      primaryArr.children.push({
+                        'id': menuArr[x].id,
+                        'label':  menuArr[x].label,
+                        'pid': menuArr[x].fid,
+                      })
+                    }
                   }
                 }
+
               }
-              this.editJurData = leftData
-              this.editJurVal = rightData
-            }else{
-              for(let x in menuArr){
-                // 定义穿梭狂左侧数据格式，插入数据
-                leftData.push({
-                  key: menuArr[x].id,
-                  label: menuArr[x].label
-                })
-              }
-              this.editJurData = leftData;
-              this.$message({
-                showClose: true,
-                message: res.msg,
-                type: 'error'
-              });
             }
           }).catch(err => {   
             console.log(err)
           });
+      },
+      /**
+       * [changeMode 切换穿梭框模式] 
+       */ 
+      changeMode() {
+        if (this.mode == "transfer") {
+          this.mode = "addressList";
+        } else {
+          this.mode = "transfer";
+        }
+      },
+      /**
+       * [addJur 穿梭框添加]
+       */
+      editHaveJur(fromData,toData,obj){
+        let nowJur = [];
+        this.haveJur = [];
+        for(let x of toData){
+          if(x.children.length > 0 && x.children instanceof Array){
+            for(let v of x.children){
+              nowJur.push(x.id,v.id)
+            }
+          }else{
+            nowJur.push(x.id)
+          }
+        }
+        this.haveJur.push(...nowJur);
       },
       /**
        * [handleClose 修改弹框关闭事件]
@@ -228,8 +257,8 @@
       handleClose(done) {
         this.$confirm('是否保留更改？')
         .then(_ => {
-          done();
           this.editJurisdition()
+          done();
         })
         .catch(_ => {
           done();
@@ -238,10 +267,9 @@
       /**
        * [editJurisdition 修改角色权限]
        */
-      editJurisdition(){
-        this.loadBack();
-        let nowJur = this.editJurVal;
-        this.$fetch(this.url+'editJurisdition',{'nowJurArr': JSON.stringify(nowJur),'nowRoleId': this.nowRoleId})
+      editJurisdition(fromData,toData,obj){
+        let staffJur = this.haveJur;
+        this.$fetch(this.url+'editJurisdition',{'nowJurArr': JSON.stringify(staffJur),'nowRoleId': this.nowRoleId})
         .then(res => {
           let msgType = '';
           if(res.code == 1){
@@ -249,12 +277,12 @@
           }else{
             msgType = 'error'
           }
+          this.editJurDialog = false;
           this.$message({
             showClose: true,
             message: res.msg,
             type: msgType
           });
-          this.editJurDialog = false;
         }).catch(err => {
           console.log(err)
         })
