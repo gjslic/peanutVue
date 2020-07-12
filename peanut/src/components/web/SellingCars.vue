@@ -119,7 +119,7 @@
 
                     
                     <el-form-item label="车辆图片">
-                        <el-upload class="upload-demo" action="http://127.0.0.1/nodejs/peanut/th5/public/sellcar/Sellcar/uploadimg" 
+                        <el-upload class="upload-demo" action="http://127.0.0.1/th5/public/sellcar/Sellcar/uploadimg" 
                         :limit="1"
                         name="image"
                         :on-preview="handlePictureCardPreview"

@@ -8,7 +8,6 @@
 
 <script>
 
-
 import PersonalContent from './PersonalContent'
 import Menu from "./Menu";
 import Bottom from "./Bottom";

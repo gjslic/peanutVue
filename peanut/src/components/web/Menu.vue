@@ -245,7 +245,16 @@ mounted(){
 
 
       },
-
+      //传递城市
+      passCity(id){
+        this.$router.push({
+            name:"BuyCar",
+            query:{
+              cityid:id,
+            }
+          });
+          location.reload();
+      },
       //用户头像名称
       getuserinfo(){
         let url = '/homepage/Homepage/getuserinfo';
@@ -255,7 +264,6 @@ mounted(){
         }
         sendParam(url, data).then(res => {
             this.userdata = res.data;
-        console.log(res.data);
 
         }).catch(err => {
             console.log(err);

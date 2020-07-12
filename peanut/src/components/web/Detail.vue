@@ -32,16 +32,24 @@
           </div>
           <div class="detail_txt hidden-xs-only">{{allInfo.introduce}} 上架时间 {{allInfo.vehicle_time}}</div>
           <div class="btn_box">
-            <el-button type="warning">
+            <el-button type="warning" @click="isChatFn()">
               <i class="el-icon-chat-dot-round"></i> 在线客服
             </el-button>
-            <el-button type="danger">
+            <el-button type="danger" @click="handelbBuy" :disabled="isClick">
               <i class="el-icon-shopping-bag-1"></i> 立即购买
             </el-button>
           </div>
           <div class="collect">
-            <i class="el-icon-star-off"></i>
-            <span>点击收藏</span>
+            <div  @click="handelCollect" v-if="isCollect">
+              <i class="el-icon-star-off"></i>
+              <span>点击收藏</span>
+            </div>
+            <div @click="handelCollect" v-else>
+              <i class="el-icon-star-on"></i>
+              <span>取消收藏</span>
+            </div>
+            
+            
           </div>
         </div>
       </el-col>
@@ -76,7 +84,7 @@
                     <span>车辆检测员</span>
                   </p>
                   <p>
-                    <el-button type="warning">在线咨询</el-button>
+                    <el-button type="warning" @click="isChatFn()">在线咨询</el-button>
                   </p>
                 </el-col>
               </el-row>
@@ -180,7 +188,7 @@
               <el-card :body-style="{ padding: '0px' }">
                 <img :src="o.img" class="image" />
                 <div style="padding: 14px;">
-                  <span>{{o.vehicle_name}}</span>
+                  <span class="carName">{{o.vehicle_name}}</span>
                   <p class="time">{{ o.vehicle_time }}</p>
                   <div class="bottom clearfix">
                     <span class="priceFirst">首付{{(o.price*0.1).toFixed(2)}}万</span>
@@ -194,8 +202,52 @@
       </div>
     </div>
     <Bottom />
+    <!-- 弹出购买框 -->
+    <el-drawer
+      title="下单信息"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+    >
+      <div style="width:80%;margin:20px auto">
+        <el-steps :active="active" finish-status="success">
+          <el-step title="下单"></el-step>
+          <el-step title="支付"></el-step>
+          <el-step title="完成"></el-step>
+        </el-steps>
+        <template>
+          <el-table :data="orderArr" border style="width: 100%">
+            <el-table-column prop="img" label="图片">
+              <template slot-scope="scope">
+                <img :src="scope.row.img" style=" width: 80%; margin:0 auto" />
+              </template>
+            </el-table-column>
+            <el-table-column prop="vehicle_name" label="车辆名称"></el-table-column>
+            <el-table-column prop="city_name" label="地址"></el-table-column>
+            <el-table-column prop="price" label="价格(万)"></el-table-column>
+          </el-table>
+        </template>
+        <p class="order_btn">
+          <el-button @click="handleOrder" :disabled="isClick">立即支付</el-button>
+          <el-button type="warning" @click="drawer = false">关闭</el-button>
+        </p>
+      </div>
+    </el-drawer>
+    <!-- 聊天 -->
+    <div class="dc_box">
+      <el-dialog :visible.sync="chatShow">
+      <JwChat-index
+        :config="config"
+        :taleList="taleList"
+        @enter="bindEnter"
+        v-model="inputMsg"
+        :toolConfig="tool"
+      />
+    </el-dialog>
+    </div>
   </div>
 </template>
+      
 
 <script>
 const CarNavTitle = () => import("./CarNavTitle");
@@ -207,6 +259,7 @@ const Menu = () => import("@/components/web/Menu");
 const Bottom = () => import("@/components/web/Bottom");
 //引入网络请求
 import { getData, sendParam } from "../../network/home";
+import { request } from "../../network/request"; //引入axios请求
 export default {
   name: "Detail",
   components: {
@@ -220,20 +273,216 @@ export default {
     return {
       vid: this.$route.query,
       allInfo: {},
-      uid: "",
+      orderArr: [],
+      uid: "", //卖家id
       tid: "",
-      currentDate: new Date(),
       remarkData: [],
       likeData: [],
       currentPage: 1, //初始页
-      pagesize: 2 //    每页的数据
+      pagesize: 2, //    每页的数据
+      drawer: false,
+      direction: "ttb",
+      active: 0,
+      isClick: false,
+
+      isCollect: true, //收藏
+      userId: "", //买家id
+      // -------------聊天--------------------------------------
+      inputMsg: '',
+      taleList: [],
+      tool: {
+        show: ['file', 'history', 'img'],
+        callback: this.toolEvent,
+        showEmoji: true,
+      },
+      userInfo: {},
+      receiveId: '',
+      userId: '',
+      chatShow: false,
+      config: {
+        img: '',
+        name: '',
+        dept: '良心卖家、值得信赖',
+        callback: this.headerEvent
+      },  
     };
   },
   mounted() {
     this.getCarInfo();
+    this.isLogin();
   },
   methods: {
+    // ------------------------聊天------------------------------
+    // 点击聊天，未登录提示请登录
+    isChatFn(){
+      let token = localStorage.getItem("tokenVue");
+      let url = "login/Login/validateToken";
+      request({
+        method: "post",
+        url: url,
+        headers: {
+          "Access-Token": token
+        }
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            this.chatShow = true
+            
+          }else{
+            this.$message({ message: "请先登录" });
+            this.$router.push("/Login");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      
+    },
+    bindEnter () {
+      const msg = this.inputMsg
+      if (!msg) return;
+      const msgObj = {
+        "date": new Date().toLocaleDateString() + new Date().toLocaleTimeString(),
+        "text": { "text": msg },
+        "mine": true,
+        "name": this.userInfo.name,
+        "img": this.userInfo.head_img,
+      }
+      console.log(this.allInfo)
+      console.log(11111)
+      
+      console.log(this.taleList)
+      this.taleList.push(msgObj)
+      // 发送到nodee
+      var sendContainer = {
+        type: 'infor',
+        sender: this.userId,
+        receiver: this.allInfo.sell_id,
+        container: msg,
+        name: this.userInfo.name,
+        img: this.userInfo.head_img,
+        mine: false
+      }
+      let params = JSON.stringify(sendContainer);
+      console.log(params)
+      this.socket.send(params);
+    },
+    toolEvent (type) {
+      console.log('tools', type)
+    },
+    //-------websocket--
+    init() {
+      if (typeof WebSocket === "undefined") {
+        alert("您的浏览器不支持socket");
+      } else {
+        // 实例化socket
+        this.socket = new WebSocket("ws://127.0.0.1:3000");
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      }
+    },
+    open() {
+      console.log("socket连接成功");
+      this.send()
+    },
+    error() {
+      console.log("连接错误");
+    },
+    getMessage(msg) {
+      let msgChat = JSON.parse(msg.data);
+      // console.log(msgChat.container)
+      this.taleList.push(msgChat.container)
+      this.config.img = msgChat.container.img
+      this.config.name = msgChat.container.name
+      this.uid = msgChat.id
+      console.log(msgChat.id)
+    },
+    send() {
+      let showObj = {
+        type: "show",
+        account: this.userId,
+      };
+      let params = JSON.stringify(showObj);
+      console.log(params)
+      this.socket.send(params);
+    },
+    close() {
+      console.log("socket已经关闭");
+    },
+    destroyed() {
+      // 销毁监听
+      this.socket.onclose = this.close;
+    },
     // ------------网络请求---------
+    // 判断用户是否登录
+    isLogin() {
+      let token = localStorage.getItem("tokenVue");
+      let url = "login/Login/validateToken";
+      request({
+        method: "post",
+        url: url,
+        headers: {
+          "Access-Token": token
+        }
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            let uid = JSON.parse(res.data.data).id;
+            this.userId = uid;
+            // 请求用户信息
+            this.getUser();
+            // lo初始化websocket
+            this.init();
+            // 如果买家的id和卖家的id一样就不能购买
+            if (uid == this.uid) {
+              this.isClick = true;
+            }
+            // 果然登录判断是否已收藏
+            this.isloginAnd();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    //请求用户信息
+    getUser() {
+      let url = "/detail/index/getUser";
+      let data = {
+        id: this.userId
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.userInfo = res.data.data;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 判断是否已收藏
+    isloginAnd() {
+      let url = "/detail/index/isloginAnd";
+      let data = {
+        id: this.userId,
+        vid: this.vid.vehicleID
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            this.isCollect = false;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
     getCarInfo() {
       let url = "/detail/index/get";
       let data = {
@@ -243,10 +492,15 @@ export default {
         .then(res => {
           if (res.data.code == 1) {
             this.allInfo = res.data.data[0];
+ 
+            this.config.img = this.allInfo.head_img
+            this.config.name = this.allInfo.name
+            this.orderArr = res.data.data;
             this.uid = res.data.data[0].sell_id;
             this.tid = res.data.data[0].tab_id;
             this.getRemark();
             this.getLike();
+            this.isLogin();
           } else {
           }
         })
@@ -280,7 +534,6 @@ export default {
       sendParam(url, data)
         .then(res => {
           if (res.data.code == 1) {
-            console.log(res.data.data);
             this.likeData = res.data.data;
           } else {
           }
@@ -295,12 +548,141 @@ export default {
     },
     // 跳转详情页
     detail(id) {
-      console.log(id)
+      console.log(id);
       this.$router.push({ name: "Detail", query: { vehicleID: id } });
-      
+
       window.location.reload();
       window.scrollTo(0, 0);
-    }
+    },
+    // 点击购买
+    handelbBuy() {
+      // 1.判断是否登录 2.判断金额是否够
+      if(this.allInfo.vehicle_state == '已下架'){
+        this.$message.error("该商品已下架");
+        this.$router.push("/");
+      }else if (window.localStorage.getItem("tokenVue") == null) {
+        this.$message("请先登录");
+        this.$router.push("/Login");
+      } else {
+        this.getToken();
+      }
+    },
+    // 获取token验证是否登录
+    getToken() {
+      let token = localStorage.getItem("tokenVue");
+      let url = "login/Login/validateToken";
+      request({
+        method: "post",
+        url: url,
+        headers: {
+          "Access-Token": token
+        }
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            let uid = JSON.parse(res.data.data).id;
+            this.userId = uid;
+
+            // 跳出弹框
+            this.drawer = true;
+          } else {
+            this.$message({ message: "请先登录" });
+            this.$router.push("/Login");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 判断钱够不够
+    handleOrder() {
+      this.active = this.active + 1;
+      let url = "/detail/Index/order";
+      let data = {
+        userId: this.userId,
+        uid: this.uid,
+        vid: this.vid.vehicleID,
+        price: this.allInfo.price
+      };
+      sendParam(url, data)
+        .then(res => {
+          if (res.data.code == 1) {
+            const loading = this.$loading({
+              lock: true,
+              text: "Loading",
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.7)"
+            });
+            setTimeout(() => {
+              loading.close();
+              this.active = this.active + 1;
+              this.$message.success(res.data.msg);
+            }, 2000);
+            this.isClick = true;
+            this.active = this.active + 1;
+          } else {
+            this.$message(res.data.msg);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
+    // 收藏
+    handelCollect() {
+      // 判断是否登录
+      let token = localStorage.getItem("tokenVue");
+      let url = "login/Login/validateToken";
+      request({
+        method: "post",
+        url: url,
+        headers: {
+          "Access-Token": token
+        }
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            let uid = JSON.parse(res.data.data).id;
+            this.userId = uid;
+            let url = "/detail/Index/collect";
+            let data = {
+              uid: this.uid,
+              userId: this.userId,
+              vid: this.vid.vehicleID,
+              isCollect: this.isCollect
+            };
+            sendParam(url, data)
+              .then(res => {
+                if (res.data.code == 1) {
+                  this.$message.success(res.data.msg);
+                  this.isCollect = false;
+                } else if (res.data.code == 2) {
+                  this.$message.success(res.data.msg);
+                  this.isCollect = true;
+                } else {
+                  this.$message(res.data.msg);
+                }
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          } else {
+            this.$message({ message: "请先登录" });
+            this.$router.push("/Login");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    
   }
 };
 </script>
@@ -313,6 +695,21 @@ export default {
 
 .block {
   margin: 5px 20px;
+}
+.carName {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.carOrder {
+  color: #fd7a3a;
+  margin-left: 20px;
+  font-size: 18px;
+}
+.order_btn {
+  float: right;
+  margin: 20px 0;
 }
 </style>
 <style>
@@ -355,5 +752,47 @@ export default {
 }
 .like_item {
   margin-bottom: 25px;
+}
+.el-drawer__header > :first-child {
+  outline: none;
+}
+.el-drawer.ttb {
+  outline: none;
+}
+.el-drawer {
+  height: auto !important;
+}
+.collect{
+  cursor: pointer;
+}
+.collect .el-icon-star-on {
+  color: #fd7a3a;
+}
+.collect .el-icon-star-off {
+  font-size: 20px !important;
+}
+.rightBox{
+  display: none !important;
+}
+.chatBox{
+  width:100%;
+}
+.dc_box .chatPage{
+  width:100% !important;
+}
+.wrapper{
+  width: auto !important;
+}
+.web__tools dl{
+  margin-top: 20px;
+}
+
+.ChatPage {
+    width:100% !important;
+}
+@media screen and (max-width:992px){
+  .el-dialog{
+    width:90% !important;
+  }
 }
 </style>

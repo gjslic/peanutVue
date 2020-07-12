@@ -11,14 +11,14 @@
 		  </el-col>
 			<el-col :span="3">
 				<el-popconfirm title="是否批量操作？删除后不可恢复" @onConfirm="batchDeleteStaff">
-		  		<el-button type="danger" slot="reference"  :disabled= "delBtnDisabled">批量删除</el-button>
+		  		<el-button type="danger" slot="reference">批量删除</el-button>
 				</el-popconfirm>
 		  </el-col>
 		  <el-col :span="12">
 				<el-select v-model="selectVal" placeholder="请选择" style="width:100px">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
-				<el-input placeholder="请输入内容" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" v-model="selectInfo" @blur="getSearchInfo(selectInfo)" class="input-with-select"></el-input>
+				<el-input placeholder="请输入内容，默认为账号" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" v-model="selectInfo" @blur="getSearchInfo(selectInfo)" class="input-with-select"></el-input>
 				<el-button icon="el-icon-search" @click="getStaff(nowPage,selectVal,selectInfo)"></el-button>
 		  </el-col>
 			<el-col :span="3">
@@ -26,19 +26,19 @@
 		  </el-col>
 		</el-row>
 		<!-- 员工添加弹出框 -->
-		<el-dialog :title="dialogTitle" @close="closeFun" center :visible.sync="addDialogForm">
+    <el-dialog :title="dialogTitle" @close="closeFun" center :visible.sync="addDialogForm">
 		  <el-form :model="form" status-icon :rules="rules" ref="MyForm" class="demo-ruleForm">
 		    <el-form-item label="员工账号" prop="account" :label-width="formLabelWidth">
-		      <el-input v-model="form.account" onKeyUp="value=value.replace(/[\W]/g,'')" required="true" placeholder="请输入账号"></el-input>
+		      <el-input v-model="form.account" onKeyUp="value=value.replace(/[\W]/g,'')" required="true" placeholder="6-10位英文+数字，英文开头"></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工密码" prop="password" :label-width="formLabelWidth">
-		    	<el-input placeholder="请输入密码" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="form.password" show-password></el-input>
+		    	<el-input placeholder="8-10位数字+大小写字母" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="form.password" show-password></el-input>
 		    </el-form-item>
 		    <el-form-item label="昵称" prop="name" :label-width="formLabelWidth">
-		      <el-input v-model="form.name" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" placeholder="请输入昵称"></el-input>
+		      <el-input v-model="form.name" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" placeholder="1~6位中文、英文、数字包括下划线"></el-input>
 		    </el-form-item>
 		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
-		    	<el-input type="text" placeholder="请输入手机号" onkeyup="this.value=this.value.replace(/\D/g,'')" v-model="form.phone" maxlength="11" show-word-limit></el-input>
+		    	<el-input type="text" placeholder="13,15,17,18开头，11位数字" onkeyup="this.value=this.value.replace(/\D/g,'')" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="checkRole" :label-width="formLabelWidth" >
 		      <el-select v-model="form.checkRole" placeholder="请选择员工职位" @focus="getRoleArr">
@@ -69,10 +69,10 @@
 					<span>{{form.account}}</span>
 		    </el-form-item>
 		    <el-form-item label="昵称" prop="name" :label-width="formLabelWidth">
-		      <el-input v-model="form.name" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" placeholder="请输入昵称"></el-input>
+		      <el-input v-model="form.name" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5_]/g, '')" placeholder="1~6位中文、英文、数字包括下划线"></el-input>
 		    </el-form-item>
 		    <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
-		    	<el-input type="text" placeholder="请输入手机号" onkeyup="this.value=this.value.replace(/\D/g,'')" v-model="form.phone" maxlength="11" show-word-limit></el-input>
+		    	<el-input type="text" placeholder="13,15,17,18开头，11位数字" onkeyup="this.value=this.value.replace(/\D/g,'')" v-model="form.phone" maxlength="11" show-word-limit></el-input>
 		    </el-form-item>
 		    <el-form-item label="员工职位" prop="role_name" :label-width="formLabelWidth" >
 		      <el-select v-model="form.role_name" placeholder="请选择员工职位" @focus="getRoleArr">
@@ -135,15 +135,27 @@
 			</el-table-column>
 			<el-table-column align="center" label="操作" width="240px">
 				<template slot-scope="scope" v-if="scope.row.role_name != '超级管理员'" disabled >
-					<el-button type="warning" icon="el-icon-lock" v-if="scope.row.state == 1" @click="editState(scope.row.id,scope.row)" circle></el-button>
-					<el-button type="primary" icon="el-icon-unlock" v-else-if="scope.row.state == 0" @click="editState(scope.row.id,scope.row)" circle></el-button>
-					<el-button type="primary" icon="el-icon-edit" @click="editStaff(scope.row)" circle></el-button>
-					<el-popconfirm title="确认删除该用户？" icon="el-icon-info" iconColor="red" @onConfirm="delStaff(scope.row.id)">
-						<el-button type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
-					</el-popconfirm>
-					<el-popconfirm title="是否重置密码？" @onConfirm="resetPsw(scope.row.id)">
-						<el-button type="danger" slot="reference" icon="el-icon-refresh" circle></el-button>
-					</el-popconfirm>
+          <el-tooltip class="item" effect="light" v-if="scope.row.state == 1" content="点击锁定" placement="top">
+					  <el-button type="warning" icon="el-icon-lock" @click="editState(scope.row.id,scope.row)" circle></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="light" v-else-if="scope.row.state == 0" content="点击解锁" placement="top">
+				  	<el-button type="primary" icon="el-icon-unlock" @click="editState(scope.row.id,scope.row)" circle></el-button>
+          </el-tooltip>
+					<el-tooltip class="item" effect="dark" content="点击修改当前员工信息" placement="top">
+            <el-button type="primary" icon="el-icon-edit" @click="editStaff(scope.row)" circle></el-button>
+          </el-tooltip>
+          <el-tooltip class="item" effect="light" content="点击删除当前员工" placement="top">
+            <el-popconfirm title="确认删除该用户？" icon="el-icon-info" iconColor="red" @onConfirm="delStaff(scope.row.id)">
+              <el-button type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+            </el-popconfirm>
+          </el-tooltip>
+					
+          <el-tooltip class="item" effect="dark" content="点击重置密码" placement="top">
+            <el-popconfirm title="是否重置密码？" @onConfirm="resetPsw(scope.row.id)">
+              <el-button type="danger" slot="reference" icon="el-icon-refresh" circle></el-button>
+            </el-popconfirm>
+          </el-tooltip>
+					
 				</template>
 			</el-table-column>
 		</el-table>
@@ -190,7 +202,7 @@
 			};
 			// 密码正则校验
       let checkPsw = (rule, value, callback) => {
-        if (value === '') {
+        if (value === '' || value == undefined) {
           callback(new Error('请输入密码'));
         } else {
           if (value.match(pswReg) == null) {
@@ -201,7 +213,7 @@
 			};
 			// 昵称正则校验
 			let checkName = (rule , value , callback) => {
-				if(value === ''){
+				if(value === '' || value == undefined){
 					callback(new Error('请创建昵称'));
 				}else{
 					if (value.match(nickNameReg) == null) {
@@ -212,20 +224,24 @@
 			}
 			// 手机号正则校验
 			let checkTel = (rule , value , callback) => {
-				let tel = value.toString();
-				if(!tel){
-					callback(new Error('请输入手机号'));
-				}else{
-					if (tel.match(telReg) == null) {
-            callback(new Error('手机号规则：13,15,17,18开头，11位数字'))
+        if(value != undefined){
+          let tel = value.toString();
+          if(!tel){
+            callback(new Error('请输入手机号'));
+          }else{
+            if (tel.match(telReg) == null) {
+              callback(new Error('手机号规则：13,15,17,18开头，11位数字'))
+            }
+            callback();
           }
-          callback();
-				}
+        }else{
+          callback(new Error('请输入手机号'));
+        }
+				
 			};
 			// 角色判断不为空
 			let checkRole = (rule , value , callback) => {
-				console.log(this.form.checkRole)
-				if(this.form.checkRole === ''){
+				if(this.form.checkRole === '' || value == undefined){
 					callback(new Error('请选择职位'));
 				}else{
           callback();
@@ -233,14 +249,14 @@
 			};
 			// 性别判断是否选中
 			let checkSex = (rule , value , callback) => {
-				if(value === ''){
+				if(value === '' || value == undefined){
 					callback(new Error('请选择性别'));
 				}else{
           callback();
 				}
 			};
       return {
-				url: 'http://localhost/th5/public/admin_staff/staff/',
+				url: 'http://localhost/peanut/th5/public/admin_staff/staff/',
 				rules: {
           name: [
             { validator: checkName, trigger: 'blur' }
@@ -261,12 +277,12 @@
             { validator: checkSex, trigger: 'blur' }
 					]
 				},
-				delBtnDisabled: true,
 				dialogTitle: '', // 弹框标题
       	selectInfo: '', //条件
       	selectVal: '', //条件搜索
 				roleArr: [], // 职位列表
-				staffArr:[],  //员工列表
+        staffArr: [],  //员工列表
+        checkArr: [], //复选框勾选容器
 				selectRow: [], //当前选中行
 				addDialogForm: false,  //添加弹出框初始状态
 				editDialogForm:false,  //修改弹出框初始状态
@@ -308,7 +324,9 @@
     mounted() {
 			let that = this;
 			that.loadBack();
-			that.getStaff(that.nowPage,'','');
+      that.getStaff(that.nowPage,'','');
+      
+      
     },
 		methods: {
 			/**
@@ -322,21 +340,14 @@
 			/**
 			 * [handleSelectionChange 复选框状态改变]
 			 */
-			handleSelectionChange(val){
-				let arr = [];
-				val.forEach((val, index) => {
-					this.staffArr.forEach((v, i) => {// id 是每一行的数据id
-						if(val.id == v.id){
-							arr.push(val.id);
-						}
-					})
-				})
-				this.selectRow = arr;
-				if(this.selectRow.length > 0){
-					this.delBtnDisabled = false;
-				}else{
-					this.delBtnDisabled = true;
-				}
+			handleSelectionChange(checkVal){
+        this.selectRow = []
+        let arr = [];
+        for(let x of checkVal){
+          arr.push(x.id)
+        }
+        this.selectRow.push(...arr);
+        return
 			},
 			/**
 			 * [handleCurrentChange 页码点击修改当前页码值]
@@ -354,6 +365,7 @@
 			 *[getStaff 获取员工列表]
 			 */ 
 			getStaff(num,searchType = '',searchInfo = ''){
+        this.nowPage = 1;
 				if(localStorage.getItem('staffAcc')){
 					let staffAcc = localStorage.getItem('staffAcc');
 					this.staffArr = [];
@@ -362,8 +374,13 @@
 						'keyWord': searchInfo,
 						'acc': staffAcc
 					}).then(res => {
-						this.total = res.data.length;
-						this.staffArr = res.data;
+            if(res.data){
+              this.total = res.data.length;
+						  this.staffArr = res.data;
+            }else{
+              this.total = 0;
+            }
+						
 					}).catch(err => {
 						console.log(err)
 					})
@@ -527,19 +544,28 @@
 			 * [batchDeleteStaff 批量删除]
 			 */
 			batchDeleteStaff(){
-				let delArr = JSON.stringify(this.selectRow);
-				this.$fetch(this.url+'batchDeleteStaff',{delArr})
-				.then(res => {
-					let msgType = res.code == 1 ? 'success' : 'error';
-					this.$message({
-						showClose: true,
-						message: res.msg,
-						type: msgType
-					});
-					this.getStaff(1);
-				}).catch(err => {
-					console.log(err)
-				})
+        if(this.selectRow.length > 0){
+          let delArr = JSON.stringify(this.selectRow);
+          this.$fetch(this.url+'batchDeleteStaff',{delArr})
+          .then(res => {
+            let msgType = res.code == 1 ? 'success' : 'error';
+            this.$message({
+              showClose: true,
+              message: res.msg,
+              type: msgType
+            });
+            this.getStaff(1);
+          }).catch(err => {
+            console.log(err)
+          })
+        }else{
+          this.$message({
+            showClose: true,
+            message: '请先选择删除项',
+            type: 'error'
+          });
+        }
+				
 			},
 			/**
 			 * [resetPsw 重置密码]
@@ -611,15 +637,16 @@
   .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
     text-align: center;
   }
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 80px;
+    height: 80px;
     display: block;
+    margin-left: 260px;
   }
 	.el-upload__input{
 		display:none;

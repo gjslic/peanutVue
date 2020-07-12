@@ -12,9 +12,10 @@
       <el-menu-item index="已完成">已完成</el-menu-item>
       <!-- 搜索框 -->
       <div class="searchBox">
-        <el-input placeholder="请输入订单号进行搜索" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="selectInfo" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search" @click="getOrderList(activeIndex,nowPage,selectInfo)"></el-button>
+        <el-input placeholder="请输入订单号进行搜索" width="75%" onKeyUp="value=value.replace(/[\W]/g,'')" v-model="selectInfo" class="input-with-select">
+          <el-button slot="append" icon="el-icon-search" @click="getOrderList(activeIndex,1,selectInfo)"></el-button>
         </el-input>
+        <el-button type="primary" v-if="selectInfo != ''" @click="clearSearch" >清空搜索</el-button>
       </div>
     </el-menu>
     <!-- 订单展示区 -->
@@ -105,7 +106,7 @@
     name: 'Order',
     data() {
       return {
-        url: 'http://localhost/th5/public/admin_order/Backorder/',
+        url: 'http://localhost/peanut/th5/public/admin_order/Backorder/',
         selectInfo: '', //搜索关键字
         orderData: [], // 所有订单显示
         nowData: [], // 当前订单显示
@@ -127,6 +128,7 @@
        */
       getOrderList(type,num,searchInfo){
         let that = this;
+        this.nowPage = 1;
         that.loadBack();
         let pageSize = that.pageSize;
         that.orderData = [];
@@ -209,10 +211,18 @@
         }, 2000);
       },
       /**
+       * [clearSearch 清空搜索框]
+       */
+      clearSearch(){
+        this.selectInfo = '';
+        this.getOrderList(this.activeIndex);
+      },
+      /**
        * [handleSelect 选择]
        */
       handleSelect(key, keyPath) {
         this.getOrderList(key);
+
       },
       handleSizeChange(page_size) {
         this.pageSize = page_size;
@@ -235,7 +245,7 @@
     cursor:pointer;
   }
   .searchBox{
-    width: 400px;
+    width: 450px;
     float: right;
     margin-right: 100px;
   }

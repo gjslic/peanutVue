@@ -85,7 +85,7 @@
         <el-form-item label="车辆图片" prop="imageUrl" class="img_box">
           <el-input v-model="ruleForm.imageUrl" v-if="false"></el-input>
           <el-upload
-            action="http://127.0.0.1/peanut/th5/public/goods/index/upload"
+            action="http://127.0.0.1/th5/public/goods/index/upload"
             list-type="picture-card"
             :limit="1"
             :on-preview="handlePictureCardPreview"
@@ -530,6 +530,7 @@ export default {
     },
     // 搜索
     handleSearch() {
+      this.currentPage = 1;
       let url = "/goods/index/searchSale";
       let data = {
         keyword: this.input3,
