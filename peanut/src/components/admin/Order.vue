@@ -48,9 +48,10 @@
       <el-table-column align="center" prop="price" label="总价/万"  sortable ></el-table-column>
       <el-table-column align="center" prop="orderTime" width="180px" label="下单时间" sortable></el-table-column>
       <el-table-column align="center" prop="state" label="状态" sortable></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center"  width="180px">
         <template slot-scope="scope">
           <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="enterOption(scope.row)"></el-button>
+          <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="cancel(scope.row)"></el-button>
           <el-button icon="el-icon-view" type="primary" circle @click="getNowOrder(scope.row)"></el-button>
         </template>
       </el-table-column>
@@ -106,7 +107,7 @@
     name: 'Order',
     data() {
       return {
-        url: 'http://localhost/peanut/th5/public/admin_order/Backorder/',
+        url: 'http://localhost/th5/public/admin_order/Backorder/',
         selectInfo: '', //搜索关键字
         orderData: [], // 所有订单显示
         nowData: [], // 当前订单显示
@@ -195,6 +196,12 @@
         }).catch(err => { 
           console.log(err)
         })
+      },
+      /**
+      * [cancel 取消退款]
+      */
+      cancel(row){
+        console.log(row)
       },
       /**
 			 * [loadBack 事件触发延时]

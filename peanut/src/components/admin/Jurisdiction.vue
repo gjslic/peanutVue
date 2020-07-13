@@ -5,13 +5,13 @@
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-row :gutter="24">
-      <el-col :span="11" class="topInfo"><h4>角色菜单</h4></el-col>
+      <el-col :span="5" :offset="3" class="topInfo"><h4>角色菜单</h4></el-col>
       <el-col :span="1" class="topInfo">
         <el-tooltip class="item" effect="dark" content="点击查看所有权限" placement="top">
           <el-button type="primary" circle @click="getJurisditionList('权限列表')" icon="el-icon-view"></el-button>
         </el-tooltip>
       </el-col>
-      <el-col :span="11" class="topInfo"><h4>{{jurTitle}}</h4></el-col>
+      <el-col :span="11" :offset="1" class="topInfo"><h4>{{jurTitle}}</h4></el-col>
     </el-row>
     <el-table :data="tableData" highlight-current-row border :header-cell-style="{background:'skyblue',color:'white',fontSize:'18px'}" style="width: 50%;float:left;border-radius:10px">
       <el-table-column align="center" prop="id" label="ID"></el-table-column>
@@ -62,7 +62,7 @@
     },
     data() {
       return {
-        url: 'http://localhost/peanut/th5/public/admin_jurisdiction/Jurisdition/',
+        url: 'http://localhost/th5/public/admin_jurisdiction/Jurisdition/',
         tableData: [], // 左侧菜单容器
         menuData: [], // 右侧权限列表容器
         allMenuArr: [], // 初始菜单
@@ -314,11 +314,8 @@
   .el-tree {
     position: relative;
     cursor: default;
-    background: aliceblue;
-    color: rebeccapurple;
-    width: 20%;
     float: left;
-    margin-left: 80px;
+    margin-left: 100px;
     border-radius: 10%;
   }
 </style>
