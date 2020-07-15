@@ -50,12 +50,31 @@
       <el-table-column align="center" prop="state" label="状态" sortable></el-table-column>
       <el-table-column label="操作" align="center"  width="180px">
         <template slot-scope="scope">
-          <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="enterOption(scope.row)"></el-button>
-          <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="cancel(scope.row)"></el-button>
+          <el-button icon="el-icon-finished" v-if="scope.row.state == '退款审核中'" type="warning" circle @click="refundApplication(scope.row)"></el-button>
           <el-button icon="el-icon-view" type="primary" circle @click="getNowOrder(scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 退款确认弹框 -->
+    <el-dialog title="退款详情" :visible.sync="resOrderDialog" width="30%" :before-close="closeOrder">
+      <el-form :model="refound">
+        <el-image :src="refound.img_content" ></el-image>
+        <el-form-item label="退款单号：" :label-width="formLabelWidth">
+          <span>{{refound.order_num}}</span>
+        </el-form-item>
+        <el-form-item label="退款发起时间：" :label-width="formLabelWidth">
+          <span>{{refound.report_time}}</span>
+        </el-form-item>
+        <el-form-item label="退款理由：" :label-width="formLabelWidth">
+          <span>{{refound.text_content}}</span>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="warning" @click="cancel">拒绝退款</el-button>
+        <el-button type="primary" @click="enterOption">同意退款</el-button>
+      </div>
+    </el-dialog>
+  <!-- 显示当前订单 -->
     <el-dialog title="当前订单展示" :visible.sync="dialogFormVisible">
       <el-form :model="nowData">
           <el-image :src="nowData.carImg" ></el-image>
@@ -118,6 +137,9 @@
         searchArr: [],
         nowPage: 1,
         pageSize: 5,
+        resInfo:{},
+        refound: {},
+        resOrderDialog: false
       }
     },
     mounted() {
@@ -171,28 +193,45 @@
         })
       },
       /**
-       * [enterOption 审核操作]
+       * [refundApplication 退款请求]
        */
-      enterOption(row){
+      refundApplication(row){
         this.loadBack();
-        this.$post(this.url+'editState',{
+        this.resInfo = row;
+        this.$post(this.url+'reasonRefund',{
           'nowId': row.id,
-          'buyId': row.buyer,
-          'price': row.price 
+        }).then(res => {
+          this.refound = res.data;
+          this.resOrderDialog = true;
+          console.log(this.refound)
+        }).catch(err => { 
+          console.log(err)
+        })
+        
+      },
+
+      closeOrder(){
+        this.resOrderDialog = false;
+      },
+      /**
+       * [enterOption 同意退款]
+       */
+      enterOption(){
+        let resInfo = this.resInfo
+        this.$post(this.url+'editState',{
+          'nowId': resInfo.id,
+          'buyId': resInfo.buyer,
+          'price': resInfo.price 
         }).then(res => {
           let msgType = '';
-          if(res.code == 1){
-            row.state = '退款成功';
-            msgType = 'success'
-          }else{
-            row.state = '退款失败';
-            msgType = 'error'
-          }
+          resInfo.state = '退款成功';
           this.$message({
             showClose: true,
             message: res.msg,
-            type: msgType
+            type: 'success'
           });
+          this.resOrderDialog = false;
+          this.getOrderList(this.activeIndex);
         }).catch(err => { 
           console.log(err)
         })
@@ -200,8 +239,21 @@
       /**
       * [cancel 取消退款]
       */
-      cancel(row){
-        console.log(row)
+      cancel(){
+        let resInfo = this.resInfo;
+        this.$post(this.url+'cancel',{
+          'nowId': resInfo.id,
+        }).then(res => {
+          this.resOrderDialog = false;
+          this.$message({
+            showClose: true,
+            message: '操纵成功',
+            type: 'success'
+          });
+          this.getOrderList(this.activeIndex);
+        }).catch(err => {
+          console.log(err)
+        })
       },
       /**
 			 * [loadBack 事件触发延时]
